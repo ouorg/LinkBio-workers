@@ -1,0 +1,36 @@
+# LinkBio-workers — Cloudflare Workers configuration
+# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "linkbio-workers"
+main = "src/index.ts"
+compatibility_date = "2025-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ── KV Namespace ──────────────────────────────────────────────
+# Local / first-time: wrangler kv namespace create BIO_KV
+# Then replace the id below with the real namespace id.
+# For GitHub Actions / Dashboard deploys you can also bind BIO_KV there.
+[[kv_namespaces]]
+binding = "BIO_KV"
+id = "00000000000000000000000000000000"
+preview_id = "00000000000000000000000000000000"
+
+# ── Non-secret Variables (override in Dashboard / CI as needed) ─
+[vars]
+SITE_NAME = "LinkBio"
+SITE_URL = "http://localhost:8787"
+DEFAULT_THEME = "default"
+
+# ── Secrets (set via CLI or Dashboard — never commit real values) ─
+# wrangler secret put ADMIN_PASSWORD
+# wrangler secret put SESSION_SECRET
+#
+# Required secrets:
+#   ADMIN_PASSWORD  — Admin login password
+#   SESSION_SECRET  — Random string for signing session cookies
+#
+# Optional (CI only, not Worker runtime):
+#   CF_API_TOKEN / CLOUDFLARE_API_TOKEN
+#   CF_ACCOUNT_ID / CLOUDFLARE_ACCOUNT_ID
+
+# Local development secrets: copy .dev.vars.example → .dev.vars
