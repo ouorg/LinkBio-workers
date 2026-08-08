@@ -12,8 +12,8 @@ compatibility_flags = ["nodejs_compat"]
 # For GitHub Actions / Dashboard deploys you can also bind BIO_KV there.
 [[kv_namespaces]]
 binding = "BIO_KV"
-id = "00000000000000000000000000000000"
-preview_id = "00000000000000000000000000000000"
+id = "bacf2f2390ec4126937b4c515f342775"
+preview_id = "bacf2f2390ec4126937b4c515f342775"
 
 # ── Non-secret Variables (override in Dashboard / CI as needed) ─
 [vars]
