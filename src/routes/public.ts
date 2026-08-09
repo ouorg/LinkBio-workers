@@ -5,6 +5,7 @@ import { renderProfileBlock } from "../components/profile";
 import { escapeHtml } from "../middleware/security";
 import { createStore } from "../services/kv";
 import type { AuthVariables } from "../middleware/auth";
+import type { Settings } from "../types";
 
 const publicRoutes = new Hono<{ Bindings: Env; Variables: AuthVariables }>();
 
@@ -27,13 +28,8 @@ publicRoutes.get("/", async (c) => {
       : "";
 
   const pageClass = settings.background ? "page page--bg" : "page";
-
-  const footer = settings.showFooter
-    ? `<footer class="footer">
-        <div>${escapeHtml(siteName)}</div>
-        <div style="margin-top:4px"><a href="/admin">Admin</a></div>
-      </footer>`
-    : "";
+  const isAdmin = c.get("isAdmin");
+  const footer = renderPublicFooter(settings, siteName, isAdmin);
 
   const html = renderLayout({
     title: `${profile.name || siteName} · ${siteName}`,
@@ -64,6 +60,36 @@ publicRoutes.get("/", async (c) => {
 
   return htmlResponse(html);
 });
+
+/**
+ * Footer rules:
+ * - showFooter false or footerMode "off" → hidden
+ * - footerMode "auth_only" → only when admin session is present
+ * - empty footerText → default lines (site name + admin link)
+ * - custom / default with text → use footerText (escaped plain text, newlines → <br>)
+ */
+export function renderPublicFooter(
+  settings: Settings,
+  siteName: string,
+  isAdmin: boolean,
+): string {
+  if (!settings.showFooter || settings.footerMode === "off") return "";
+  if (settings.footerMode === "auth_only" && !isAdmin) return "";
+
+  const custom = (settings.footerText || "").trim();
+  const useCustom = settings.footerMode === "custom" || custom.length > 0;
+
+  let inner: string;
+  if (useCustom && custom) {
+    inner = escapeHtml(custom).replace(/\r\n|\n|\r/g, "<br />");
+  } else {
+    // Default: project / site name + admin entry
+    inner = `<div>${escapeHtml(siteName)}</div>
+        <div style="margin-top:4px"><a href="/admin">Admin</a></div>`;
+  }
+
+  return `<footer class="footer">${inner}</footer>`;
+}
 
 /** Health check for deploys / uptime */
 publicRoutes.get("/health", (c) =>

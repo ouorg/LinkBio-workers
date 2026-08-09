@@ -28,7 +28,7 @@ export type DashboardData = {
 };
 
 export function renderAdminDashboard(data: DashboardData): Response {
-  const nav = renderNav(data.page, data.siteName);
+  const nav = renderNav(data.page, data.siteName, data.csrf);
   let body = "";
 
   switch (data.page) {
@@ -129,7 +129,7 @@ export function renderLoginPage(opts: {
   return htmlResponse(html);
 }
 
-function renderNav(page: AdminPage, siteName: string): string {
+function renderNav(page: AdminPage, siteName: string, csrf: string): string {
   const items: { id: AdminPage | "logout" | "public"; href: string; label: string; danger?: boolean }[] = [
     { id: "overview", href: "/admin", label: "Overview" },
     { id: "profile", href: "/admin/profile", label: "Profile" },
@@ -145,8 +145,13 @@ function renderNav(page: AdminPage, siteName: string): string {
       const active = item.id === page ? " active" : "";
       const danger = item.danger ? " danger" : "";
       if (item.id === "logout") {
-        // logout is GET for simplicity; session cleared server-side
-        return `<a class="nav-link${danger}" href="${item.href}">${item.label}</a>`;
+        // POST + CSRF only — GET /admin/logout does not clear the session
+        return `<form method="post" action="/admin/logout" class="nav-logout-form" style="display:inline;margin:0">
+          <input type="hidden" name="_csrf" value="${escapeHtml(csrf)}" />
+          <button type="submit" class="nav-link${danger}" style="background:none;border:0;padding:0;font:inherit;cursor:pointer;color:inherit">
+            ${item.label}
+          </button>
+        </form>`;
       }
       return `<a class="nav-link${active}${danger}" href="${item.href}">${item.label}</a>`;
     })

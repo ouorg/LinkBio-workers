@@ -10,8 +10,9 @@ Think of it as a self-hosted Linktree alternative: no traditional servers, KV-ba
 - **Cloudflare KV** for profile, links, settings, analytics
 - **SSR** public page (Hono + HTML templates — no heavy SPA)
 - **Admin console** at `/admin` (session auth, CSRF, form-based UI)
-- **GitHub Actions** auto-deploy with Wrangler
-- **Cloudflare Dashboard** manual deploy (upload / connect repo)
+- **GitHub Actions** auto-deploy (`.github/workflows/deploy.yml`) + Dashboard path
+- Configurable public **footer** (default / custom / auth-only / off)
+- Login **rate limit** (KV) + **POST+CSRF logout**
 - Modern SaaS UI (mobile-first, dark/light, accent color)
 - Import / export JSON backups
 - Designed for **3–5 years** of low-maintenance ownership
@@ -100,102 +101,90 @@ Local KV is simulated by Wrangler; defaults seed profile/links when keys are emp
 
 ## Deployment
 
-The project supports **two** deployment modes.
+Two supported paths. **Real KV namespace IDs are never committed** — `wrangler.toml` only has placeholders (`REPLACE_WITH_YOUR_KV_*`).
 
-### Mode 1 — GitHub Actions (recommended for developers)
-
-Flow:
-
-```
-GitHub Repository
-  → GitHub Actions (.github/workflows/deploy.yml)
-    → npm ci → typecheck → build
-      → wrangler deploy
-        → Cloudflare Workers
-```
-
-#### 1) Create a KV namespace
+### Shared: create KV + runtime secrets
 
 ```bash
 npx wrangler login
 npx wrangler kv namespace create BIO_KV
 npx wrangler kv namespace create BIO_KV --preview
-```
-
-Copy the returned IDs into `wrangler.toml`:
-
-```toml
-[[kv_namespaces]]
-binding = "BIO_KV"
-id = "<your-namespace-id>"
-preview_id = "<your-preview-namespace-id>"
-```
-
-#### 2) Set Worker secrets (runtime)
-
-```bash
 npx wrangler secret put ADMIN_PASSWORD
 npx wrangler secret put SESSION_SECRET
 ```
 
-Generate a strong `SESSION_SECRET` (e.g. 32+ random bytes).
+Save the returned namespace IDs for the steps below (do not commit them).
 
-#### 3) GitHub Secrets & Variables
+### Mode 1 — GitHub Actions (workflow in-repo)
 
-In the repo: **Settings → Secrets and variables → Actions**
+Workflow file: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 
-**Secrets** (required for deploy):
+```
+push main
+  → checkout → npm ci → typecheck
+  → inject BIO_KV_ID into wrangler.toml
+  → build dry-run → wrangler deploy
+```
 
-| Name | Purpose |
-| ---- | ------- |
-| `CF_API_TOKEN` | Cloudflare API token with Workers edit permission |
-| `CF_ACCOUNT_ID` | Cloudflare account ID |
-
-> Aliases `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` are also accepted by the workflow.
-
-**Variables** (optional):
+#### GitHub Secrets (required)
 
 | Name | Purpose |
 | ---- | ------- |
-| `PROJECT_NAME` | Logical project label |
-| `ENVIRONMENT` | e.g. `production` |
+| `CF_API_TOKEN` | Cloudflare API token (Workers Edit). Alias: `CLOUDFLARE_API_TOKEN` |
+| `CF_ACCOUNT_ID` | Cloudflare account ID. Alias: `CLOUDFLARE_ACCOUNT_ID` |
 
-#### 4) API token permissions
+#### GitHub Variables / Secrets (KV + optional vars)
 
-Create a token at Cloudflare → **My Profile → API Tokens** with at least:
+| Name | Required | Purpose |
+| ---- | -------- | ------- |
+| `BIO_KV_ID` | **Yes** | Real production KV namespace id (Variable or Secret) |
+| `BIO_KV_PREVIEW_ID` | No | Preview KV id (defaults to `BIO_KV_ID`) |
+| `SITE_NAME` | No | Overrides Worker var at deploy (also settable in Dashboard) |
+| `SITE_URL` | No | Canonical public URL, e.g. `https://linkbio-workers.<account>.workers.dev` |
+| `DEFAULT_THEME` | No | Default theme id |
+
+API token permissions (minimum):
 
 - Account → Workers Scripts → Edit
-- Account → Workers KV Storage → Edit (if managing KV via API)
-- Account → Account Settings → Read (often needed for account id resolution)
+- Account → Account Settings → Read
 
-#### 5) Push to deploy
+Then:
 
 ```bash
 git push origin main
 ```
 
-Or run the workflow manually: **Actions → Deploy → Run workflow**.
+Or **Actions → Deploy → Run workflow**.  
+`ADMIN_PASSWORD` / `SESSION_SECRET` are **not** set by CI — configure them once on the Worker.
 
-Worker runtime secrets (`ADMIN_PASSWORD`, `SESSION_SECRET`) are **not** set by CI — configure them once in Cloudflare (CLI or Dashboard).
+### Mode 2 — Cloudflare Dashboard / Workers Builds
 
----
-
-### Mode 2 — Cloudflare Dashboard (no GitHub required)
-
-You can deploy without GitHub:
-
-1. Open [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages**
-2. **Create** application → **Worker**
-3. Either:
-   - Connect this Git repository, or
-   - Use Wrangler from your machine: `npm run deploy`, or
-   - Paste / upload the project and bind the entry `src/index.ts` via Wrangler config
-4. Under the Worker → **Settings**:
-   - **Variables and Secrets** — add variables + secrets (table below)
-   - **Bindings** → **KV namespace** → bind name `BIO_KV` to a namespace
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages**
+2. Create or open the Worker; connect this Git repo **or** deploy with Wrangler from your machine
+3. **Settings → Bindings → KV** → bind name **`BIO_KV`** to your namespace  
+   (Dashboard binding supplies the real id; placeholders in git stay placeholders)
+4. **Variables and Secrets** → set `SITE_NAME`, `SITE_URL`, secrets `ADMIN_PASSWORD`, `SESSION_SECRET`
 5. Deploy
 
-Dashboard Variables are injected as `env.*` the same way as `wrangler.toml` `[vars]`.
+### Mode 3 — Local Wrangler deploy
+
+Either:
+
+- Temporarily put real ids into local `wrangler.toml` (never commit), or
+- Use remote bindings after Dashboard has `BIO_KV` bound
+
+```bash
+# After ids are available locally:
+npm run deploy
+```
+
+### How real KV IDs are obtained (summary)
+
+| Deploy path | Where the real `BIO_KV` id comes from |
+| ----------- | ------------------------------------- |
+| GitHub Actions | Repo **Variable/Secret** `BIO_KV_ID` injected into `wrangler.toml` before deploy |
+| Dashboard / Workers Builds | **Worker binding** `BIO_KV` configured in the UI |
+| Local Wrangler | Local `wrangler.toml` (gitignored change) or remote binding |
 
 ---
 
@@ -209,32 +198,24 @@ Dashboard Variables are injected as `env.*` the same way as `wrangler.toml` `[va
 | `SESSION_SECRET` | Secret | Worker Secrets / `.dev.vars` | HMAC key for session cookies |
 | `CF_API_TOKEN` | Secret | **GitHub only** | Actions → Wrangler deploy |
 | `CF_ACCOUNT_ID` | Secret | **GitHub only** | Cloudflare account for Actions |
+| `BIO_KV_ID` | Variable or Secret | **GitHub only** | KV namespace id for CI deploy |
 
-**Rules:**
-
-- Never commit secrets
-- Never put secrets in `wrangler.toml`
-- Never store `ADMIN_PASSWORD` in KV
-- Never expose secrets to the frontend
-
-Set Worker secrets:
+**Rules:** never commit secrets; never put secrets or real KV ids in git; never store `ADMIN_PASSWORD` in KV.
 
 ```bash
 npx wrangler secret put ADMIN_PASSWORD
 npx wrangler secret put SESSION_SECRET
 ```
 
-Or: **Workers → your worker → Settings → Variables and Secrets**.
-
 ### Variables (non-secret)
 
-| Variable | Type | Purpose | Default |
-| -------- | ---- | ------- | ------- |
-| `SITE_NAME` | Variable | Display / title name | `LinkBio` |
-| `SITE_URL` | Variable | Canonical URL | `http://localhost:8787` |
-| `DEFAULT_THEME` | Variable | Default theme id | `default` |
+| Variable | Purpose | Repo default |
+| -------- | ------- | ------------ |
+| `SITE_NAME` | Display / title name | `LinkBio` |
+| `SITE_URL` | Canonical public URL | `https://YOUR_SUBDOMAIN.workers.dev` (placeholder — set real URL after deploy) |
+| `DEFAULT_THEME` | Default theme id | `default` |
 
-Configured in `wrangler.toml` `[vars]` and overridable in Dashboard / CI.
+Override in Dashboard, `wrangler.toml` `[vars]` (non-secret only), or GitHub Variables.
 
 ---
 
@@ -242,46 +223,20 @@ Configured in `wrangler.toml` `[vars]` and overridable in Dashboard / CI.
 
 **Binding name:** `BIO_KV` (must match code + `wrangler.toml`)
 
-### Keys
+### Content keys
 
 | Key | Content |
 | --- | ------- |
 | `profile` | Name, username, bio, avatar, location, email |
 | `links` | Array of link objects |
-| `settings` | Theme, dark mode, accent, background, footer |
-| `analytics` | Page views + per-link click counts |
+| `settings` | Theme, footer, accent, background |
+| `analytics` | Legacy blob (kept for export/import compatibility) |
+| `analytics:pv` | Page-view counter (split key) |
+| `analytics:click:<id>` | Per-link click counters |
+| `analytics:updated` | Last counter update ISO timestamp |
+| `rate:login:<ip>` | Failed login attempts (TTL window) |
 
-### Example values
-
-**profile**
-
-```json
-{
-  "name": "Example",
-  "username": "example",
-  "bio": "Developer",
-  "avatar": "",
-  "location": "",
-  "email": ""
-}
-```
-
-**links**
-
-```json
-[
-  {
-    "id": "link-github",
-    "title": "GitHub",
-    "url": "https://github.com",
-    "icon": "github",
-    "order": 0,
-    "enabled": true
-  }
-]
-```
-
-**settings**
+### Settings / footer example
 
 ```json
 {
@@ -289,11 +244,26 @@ Configured in `wrangler.toml` `[vars]` and overridable in Dashboard / CI.
   "darkMode": true,
   "accentColor": "#6366f1",
   "background": "",
-  "showFooter": true
+  "showFooter": true,
+  "footerMode": "default",
+  "footerText": ""
 }
 ```
 
-Empty keys automatically fall back to safe defaults so a fresh namespace works immediately.
+| `footerMode` | Behaviour |
+| ------------ | --------- |
+| `default` | Site name + Admin link (or `footerText` if set) |
+| `custom` | `footerText` only (empty → same as default lines) |
+| `auth_only` | Footer only when admin session is present |
+| `off` | Hidden (also when `showFooter` is false) |
+
+Empty content keys fall back to safe defaults.
+
+### Analytics consistency
+
+Counters use **split KV keys** + short read/verify retries so page views and clicks do not overwrite each other.
+
+Cloudflare KV is still **eventually consistent**: under concurrent traffic, counts may slightly under-count. That is acceptable for a personal bio page. For strict accuracy, move counters to a **Durable Object** (not required by this project).
 
 ---
 
@@ -308,14 +278,16 @@ Empty keys automatically fall back to safe defaults so a fresh namespace works i
 | Overview | `/admin` | Stats + shortcuts |
 | Profile | `/admin/profile` | Name, username, bio, avatar, location, email |
 | Links | `/admin/links` | Add / delete / reorder / enable-disable |
-| Theme | `/admin/theme` | Dark/light, accent color, background image |
+| Theme | `/admin/theme` | Appearance + **footer** settings |
 | Data | `/admin/data` | Export JSON backup / import JSON |
 
 ### Security model
 
 - Password checked against `ADMIN_PASSWORD` secret only (not stored in KV)
 - Session = HMAC-SHA256 signed cookie (`HttpOnly`, `SameSite=Lax`, `Secure` on HTTPS)
-- CSRF double-submit on all state-changing form posts
+- CSRF double-submit on all state-changing form posts (including **Logout**)
+- Logout is **POST + CSRF** only; `GET /admin/logout` does not clear the session
+- Login rate limit: **5 failures / 15 minutes / IP** (stored in KV)
 - HTML output escaped; CSP headers enabled
 - Public API never returns secrets
 
@@ -346,22 +318,25 @@ Must:
 - [x] Secure cookie on HTTPS
 - [x] CSP header
 - [x] XSS escaping on SSR
-- [x] CSRF on admin forms
+- [x] CSRF on admin forms **and logout**
+- [x] Login rate limiting (KV)
 - [x] Input sanitization on writes / import
+- [x] No real KV ids or secrets in git
 
 Forbidden:
 
 - Frontend exposure of admin password
 - Public raw KV access
 - Plaintext session storage in KV
+- GET-based logout (CSRF risk)
 
 ---
 
 ## Customization
 
-- **Theme accent / mode** — Admin → Theme, or edit `settings` in KV
-- **Icons** — built-in: `link`, `github`, `globe`, `twitter`, `x`, `linkedin`, `youtube`, `instagram`, `mail` (`src/components/icons.ts`)
-- **CSS** — `src/styles/app.css` (inlined via `app.css.ts` at build time for SSR)
+- **Theme / footer** — Admin → Theme (`footerMode`, `footerText`, show/hide)
+- **Icons** — built-in: `link`, `github`, `globe`, `twitter`, `x`, `linkedin`, `youtube`, `instagram`, `mail`
+- **CSS** — `src/styles/app.css` (inlined via `app.css.ts` for SSR)
 - **Defaults** — `src/types.ts`
 
 ## Tech stack

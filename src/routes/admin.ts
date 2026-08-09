@@ -11,6 +11,7 @@ import {
 } from "../middleware/security";
 import { renderAdminDashboard, renderLoginPage, type AdminPage } from "../admin/dashboard";
 import {
+  clientIp,
   createStore,
   sanitizeLink,
   sanitizeProfile,
@@ -93,10 +94,20 @@ admin.post("/login", async (c) => {
   const store = createStore(c.env);
   const settings = await store.getSettings().catch(() => ({ ...DEFAULT_SETTINGS }));
   const csrf = withCsrf(c);
+  const ip = clientIp(c);
+
   const cfgError = ensureSecrets(c);
   if (cfgError) {
     return withSetCookie(
       renderLoginPage({ siteName: siteName(c.env), settings, csrf: csrf.token, error: cfgError }),
+      csrf.setCookie,
+    );
+  }
+
+  const rateMsg = await store.checkLoginRateLimit(ip);
+  if (rateMsg) {
+    return withSetCookie(
+      renderLoginPage({ siteName: siteName(c.env), settings, csrf: csrf.token, error: rateMsg }),
       csrf.setCookie,
     );
   }
@@ -112,6 +123,7 @@ admin.post("/login", async (c) => {
   const password = checked.body.password || "";
   const ok = await constantTimeEqual(password, c.env.ADMIN_PASSWORD);
   if (!ok) {
+    await store.recordLoginFailure(ip);
     return withSetCookie(
       renderLoginPage({
         siteName: siteName(c.env),
@@ -123,17 +135,26 @@ admin.post("/login", async (c) => {
     );
   }
 
+  await store.clearLoginRateLimit(ip);
   const token = await createSessionToken(c.env.SESSION_SECRET);
   const secure = isSecureRequest(c);
-  // Use append so both session + CSRF cookies are set (Set-Cookie is multi-valued)
   const res = c.redirect("/admin", 302);
   res.headers.append("Set-Cookie", buildSessionCookie(token, secure));
   res.headers.append("Set-Cookie", buildCsrfCookie(generateCsrfToken(), secure));
   return res;
 });
 
-admin.get("/logout", async (c) => {
+/** GET logout is intentionally a no-op redirect (prevent CSRF logout via image/link). */
+admin.get("/logout", (c) => c.redirect("/admin/login", 302));
+
+/** Logout must be POST + CSRF */
+admin.post("/logout", async (c) => {
+  const checked = await requireCsrf(c);
   const secure = isSecureRequest(c);
+  if (!checked.ok) {
+    // Still safe to clear session if someone posts without CSRF? Prefer fail closed.
+    return c.redirect(`/admin?msg=${encodeURIComponent("error:Invalid CSRF token.")}`, 302);
+  }
   const res = c.redirect("/admin/login", 302);
   res.headers.append("Set-Cookie", buildClearSessionCookie(secure));
   return res;
@@ -222,6 +243,8 @@ authed.post("/settings", async (c) => {
       background: b.background,
       darkMode: b.darkMode === "1",
       showFooter: b.showFooter === "1",
+      footerMode: b.footerMode as never,
+      footerText: b.footerText,
     }),
   );
   return c.redirect("/admin/theme?msg=" + encodeURIComponent("ok:Theme saved."));

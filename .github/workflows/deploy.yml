@@ -4,13 +4,16 @@
 #   CF_API_TOKEN   (or CLOUDFLARE_API_TOKEN) — API token with Workers Edit
 #   CF_ACCOUNT_ID  (or CLOUDFLARE_ACCOUNT_ID) — Cloudflare account id
 #
-# Optional GitHub Variables:
-#   PROJECT_NAME   — overrides wrangler worker name (default: linkbio-workers)
-#   ENVIRONMENT    — label only (e.g. production)
+# Required GitHub Variables (or Secrets) for KV binding:
+#   BIO_KV_ID          — production KV namespace id
+#   BIO_KV_PREVIEW_ID  — optional preview namespace id (defaults to BIO_KV_ID)
+#
+# Optional GitHub Variables (Worker [vars] overrides at deploy):
+#   SITE_NAME, SITE_URL, DEFAULT_THEME
 #
 # Worker runtime secrets (ADMIN_PASSWORD, SESSION_SECRET) must be set once in
 # Cloudflare Dashboard or via: wrangler secret put ...
-# They are NOT injected by this workflow (keeps CI token scope minimal).
+# They are NOT injected by this workflow.
 
 name: Deploy
 
@@ -47,13 +50,43 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Inject KV namespace IDs into wrangler.toml
+        env:
+          BIO_KV_ID: ${{ vars.BIO_KV_ID || secrets.BIO_KV_ID }}
+          BIO_KV_PREVIEW_ID: ${{ vars.BIO_KV_PREVIEW_ID || secrets.BIO_KV_PREVIEW_ID || vars.BIO_KV_ID || secrets.BIO_KV_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${BIO_KV_ID:-}" ] || [ "$BIO_KV_ID" = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" ]; then
+            echo "::error::BIO_KV_ID is required. Set it as a GitHub Actions Variable or Secret (real Cloudflare KV namespace id)."
+            exit 1
+          fi
+          export BIO_KV_PREVIEW_ID="${BIO_KV_PREVIEW_ID:-$BIO_KV_ID}"
+          node -e '
+            const fs = require("fs");
+            const id = process.env.BIO_KV_ID;
+            const preview = process.env.BIO_KV_PREVIEW_ID || id;
+            let toml = fs.readFileSync("wrangler.toml", "utf8");
+            toml = toml
+              .split("REPLACE_WITH_YOUR_KV_NAMESPACE_ID").join(id)
+              .split("REPLACE_WITH_YOUR_KV_PREVIEW_ID").join(preview);
+            if (toml.includes("REPLACE_WITH_YOUR_KV_")) {
+              console.error("Failed to inject KV ids — placeholder still present");
+              process.exit(1);
+            }
+            fs.writeFileSync("wrangler.toml", toml);
+            console.log("Injected BIO_KV_ID and BIO_KV_PREVIEW_ID into wrangler.toml");
+          '
+
       - name: Build (dry-run bundle)
         run: npm run build
 
       - name: Deploy with Wrangler
         uses: cloudflare/wrangler-action@v3
+        env:
+          SITE_NAME: ${{ vars.SITE_NAME }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          DEFAULT_THEME: ${{ vars.DEFAULT_THEME }}
         with:
-          # Prefer CF_* names from project docs; fall back to Cloudflare defaults
-          apiToken: ${{ secrets.CF_API_TOKEN != '' && secrets.CF_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID != '' && secrets.CF_ACCOUNT_ID || secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CF_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID || secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy

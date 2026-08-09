@@ -9,7 +9,10 @@ interface Env {
   /** Display name of the site (Variable) */
   SITE_NAME: string;
 
-  /** Canonical public URL (Variable) */
+  /**
+   * Canonical public URL (Variable), e.g. https://your-subdomain.workers.dev
+   * Override in Dashboard / CI — do not use localhost in production.
+   */
   SITE_URL: string;
 
   /** Default theme id (Variable) */

@@ -79,11 +79,30 @@ export function renderSettingsForm(settings: Settings, csrf: string, message?: s
           Dark mode
         </label>
       </div>
+      <hr class="sep" />
+      <h2 style="margin-top:0">Public footer</h2>
+      <p class="hint" style="color:var(--text-secondary);font-size:0.85rem;margin:0 0 12px">
+        Empty custom text falls back to site name + Admin link. Auth-only shows the footer only when you are logged in.
+      </p>
       <div class="field">
         <label class="check-row">
-          <input type="checkbox" name="showFooter" value="1" ${settings.showFooter ? "checked" : ""} />
+          <input type="checkbox" name="showFooter" value="1" ${settings.showFooter && settings.footerMode !== "off" ? "checked" : ""} />
           Show footer
         </label>
+      </div>
+      <div class="field">
+        <label for="footerMode">Footer mode</label>
+        <select id="footerMode" name="footerMode">
+          ${option("default", "Default (site name + Admin link)", settings.footerMode)}
+          ${option("custom", "Custom text only", settings.footerMode)}
+          ${option("auth_only", "Only when admin is logged in", settings.footerMode)}
+          ${option("off", "Always hidden", settings.footerMode)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="footerText">Custom footer text (optional)</label>
+        <textarea id="footerText" name="footerText" maxlength="500" placeholder="Leave empty for default: site name + Admin link">${escapeHtml(settings.footerText || "")}</textarea>
+        <div class="hint">Plain text; line breaks are preserved. HTML is escaped.</div>
       </div>
       <div class="row-actions">
         <button class="btn" type="submit">Save theme</button>
@@ -197,6 +216,10 @@ export function renderStats(analytics: Analytics): string {
   return `
   <section class="panel">
     <h2>Analytics</h2>
+    <p class="hint" style="color:var(--text-muted);font-size:0.8rem;margin:0 0 12px">
+      Counters use split KV keys with short retries. Under concurrent traffic, counts are
+      <strong>eventually consistent</strong> and may slightly under-count. For strict accuracy, migrate to a Durable Object.
+    </p>
     <div class="stats">
       <div class="stat">
         <div class="label">Page views</div>
