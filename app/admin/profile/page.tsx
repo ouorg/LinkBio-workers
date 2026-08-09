@@ -33,6 +33,7 @@ export default async function ProfilePage({
         <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
           {t("admin.page.profile")}
         </h1>
+        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
       </header>
       <AdminPanel title={t("admin.profile.title")}>
         <Flash message={flash} />

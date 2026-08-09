@@ -10,6 +10,7 @@ import {
   toggleLinkAction,
   updateLinkAction,
 } from "../actions";
+import { ConfirmSubmitButton } from "@/components/admin/confirm-submit";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { IconSelect } from "@/components/admin/icon-select";
@@ -45,6 +46,7 @@ export default async function LinksPage({
         <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
           {t("admin.page.links")}
         </h1>
+        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
       </header>
       <AdminPanel title={t("admin.links.title")} className="mb-6">
           <div className="space-y-3">
@@ -118,7 +120,13 @@ export default async function LinksPage({
                           <input type="hidden" name={CSRF_FIELD} value={csrf} />
                           <input type="hidden" name="id" value={l.id} />
                           <input type="hidden" name="dir" value={-1} />
-                          <Button type="submit" size="sm" variant="secondary">
+                          <Button
+                            type="submit"
+                            size="sm"
+                            variant="secondary"
+                            aria-label={t("admin.links.moveUp")}
+                            title={t("admin.links.moveUp")}
+                          >
                             ↑
                           </Button>
                         </form>
@@ -126,16 +134,26 @@ export default async function LinksPage({
                           <input type="hidden" name={CSRF_FIELD} value={csrf} />
                           <input type="hidden" name="id" value={l.id} />
                           <input type="hidden" name="dir" value={1} />
-                          <Button type="submit" size="sm" variant="secondary">
+                          <Button
+                            type="submit"
+                            size="sm"
+                            variant="secondary"
+                            aria-label={t("admin.links.moveDown")}
+                            title={t("admin.links.moveDown")}
+                          >
                             ↓
                           </Button>
                         </form>
                         <form action={deleteLinkAction}>
                           <input type="hidden" name={CSRF_FIELD} value={csrf} />
                           <input type="hidden" name="id" value={l.id} />
-                          <Button type="submit" size="sm" variant="destructive">
+                          <ConfirmSubmitButton
+                            size="sm"
+                            variant="destructive"
+                            confirmMessage={t("admin.links.deleteConfirm")}
+                          >
                             {t("admin.links.delete")}
-                          </Button>
+                          </ConfirmSubmitButton>
                         </form>
                       </div>
                     </div>
@@ -172,7 +190,7 @@ export default async function LinksPage({
                           defaultValue={l.url}
                           required
                           maxLength={2000}
-                          placeholder="https://"
+                          placeholder={t("admin.links.urlPlaceholder")}
                         />
                         <label className="flex items-center gap-2 text-sm text-kumo-default">
                           <input
@@ -236,7 +254,7 @@ export default async function LinksPage({
               label={t("admin.links.url")}
               required
               maxLength={2000}
-              placeholder="https://"
+              placeholder={t("admin.links.urlPlaceholder")}
             />
             <label className="flex items-center gap-2 text-sm text-kumo-default">
               <input type="checkbox" name="enabled" value="1" defaultChecked className="size-4" />

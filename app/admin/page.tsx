@@ -41,7 +41,7 @@ export default async function AdminOverviewPage() {
         <AdminPanel>
           <p className="text-sm font-medium text-kumo-subtle">{t("admin.stats.lastUpdated")}</p>
           <p className="mt-1 text-sm font-medium text-kumo-default">
-            {analytics.lastUpdated || "—"}
+            {analytics.lastUpdated || t("admin.stats.empty")}
           </p>
         </AdminPanel>
       </div>

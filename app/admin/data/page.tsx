@@ -69,6 +69,7 @@ export default async function DataPage({
         <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
           {t("admin.page.data")}
         </h1>
+        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
       </header>
 
       <AdminPanel title={t("admin.data.title")} className="mb-6">
@@ -174,7 +175,9 @@ export default async function DataPage({
                   name="webdavPassword"
                   type="password"
                   label={t("admin.backup.webdavPass")}
-                  placeholder={backup.webdav.password ? "••••••••" : ""}
+                  placeholder={
+                    backup.webdav.password ? t("admin.backup.secretPlaceholder") : ""
+                  }
                   description={t("admin.backup.secretKeep")}
                   required={false}
                   autoComplete="new-password"
@@ -200,7 +203,9 @@ export default async function DataPage({
                 type="password"
                 label={t("admin.backup.gistToken")}
                 placeholder={
-                  backup.gist.token ? "••••••••" : t("admin.backup.gistTokenPlaceholder")
+                  backup.gist.token
+                    ? t("admin.backup.secretPlaceholder")
+                    : t("admin.backup.gistTokenPlaceholder")
                 }
                 description={t("admin.backup.secretKeep")}
                 required={false}
