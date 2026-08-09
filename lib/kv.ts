@@ -449,6 +449,11 @@ export function sanitizeBackupConfig(input: Partial<BackupConfig>): BackupConfig
   const filename =
     str(gistIn.filename, 120).replace(/[^\w.\-()+@ ]/g, "") || DEFAULT_BACKUP_CONFIG.gist.filename;
 
+  // Gist fine-grained PATs (github_pat_…) can exceed 200 chars; keep headroom.
+  // Do not trim passwords aggressively mid-string — only ends (str() trims ends).
+  let token = str(gistIn.token, 512);
+  token = token.replace(/^(Bearer|token)\s+/i, "").trim();
+
   return {
     autoBackup: Boolean(input.autoBackup),
     minIntervalSec: minInterval,
@@ -457,11 +462,12 @@ export function sanitizeBackupConfig(input: Partial<BackupConfig>): BackupConfig
       enabled: Boolean(webdavIn.enabled),
       url: sanitizeUrl(str(webdavIn.url, 2000)),
       username: str(webdavIn.username, 200),
-      password: str(webdavIn.password, 500),
+      // App passwords can be long; avoid over-truncation
+      password: str(webdavIn.password, 512),
     },
     gist: {
       enabled: Boolean(gistIn.enabled),
-      token: str(gistIn.token, 200),
+      token,
       gistId: str(gistIn.gistId, 64).replace(/[^a-fA-F0-9]/g, ""),
       filename: filename.endsWith(".json") ? filename : `${filename}.json`,
     },

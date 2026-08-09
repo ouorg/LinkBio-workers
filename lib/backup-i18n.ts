@@ -38,6 +38,8 @@ export function translateBackupError(t: TranslateFn, raw: string | undefined | n
     switch (code) {
       case "err.webdav_url_empty":
         return t("admin.backup.err.webdavUrlEmpty");
+      case "err.webdav_auth_required":
+        return t("admin.backup.err.webdavAuthRequired");
       case "err.webdav_http":
         return t("admin.backup.err.webdavHttp", {
           status: args[0] || "?",

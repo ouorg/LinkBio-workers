@@ -1,6 +1,12 @@
 /**
  * Optional remote backup (WebDAV + GitHub Gist).
  * Credentials live in KV as plain user config — never env ADMIN_PASSWORD / SESSION_SECRET.
+ *
+ * Auth notes (401 root causes we handle):
+ * - WebDAV: fetch() drops Authorization on cross-origin redirects (http→https, trailing slash).
+ *   We follow redirects manually and re-attach Basic auth each hop.
+ * - WebDAV: user:pass@url credentials must not be mixed with a second Authorization header.
+ * - Gist: strip accidental "Bearer "/"token " prefixes; allow long fine-grained PATs.
  */
 import type { BioStore } from "./kv";
 import { sanitizeBackupConfig, stripForbiddenSecrets } from "./kv";
@@ -13,6 +19,8 @@ import type {
   WebDavBackupConfig,
 } from "./types";
 import { DEFAULT_BACKUP_STATE } from "./types";
+
+const UA = "LinkBio-workers-backup";
 
 export type BackupTargetResult = {
   target: "webdav" | "gist";
@@ -30,6 +38,7 @@ export type BackupRunResult = {
 };
 
 function basicAuth(user: string, pass: string): string {
+  // UTF-8 safe Basic (Workers btoa only accepts Latin-1 binary string)
   const raw = `${user}:${pass}`;
   const bytes = new TextEncoder().encode(raw);
   let bin = "";
@@ -42,25 +51,151 @@ function errCode(code: string, ...args: Array<string | number>): string {
   return args.length ? `err.${code}|${args.join("|")}` : `err.${code}`;
 }
 
+/**
+ * Resolve WebDAV URL + Basic auth.
+ * Prefer form fields; fall back to userinfo embedded in the URL; never send both
+ * (userinfo in URL + Authorization) — that confuses some servers → 401.
+ */
+function resolveWebDavAuth(cfg: WebDavBackupConfig): {
+  url: string;
+  authorization: string | null;
+} {
+  let url = (cfg.url || "").trim();
+  let user = (cfg.username || "").trim();
+  let pass = cfg.password || ""; // do not trim password (may be intentional spaces)
+
+  try {
+    const u = new URL(url);
+    if (u.username || u.password) {
+      if (!user && !pass) {
+        try {
+          user = decodeURIComponent(u.username);
+        } catch {
+          user = u.username;
+        }
+        try {
+          pass = decodeURIComponent(u.password);
+        } catch {
+          pass = u.password;
+        }
+      }
+      // Strip credentials from URL before request
+      u.username = "";
+      u.password = "";
+      url = u.toString();
+    }
+  } catch {
+    /* keep raw url; fetch will fail with network error if invalid */
+  }
+
+  const authorization = user || pass ? basicAuth(user, pass) : null;
+  return { url, authorization };
+}
+
+/**
+ * fetch that re-applies Authorization on every redirect hop.
+ * Default fetch drops Authorization when the redirect changes origin
+ * (common: http→https or host rewrite on NAS / Nextcloud) → spurious 401.
+ */
+async function fetchWebDav(
+  url: string,
+  init: {
+    method: string;
+    headers?: Record<string, string>;
+    body?: string;
+    authorization: string | null;
+  },
+): Promise<Response> {
+  let current = url;
+  for (let hop = 0; hop < 8; hop++) {
+    const headers: Record<string, string> = {
+      "User-Agent": UA,
+      ...(init.headers || {}),
+    };
+    if (init.authorization) {
+      headers.Authorization = init.authorization;
+    }
+    const res = await fetch(current, {
+      method: init.method,
+      headers,
+      body: init.body,
+      redirect: "manual",
+    });
+
+    // 3xx → follow with auth re-attached
+    if (res.status >= 300 && res.status < 400) {
+      const loc = res.headers.get("Location");
+      // Drain body to free connection
+      try {
+        await res.arrayBuffer();
+      } catch {
+        /* ignore */
+      }
+      if (!loc) return res;
+      current = new URL(loc, current).toString();
+      // Only GET/HEAD should replay body-less; for PUT re-send body on redirect
+      continue;
+    }
+
+    return res;
+  }
+  // Too many redirects
+  return new Response(null, { status: 310, statusText: "Too many redirects" });
+}
+
+function normalizeGistToken(raw: string): string {
+  let t = (raw || "").trim();
+  // Users sometimes paste full header values
+  t = t.replace(/^(Bearer|token)\s+/i, "").trim();
+  // Remove accidental surrounding quotes
+  if (
+    (t.startsWith('"') && t.endsWith('"')) ||
+    (t.startsWith("'") && t.endsWith("'"))
+  ) {
+    t = t.slice(1, -1).trim();
+  }
+  return t;
+}
+
+function gistHeaders(token: string, withJson = true): Record<string, string> {
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    // Bearer works for classic (ghp_) and fine-grained (github_pat_) PATs
+    Authorization: `Bearer ${token}`,
+    "X-GitHub-Api-Version": "2022-11-28",
+    "User-Agent": UA,
+  };
+  if (withJson) headers["Content-Type"] = "application/json";
+  return headers;
+}
+
 async function pushWebDav(
   cfg: WebDavBackupConfig,
   body: string,
 ): Promise<BackupTargetResult> {
   if (!cfg.url) return { target: "webdav", ok: false, error: errCode("webdav_url_empty") };
   try {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json; charset=utf-8",
-    };
-    if (cfg.username || cfg.password) {
-      headers.Authorization = basicAuth(cfg.username, cfg.password);
-    }
-    const res = await fetch(cfg.url, {
+    const { url, authorization } = resolveWebDavAuth(cfg);
+    if (!url) return { target: "webdav", ok: false, error: errCode("webdav_url_empty") };
+
+    const res = await fetchWebDav(url, {
       method: "PUT",
-      headers,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
       body,
+      authorization,
     });
     if (!res.ok) {
       const text = await res.text().catch(() => "");
+      // 401 with no credentials configured — clearer code
+      if (res.status === 401 && !authorization) {
+        return {
+          target: "webdav",
+          ok: false,
+          error: errCode("webdav_auth_required"),
+        };
+      }
       return {
         target: "webdav",
         ok: false,
@@ -77,15 +212,23 @@ async function pushWebDav(
   }
 }
 
-async function pullWebDav(cfg: WebDavBackupConfig): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
+async function pullWebDav(
+  cfg: WebDavBackupConfig,
+): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
   if (!cfg.url) return { ok: false, error: errCode("webdav_url_empty") };
   try {
-    const headers: Record<string, string> = { Accept: "application/json, text/plain, */*" };
-    if (cfg.username || cfg.password) {
-      headers.Authorization = basicAuth(cfg.username, cfg.password);
-    }
-    const res = await fetch(cfg.url, { method: "GET", headers });
+    const { url, authorization } = resolveWebDavAuth(cfg);
+    if (!url) return { ok: false, error: errCode("webdav_url_empty") };
+
+    const res = await fetchWebDav(url, {
+      method: "GET",
+      headers: { Accept: "application/json, text/plain, */*" },
+      authorization,
+    });
     if (!res.ok) {
+      if (res.status === 401 && !authorization) {
+        return { ok: false, error: errCode("webdav_auth_required") };
+      }
       return { ok: false, error: errCode("webdav_http", res.status) };
     }
     return { ok: true, text: await res.text() };
@@ -101,15 +244,10 @@ async function pushGist(
   cfg: GistBackupConfig,
   body: string,
 ): Promise<BackupTargetResult> {
-  if (!cfg.token) return { target: "gist", ok: false, error: errCode("gist_token_empty") };
+  const token = normalizeGistToken(cfg.token);
+  if (!token) return { target: "gist", ok: false, error: errCode("gist_token_empty") };
   const filename = cfg.filename || "linkbio-backup.json";
-  const headers = {
-    Accept: "application/vnd.github+json",
-    Authorization: `Bearer ${cfg.token}`,
-    "Content-Type": "application/json",
-    "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "LinkBio-workers-backup",
-  };
+  const headers = gistHeaders(token);
 
   try {
     if (cfg.gistId) {
@@ -163,17 +301,13 @@ async function pushGist(
 async function pullGist(
   cfg: GistBackupConfig,
 ): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
-  if (!cfg.token) return { ok: false, error: errCode("gist_token_empty") };
+  const token = normalizeGistToken(cfg.token);
+  if (!token) return { ok: false, error: errCode("gist_token_empty") };
   if (!cfg.gistId) return { ok: false, error: errCode("gist_id_empty") };
   const filename = cfg.filename || "linkbio-backup.json";
   try {
     const res = await fetch(`https://api.github.com/gists/${cfg.gistId}`, {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${cfg.token}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "LinkBio-workers-backup",
-      },
+      headers: gistHeaders(token, false),
     });
     if (!res.ok) return { ok: false, error: errCode("gist_http", res.status) };
     const json = (await res.json()) as {
@@ -185,8 +319,9 @@ async function pullGist(
     if (file.raw_url) {
       const raw = await fetch(file.raw_url, {
         headers: {
-          Authorization: `Bearer ${cfg.token}`,
-          "User-Agent": "LinkBio-workers-backup",
+          Authorization: `Bearer ${token}`,
+          "User-Agent": UA,
+          Accept: "application/vnd.github.raw",
         },
       });
       if (!raw.ok) return { ok: false, error: errCode("gist_raw_http", raw.status) };

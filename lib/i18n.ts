@@ -191,6 +191,8 @@ const en: Dict = {
   "admin.backup.lastAttempt": "Last attempt",
   "admin.backup.lastError": "Error",
   "admin.backup.err.webdavUrlEmpty": "WebDAV URL is empty.",
+  "admin.backup.err.webdavAuthRequired":
+    "WebDAV returned 401 — set username and password (or app password).",
   "admin.backup.err.webdavHttp": "WebDAV HTTP {status}{detail}",
   "admin.backup.err.webdavFailed": "WebDAV request failed.",
   "admin.backup.err.webdavFetchFailed": "WebDAV download failed.",
@@ -419,6 +421,8 @@ const zhCN: Dict = {
   "admin.backup.lastAttempt": "上次尝试",
   "admin.backup.lastError": "错误",
   "admin.backup.err.webdavUrlEmpty": "WebDAV URL 为空。",
+  "admin.backup.err.webdavAuthRequired":
+    "WebDAV 返回 401 — 请填写用户名和密码（或应用专用密码）。",
   "admin.backup.err.webdavHttp": "WebDAV HTTP {status}{detail}",
   "admin.backup.err.webdavFailed": "WebDAV 请求失败。",
   "admin.backup.err.webdavFetchFailed": "WebDAV 下载失败。",
