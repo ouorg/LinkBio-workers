@@ -334,37 +334,6 @@
   opacity: 0.45;
 }
 
-/* Yellow accent bar on non-primary links */
-[data-theme-id="qtcool"] a.theme-link:not(:first-child)::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0.35rem;
-  border-radius: var(--theme-link-radius) 0 0 var(--theme-link-radius);
-  background: linear-gradient(
-    180deg,
-    hsl(var(--qtcool-yellow)) 0%,
-    hsl(var(--qtcool-orange)) 100%
-  );
-  pointer-events: none;
-}
-
-[data-theme-id="qtcool"] a.theme-link {
-  position: relative;
-  /* room for accent strip */
-  padding-left: 1.25rem;
-}
-
-[data-theme-id="qtcool"] a.theme-link:first-child {
-  padding-left: 1.1rem;
-}
-
-[data-theme-id="qtcool"] a.theme-link:first-child::before {
-  display: none;
-}
-
 /* ── Footer ─────────────────────────────────────────────────── */
 
 [data-theme-id="qtcool"] .theme-footer {
