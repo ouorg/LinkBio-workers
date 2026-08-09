@@ -20,23 +20,40 @@ export interface LinkItem {
 
 /**
  * Footer behaviour on the public page:
- * - default: site name + /admin link (or footerText if set)
- * - custom: footerText only (falls back to default content if empty)
- * - auth_only: same content as default/custom, but only when admin is logged in
- * - off: never show footer (same as showFooter=false)
+ * - default: site name only (or footerText if set)
+ * - custom: footerText only (falls back to default if empty)
+ * - auth_only: same content, but only when admin is logged in
+ * - off: never show footer
  */
 export type FooterMode = "default" | "custom" | "auth_only" | "off";
 
+/** Color appearance: follow OS, or force light/dark */
+export type ColorMode = "system" | "light" | "dark";
+
+/** UI locale for public + admin chrome (user content is not translated) */
+export type Locale = "zh-CN" | "en";
+
 export interface Settings {
   theme: string;
+  /**
+   * Preferred color mode. Default `system` follows prefers-color-scheme.
+   * Legacy `darkMode` is only used when migrating old KV rows.
+   */
+  colorMode: ColorMode;
+  /**
+   * @deprecated Read-only compatibility. Prefer `colorMode`.
+   * Still written as a derived mirror for older tools: dark when colorMode==="dark".
+   */
   darkMode: boolean;
+  /** UI language for SSR chrome (zh-CN | en) */
+  locale: Locale;
   accentColor: string;
   background: string;
   /** Master switch; false hides footer regardless of footerMode */
   showFooter: boolean;
   /** How footer is rendered when showFooter is true */
   footerMode: FooterMode;
-  /** Custom footer text (plain text; HTML-escaped). Empty → built-in default lines */
+  /** Custom footer text (plain text; HTML-escaped). Empty → site name */
   footerText: string;
 }
 
@@ -98,7 +115,9 @@ export const DEFAULT_LINKS: LinkItem[] = [
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: "default",
-  darkMode: true,
+  colorMode: "system",
+  darkMode: false,
+  locale: "zh-CN",
   accentColor: "#6366f1",
   background: "",
   showFooter: true,

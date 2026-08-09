@@ -6,8 +6,10 @@ import {
   KV_KEYS,
   LOGIN_RATE_LIMIT,
   type Analytics,
+  type ColorMode,
   type FooterMode,
   type LinkItem,
+  type Locale,
   type Profile,
   type Settings,
   type SiteData,
@@ -138,16 +140,15 @@ export class BioStore {
   // ── Login rate limit ──────────────────────────────────────────
 
   /**
-   * Returns null if allowed, or an error message if locked out.
+   * Returns null if allowed, or remaining lockout minutes if locked out.
    */
-  async checkLoginRateLimit(ip: string): Promise<string | null> {
+  async checkLoginRateLimit(ip: string): Promise<number | null> {
     const state = await this.getLoginRate(ip);
     if (!state) return null;
     const now = Math.floor(Date.now() / 1000);
     if (now >= state.resetAt) return null;
     if (state.failures >= LOGIN_RATE_LIMIT.maxFailures) {
-      const mins = Math.max(1, Math.ceil((state.resetAt - now) / 60));
-      return `Too many failed login attempts. Try again in about ${mins} minute(s).`;
+      return Math.max(1, Math.ceil((state.resetAt - now) / 60));
     }
     return null;
   }
@@ -300,19 +301,44 @@ export function sanitizeLink(input: Partial<LinkItem>, index = 0): LinkItem {
   };
 }
 
-export function sanitizeSettings(input: Partial<Settings>): Settings {
+const COLOR_MODES: ColorMode[] = ["system", "light", "dark"];
+const LOCALES: Locale[] = ["zh-CN", "en"];
+
+/**
+ * Migrate / normalize settings from KV or forms.
+ * colorMode wins; legacy darkMode only used when colorMode is missing.
+ */
+export function sanitizeSettings(input: Partial<Settings> & { darkMode?: boolean }): Settings {
   const accent = str(input.accentColor, 20);
   const modeRaw = str(input.footerMode, 20) as FooterMode;
   const footerMode: FooterMode = FOOTER_MODES.includes(modeRaw) ? modeRaw : DEFAULT_SETTINGS.footerMode;
+
+  const colorMode = resolveColorMode(input);
+  const localeRaw = str(input.locale, 16) as Locale;
+  const locale: Locale = LOCALES.includes(localeRaw) ? localeRaw : DEFAULT_SETTINGS.locale;
+
   return {
     theme: str(input.theme, 40) || DEFAULT_SETTINGS.theme,
-    darkMode: input.darkMode !== false,
+    colorMode,
+    // Derived mirror for older clients / exports
+    darkMode: colorMode === "dark",
+    locale,
     accentColor: /^#[0-9a-fA-F]{3,8}$/.test(accent) ? accent : DEFAULT_SETTINGS.accentColor,
     background: str(input.background, 2000),
     showFooter: input.showFooter !== false && footerMode !== "off",
     footerMode: input.showFooter === false ? "off" : footerMode,
     footerText: str(input.footerText, 500),
   };
+}
+
+function resolveColorMode(input: Partial<Settings> & { darkMode?: boolean }): ColorMode {
+  const raw = str(input.colorMode, 16) as ColorMode;
+  if (COLOR_MODES.includes(raw)) return raw;
+  // Legacy: only darkMode present
+  if (typeof input.darkMode === "boolean") {
+    return input.darkMode ? "dark" : "light";
+  }
+  return DEFAULT_SETTINGS.colorMode;
 }
 
 export function sanitizeAnalytics(input: Partial<Analytics>): Analytics {

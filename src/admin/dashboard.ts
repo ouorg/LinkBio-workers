@@ -7,6 +7,7 @@ import {
   renderSettingsForm,
   renderStats,
 } from "./forms";
+import { createT, type TranslateFn } from "../i18n";
 import type { Analytics, LinkItem, Profile, Settings } from "../types";
 
 export type AdminPage =
@@ -28,56 +29,61 @@ export type DashboardData = {
 };
 
 export function renderAdminDashboard(data: DashboardData): Response {
-  const nav = renderNav(data.page, data.siteName, data.csrf);
+  const t = createT(data.settings.locale);
+  const nav = renderNav(data.page, data.siteName, data.csrf, t);
   let body = "";
 
   switch (data.page) {
     case "profile":
-      body = renderProfileForm(data.profile, data.csrf, data.message);
+      body = renderProfileForm(data.profile, data.csrf, t, data.message);
       break;
     case "links":
-      body = renderLinksPanel(data.links, data.csrf, data.message);
+      body = renderLinksPanel(data.links, data.csrf, t, data.message);
       break;
     case "theme":
-      body = renderSettingsForm(data.settings, data.csrf, data.message);
+      body = renderSettingsForm(data.settings, data.csrf, t, data.message);
       break;
     case "data":
-      body = renderDataPanel(data.csrf, data.message);
+      body = renderDataPanel(data.csrf, t, data.message);
       break;
     default:
       body = `
-        ${renderStats(data.analytics)}
+        ${renderStats(data.analytics, t)}
         <section class="panel">
-          <h2>Quick links</h2>
+          <h2>${escapeHtml(t("admin.overview.quickLinks"))}</h2>
           <div class="row-actions">
-            <a class="btn btn-secondary" href="/admin/profile">Edit profile</a>
-            <a class="btn btn-secondary" href="/admin/links">Manage links</a>
-            <a class="btn btn-secondary" href="/admin/theme">Theme</a>
-            <a class="btn btn-secondary" href="/admin/data">Import / Export</a>
-            <a class="btn btn-secondary" href="/" target="_blank" rel="noopener">View public site</a>
+            <a class="btn btn-secondary" href="/admin/profile">${escapeHtml(t("admin.overview.editProfile"))}</a>
+            <a class="btn btn-secondary" href="/admin/links">${escapeHtml(t("admin.overview.manageLinks"))}</a>
+            <a class="btn btn-secondary" href="/admin/theme">${escapeHtml(t("admin.overview.theme"))}</a>
+            <a class="btn btn-secondary" href="/admin/data">${escapeHtml(t("admin.overview.data"))}</a>
+            <a class="btn btn-secondary" href="/" target="_blank" rel="noopener">${escapeHtml(t("admin.overview.viewPublic"))}</a>
           </div>
         </section>
         <section class="panel">
-          <h2>Current profile</h2>
+          <h2>${escapeHtml(t("admin.overview.currentProfile"))}</h2>
           <p style="margin:0;color:var(--text-secondary)">
             <strong>${escapeHtml(data.profile.name)}</strong>
             ${data.profile.username ? ` · @${escapeHtml(data.profile.username)}` : ""}
           </p>
           <p style="margin:8px 0 0;color:var(--text-muted);font-size:0.9rem">${escapeHtml(data.profile.bio)}</p>
-          <p style="margin:12px 0 0;color:var(--text-muted);font-size:0.85rem">${data.links.filter((l) => l.enabled).length} enabled link(s)</p>
+          <p style="margin:12px 0 0;color:var(--text-muted);font-size:0.85rem">${escapeHtml(
+            t("admin.overview.enabledLinks", {
+              count: data.links.filter((l) => l.enabled).length,
+            }),
+          )}</p>
         </section>`;
   }
 
   const titles: Record<AdminPage, string> = {
-    overview: "Dashboard",
-    profile: "Profile",
-    links: "Links",
-    theme: "Theme",
-    data: "Data",
+    overview: t("admin.page.overview"),
+    profile: t("admin.page.profile"),
+    links: t("admin.page.links"),
+    theme: t("admin.page.theme"),
+    data: t("admin.page.data"),
   };
 
   const html = renderLayout({
-    title: `${titles[data.page]} · Admin · ${data.siteName}`,
+    title: `${titles[data.page]} · ${t("admin.login.title")} · ${data.siteName}`,
     siteName: data.siteName,
     settings: data.settings,
     bodyClass: "admin-body",
@@ -86,7 +92,7 @@ export function renderAdminDashboard(data: DashboardData): Response {
       ${nav}
       <header class="admin-header">
         <h1>${escapeHtml(titles[data.page])}</h1>
-        <p>Manage your bio page content and appearance.</p>
+        <p>${escapeHtml(t("admin.subtitle"))}</p>
       </header>
       ${body}
     </div>`,
@@ -101,26 +107,27 @@ export function renderLoginPage(opts: {
   csrf: string;
   error?: string;
 }): Response {
+  const t = createT(opts.settings.locale);
   const html = renderLayout({
-    title: `Admin login · ${opts.siteName}`,
+    title: `${t("admin.login.heading")} · ${opts.siteName}`,
     siteName: opts.siteName,
     settings: opts.settings,
     bodyClass: "admin-body",
     children: `
     <div class="login-page">
       <div class="login-card">
-        <h1>Admin</h1>
-        <p class="sub">Sign in to manage ${escapeHtml(opts.siteName)}</p>
+        <h1>${escapeHtml(t("admin.login.title"))}</h1>
+        <p class="sub">${escapeHtml(t("admin.login.sub", { siteName: opts.siteName }))}</p>
         ${opts.error ? `<div class="alert alert-error">${escapeHtml(opts.error)}</div>` : ""}
         <form method="post" action="/admin/login">
           <input type="hidden" name="_csrf" value="${escapeHtml(opts.csrf)}" />
           <div class="field">
-            <label for="password">Password</label>
+            <label for="password">${escapeHtml(t("admin.login.password"))}</label>
             <input id="password" name="password" type="password" required autocomplete="current-password" autofocus />
-            <div class="hint">Uses the ADMIN_PASSWORD secret — never stored in KV.</div>
+            <div class="hint">${escapeHtml(t("admin.login.hint"))}</div>
           </div>
           <div class="row-actions">
-            <button class="btn" type="submit" style="width:100%">Sign in</button>
+            <button class="btn" type="submit" style="width:100%">${escapeHtml(t("admin.login.submit"))}</button>
           </div>
         </form>
       </div>
@@ -129,15 +136,15 @@ export function renderLoginPage(opts: {
   return htmlResponse(html);
 }
 
-function renderNav(page: AdminPage, siteName: string, csrf: string): string {
+function renderNav(page: AdminPage, siteName: string, csrf: string, t: TranslateFn): string {
   const items: { id: AdminPage | "logout" | "public"; href: string; label: string; danger?: boolean }[] = [
-    { id: "overview", href: "/admin", label: "Overview" },
-    { id: "profile", href: "/admin/profile", label: "Profile" },
-    { id: "links", href: "/admin/links", label: "Links" },
-    { id: "theme", href: "/admin/theme", label: "Theme" },
-    { id: "data", href: "/admin/data", label: "Data" },
-    { id: "public", href: "/", label: "Public" },
-    { id: "logout", href: "/admin/logout", label: "Logout", danger: true },
+    { id: "overview", href: "/admin", label: t("admin.nav.overview") },
+    { id: "profile", href: "/admin/profile", label: t("admin.nav.profile") },
+    { id: "links", href: "/admin/links", label: t("admin.nav.links") },
+    { id: "theme", href: "/admin/theme", label: t("admin.nav.theme") },
+    { id: "data", href: "/admin/data", label: t("admin.nav.data") },
+    { id: "public", href: "/", label: t("admin.nav.public") },
+    { id: "logout", href: "/admin/logout", label: t("admin.nav.logout"), danger: true },
   ];
 
   const links = items
@@ -145,21 +152,20 @@ function renderNav(page: AdminPage, siteName: string, csrf: string): string {
       const active = item.id === page ? " active" : "";
       const danger = item.danger ? " danger" : "";
       if (item.id === "logout") {
-        // POST + CSRF only — GET /admin/logout does not clear the session
         return `<form method="post" action="/admin/logout" class="nav-logout-form" style="display:inline;margin:0">
           <input type="hidden" name="_csrf" value="${escapeHtml(csrf)}" />
           <button type="submit" class="nav-link${danger}" style="background:none;border:0;padding:0;font:inherit;cursor:pointer;color:inherit">
-            ${item.label}
+            ${escapeHtml(item.label)}
           </button>
         </form>`;
       }
-      return `<a class="nav-link${active}${danger}" href="${item.href}">${item.label}</a>`;
+      return `<a class="nav-link${active}${danger}" href="${item.href}">${escapeHtml(item.label)}</a>`;
     })
     .join("");
 
   return `
   <nav class="admin-nav">
-    <div class="admin-brand">LinkBio<span>${escapeHtml(siteName)}</span></div>
+    <div class="admin-brand">${escapeHtml(t("admin.brand"))}<span>${escapeHtml(siteName)}</span></div>
     <div class="admin-nav-links">${links}</div>
   </nav>`;
 }

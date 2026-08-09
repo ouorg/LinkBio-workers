@@ -1,6 +1,23 @@
 /* LinkBio-workers - modern SaaS bio card UI (Linear / Vercel / Apple inspired) */
 
+/* Shared tokens (accent etc. may be overridden inline for brand color) */
 :root {
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-soft: rgba(99, 102, 241, 0.15);
+  --danger: #ef4444;
+  --success: #22c55e;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --max: 420px;
+  --admin-max: 880px;
+}
+
+/* Default + forced dark */
+:root,
+[data-theme="dark"] {
   --bg: #0a0a0b;
   --bg-elevated: #141416;
   --bg-card: #18181b;
@@ -9,20 +26,11 @@
   --text: #fafafa;
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --accent-soft: rgba(99, 102, 241, 0.15);
-  --danger: #ef4444;
-  --success: #22c55e;
-  --radius: 14px;
-  --radius-sm: 10px;
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --max: 420px;
-  --admin-max: 880px;
+  --accent-soft: rgba(99, 102, 241, 0.15);
 }
 
+/* Forced light */
 [data-theme="light"] {
   --bg: #fafafa;
   --bg-elevated: #ffffff;
@@ -34,6 +42,50 @@
   --text-muted: #a1a1aa;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
   --accent-soft: rgba(99, 102, 241, 0.1);
+}
+
+/* Follow OS — pure CSS, no JS theme watcher */
+[data-theme="system"] {
+  --bg: #0a0a0b;
+  --bg-elevated: #141416;
+  --bg-card: #18181b;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --accent-soft: rgba(99, 102, 241, 0.15);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] {
+    --bg: #fafafa;
+    --bg-elevated: #ffffff;
+    --bg-card: #ffffff;
+    --border: rgba(0, 0, 0, 0.08);
+    --border-strong: rgba(0, 0, 0, 0.12);
+    --text: #09090b;
+    --text-secondary: #52525b;
+    --text-muted: #a1a1aa;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    --accent-soft: rgba(99, 102, 241, 0.1);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    --bg: #0a0a0b;
+    --bg-elevated: #141416;
+    --bg-card: #18181b;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --text: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    --accent-soft: rgba(99, 102, 241, 0.15);
+  }
 }
 
 *,
@@ -469,6 +521,12 @@ select {
   color: #991b1b;
 }
 
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] .alert-error {
+    color: #991b1b;
+  }
+}
+
 .alert-success {
   background: color-mix(in srgb, var(--success) 12%, transparent);
   border-color: color-mix(in srgb, var(--success) 35%, var(--border));
@@ -477,6 +535,12 @@ select {
 
 [data-theme="light"] .alert-success {
   color: #166534;
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] .alert-success {
+    color: #166534;
+  }
 }
 
 .stats {

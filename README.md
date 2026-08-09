@@ -241,7 +241,8 @@ Override in Dashboard, `wrangler.toml` `[vars]` (non-secret only), or GitHub Var
 ```json
 {
   "theme": "default",
-  "darkMode": true,
+  "colorMode": "system",
+  "locale": "zh-CN",
   "accentColor": "#6366f1",
   "background": "",
   "showFooter": true,
@@ -250,10 +251,15 @@ Override in Dashboard, `wrangler.toml` `[vars]` (non-secret only), or GitHub Var
 }
 ```
 
+| Field | Values | Notes |
+| ----- | ------ | ----- |
+| `colorMode` | `system` / `light` / `dark` | Default `system` follows OS via CSS `prefers-color-scheme` (no JS). Legacy `darkMode` migrates on read. |
+| `locale` | `zh-CN` / `en` | UI chrome only; profile/links content is not translated. |
+
 | `footerMode` | Behaviour |
 | ------------ | --------- |
-| `default` | Site name + Admin link (or `footerText` if set) |
-| `custom` | `footerText` only (empty → same as default lines) |
+| `default` | Site name (or `footerText` if set) — no public Admin link |
+| `custom` | `footerText` only (empty → site name) |
 | `auth_only` | Footer only when admin session is present |
 | `off` | Hidden (also when `showFooter` is false) |
 
@@ -334,7 +340,8 @@ Forbidden:
 
 ## Customization
 
-- **Theme / footer** — Admin → Theme (`footerMode`, `footerText`, show/hide)
+- **Theme / color / language / footer** — Admin → Theme (`colorMode`, `locale`, `footerMode`, …)
+- **i18n** — lightweight `src/i18n` (zh-CN / en), no extra packages
 - **Icons** — built-in: `link`, `github`, `globe`, `twitter`, `x`, `linkedin`, `youtube`, `instagram`, `mail`
 - **CSS** — `src/styles/app.css` (inlined via `app.css.ts` for SSR)
 - **Defaults** — `src/types.ts`

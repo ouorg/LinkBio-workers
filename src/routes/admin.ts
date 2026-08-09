@@ -23,19 +23,32 @@ import {
   constantTimeEqual,
   createSessionToken,
 } from "../services/session";
-import type { LinkItem } from "../types";
+import { createT, type TranslateFn } from "../i18n";
+import type { LinkItem, Settings } from "../types";
 import { DEFAULT_SETTINGS } from "../types";
 
 const admin = new Hono<{ Bindings: Env; Variables: AuthVariables }>();
 
-function ensureSecrets(c: { env: Env }): string | null {
-  if (!c.env.ADMIN_PASSWORD) return "ADMIN_PASSWORD secret is not configured.";
-  if (!c.env.SESSION_SECRET) return "SESSION_SECRET secret is not configured.";
+function ensureSecretsKey(c: { env: Env }): "admin.login.error.noPassword" | "admin.login.error.noSessionSecret" | null {
+  if (!c.env.ADMIN_PASSWORD) return "admin.login.error.noPassword";
+  if (!c.env.SESSION_SECRET) return "admin.login.error.noSessionSecret";
   return null;
 }
 
 function siteName(env: Env): string {
   return env.SITE_NAME || "LinkBio";
+}
+
+function tFor(settings: Settings): TranslateFn {
+  return createT(settings.locale);
+}
+
+function okMsg(t: TranslateFn, key: string): string {
+  return "ok:" + t(key);
+}
+
+function errMsg(t: TranslateFn, key: string, vars?: Record<string, string | number>): string {
+  return "error:" + t(key, vars);
 }
 
 /** Ensure a CSRF token exists; returns token + optional Set-Cookie to attach on Response. */
@@ -57,7 +70,7 @@ function withSetCookie(res: Response, cookie?: string): Response {
 
 async function requireCsrf(c: {
   req: { header: (n: string) => string | undefined; parseBody: () => Promise<Record<string, string | File>> };
-}): Promise<{ ok: true; body: Record<string, string> } | { ok: false; error: string }> {
+}): Promise<{ ok: true; body: Record<string, string> } | { ok: false }> {
   const body = await c.req.parseBody();
   const form: Record<string, string> = {};
   for (const [k, v] of Object.entries(body)) {
@@ -66,7 +79,7 @@ async function requireCsrf(c: {
   const cookieToken = parseCsrfFromCookie(c.req.header("Cookie"));
   const formToken = form[CSRF_FIELD];
   if (!validateCsrf(cookieToken, formToken)) {
-    return { ok: false, error: "Invalid CSRF token. Refresh and try again." };
+    return { ok: false };
   }
   return { ok: true, body: form };
 }
@@ -77,14 +90,15 @@ admin.get("/login", async (c) => {
   if (c.get("isAdmin")) return c.redirect("/admin");
   const store = createStore(c.env);
   const settings = await store.getSettings().catch(() => ({ ...DEFAULT_SETTINGS }));
+  const t = tFor(settings);
   const csrf = withCsrf(c);
-  const cfgError = ensureSecrets(c);
+  const cfgKey = ensureSecretsKey(c);
   return withSetCookie(
     renderLoginPage({
       siteName: siteName(c.env),
       settings,
       csrf: csrf.token,
-      error: cfgError || undefined,
+      error: cfgKey ? t(cfgKey) : undefined,
     }),
     csrf.setCookie,
   );
@@ -93,21 +107,27 @@ admin.get("/login", async (c) => {
 admin.post("/login", async (c) => {
   const store = createStore(c.env);
   const settings = await store.getSettings().catch(() => ({ ...DEFAULT_SETTINGS }));
+  const t = tFor(settings);
   const csrf = withCsrf(c);
   const ip = clientIp(c);
 
-  const cfgError = ensureSecrets(c);
-  if (cfgError) {
+  const cfgKey = ensureSecretsKey(c);
+  if (cfgKey) {
     return withSetCookie(
-      renderLoginPage({ siteName: siteName(c.env), settings, csrf: csrf.token, error: cfgError }),
+      renderLoginPage({ siteName: siteName(c.env), settings, csrf: csrf.token, error: t(cfgKey) }),
       csrf.setCookie,
     );
   }
 
-  const rateMsg = await store.checkLoginRateLimit(ip);
-  if (rateMsg) {
+  const lockMinutes = await store.checkLoginRateLimit(ip);
+  if (lockMinutes !== null) {
     return withSetCookie(
-      renderLoginPage({ siteName: siteName(c.env), settings, csrf: csrf.token, error: rateMsg }),
+      renderLoginPage({
+        siteName: siteName(c.env),
+        settings,
+        csrf: csrf.token,
+        error: t("admin.login.error.rateLimit", { minutes: lockMinutes }),
+      }),
       csrf.setCookie,
     );
   }
@@ -115,7 +135,12 @@ admin.post("/login", async (c) => {
   const checked = await requireCsrf(c);
   if (!checked.ok) {
     return withSetCookie(
-      renderLoginPage({ siteName: siteName(c.env), settings, csrf: csrf.token, error: checked.error }),
+      renderLoginPage({
+        siteName: siteName(c.env),
+        settings,
+        csrf: csrf.token,
+        error: t("admin.login.error.csrf"),
+      }),
       csrf.setCookie,
     );
   }
@@ -129,7 +154,7 @@ admin.post("/login", async (c) => {
         siteName: siteName(c.env),
         settings,
         csrf: csrf.token,
-        error: "Incorrect password.",
+        error: t("admin.login.error.password"),
       }),
       csrf.setCookie,
     );
@@ -149,11 +174,13 @@ admin.get("/logout", (c) => c.redirect("/admin/login", 302));
 
 /** Logout must be POST + CSRF */
 admin.post("/logout", async (c) => {
+  const store = createStore(c.env);
+  const settings = await store.getSettings().catch(() => ({ ...DEFAULT_SETTINGS }));
+  const t = tFor(settings);
   const checked = await requireCsrf(c);
   const secure = isSecureRequest(c);
   if (!checked.ok) {
-    // Still safe to clear session if someone posts without CSRF? Prefer fail closed.
-    return c.redirect(`/admin?msg=${encodeURIComponent("error:Invalid CSRF token.")}`, 302);
+    return c.redirect(`/admin?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`, 302);
   }
   const res = c.redirect("/admin/login", 302);
   res.headers.append("Set-Cookie", buildClearSessionCookie(secure));
@@ -214,10 +241,12 @@ authed.get("/export", async (c) => {
 // ── Form posts ────────────────────────────────────────────────
 
 authed.post("/profile", async (c) => {
-  const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/profile?msg=${encodeURIComponent("error:" + checked.error)}`);
-  const b = checked.body;
   const store = createStore(c.env);
+  const settings = await store.getSettings();
+  const t = tFor(settings);
+  const checked = await requireCsrf(c);
+  if (!checked.ok) return c.redirect(`/admin/profile?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
+  const b = checked.body;
   await store.setProfile(
     sanitizeProfile({
       name: b.name,
@@ -228,33 +257,39 @@ authed.post("/profile", async (c) => {
       email: b.email,
     }),
   );
-  return c.redirect("/admin/profile?msg=" + encodeURIComponent("ok:Profile saved."));
+  return c.redirect("/admin/profile?msg=" + encodeURIComponent(okMsg(t, "admin.profile.saved")));
 });
 
 authed.post("/settings", async (c) => {
-  const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/theme?msg=${encodeURIComponent("error:" + checked.error)}`);
-  const b = checked.body;
   const store = createStore(c.env);
-  await store.setSettings(
-    sanitizeSettings({
-      theme: b.theme,
-      accentColor: b.accentColor,
-      background: b.background,
-      darkMode: b.darkMode === "1",
-      showFooter: b.showFooter === "1",
-      footerMode: b.footerMode as never,
-      footerText: b.footerText,
-    }),
-  );
-  return c.redirect("/admin/theme?msg=" + encodeURIComponent("ok:Theme saved."));
+  const current = await store.getSettings();
+  const t = tFor(current);
+  const checked = await requireCsrf(c);
+  if (!checked.ok) return c.redirect(`/admin/theme?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
+  const b = checked.body;
+  const next = sanitizeSettings({
+    theme: b.theme,
+    accentColor: b.accentColor,
+    background: b.background,
+    colorMode: b.colorMode as never,
+    locale: b.locale as never,
+    showFooter: b.showFooter === "1",
+    footerMode: b.footerMode as never,
+    footerText: b.footerText,
+  });
+  await store.setSettings(next);
+  // Re-translate flash with NEW locale so user sees success in the language they just chose
+  const tNext = tFor(next);
+  return c.redirect("/admin/theme?msg=" + encodeURIComponent(okMsg(tNext, "admin.theme.saved")));
 });
 
 authed.post("/links", async (c) => {
-  const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent("error:" + checked.error)}`);
-  const b = checked.body;
   const store = createStore(c.env);
+  const settings = await store.getSettings();
+  const t = tFor(settings);
+  const checked = await requireCsrf(c);
+  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
+  const b = checked.body;
   const links = await store.getLinks();
   const maxOrder = links.reduce((m, l) => Math.max(m, l.order), -1);
   const item = sanitizeLink(
@@ -269,50 +304,61 @@ authed.post("/links", async (c) => {
     maxOrder + 1,
   );
   if (!item.url) {
-    return c.redirect("/admin/links?msg=" + encodeURIComponent("error:Invalid URL. Use http(s) only."));
+    return c.redirect("/admin/links?msg=" + encodeURIComponent(errMsg(t, "admin.links.invalidUrl")));
   }
   links.push(item);
   await store.setLinks(links);
-  return c.redirect("/admin/links?msg=" + encodeURIComponent("ok:Link added."));
+  return c.redirect("/admin/links?msg=" + encodeURIComponent(okMsg(t, "admin.links.added")));
 });
 
 authed.post("/links/:id/delete", async (c) => {
-  const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent("error:" + checked.error)}`);
-  const id = c.req.param("id");
   const store = createStore(c.env);
+  const settings = await store.getSettings();
+  const t = tFor(settings);
+  const checked = await requireCsrf(c);
+  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
+  const id = c.req.param("id");
   const links = (await store.getLinks()).filter((l) => l.id !== id);
   await store.setLinks(links.map((l, i) => ({ ...l, order: i })));
-  return c.redirect("/admin/links?msg=" + encodeURIComponent("ok:Link deleted."));
+  return c.redirect("/admin/links?msg=" + encodeURIComponent(okMsg(t, "admin.links.deleted")));
 });
 
 authed.post("/links/:id/toggle", async (c) => {
-  const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent("error:" + checked.error)}`);
-  const id = c.req.param("id");
   const store = createStore(c.env);
+  const settings = await store.getSettings();
+  const t = tFor(settings);
+  const checked = await requireCsrf(c);
+  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
+  const id = c.req.param("id");
   const links = await store.getLinks();
   const next = links.map((l) => (l.id === id ? { ...l, enabled: !l.enabled } : l));
   await store.setLinks(next);
-  return c.redirect("/admin/links?msg=" + encodeURIComponent("ok:Link updated."));
+  return c.redirect("/admin/links?msg=" + encodeURIComponent(okMsg(t, "admin.links.updated")));
 });
 
 authed.post("/links/:id/up", async (c) => {
+  const store = createStore(c.env);
+  const settings = await store.getSettings();
+  const t = tFor(settings);
   const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent("error:" + checked.error)}`);
-  return reorder(c, c.req.param("id"), -1);
+  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
+  return reorder(c, c.req.param("id"), -1, t);
 });
 
 authed.post("/links/:id/down", async (c) => {
+  const store = createStore(c.env);
+  const settings = await store.getSettings();
+  const t = tFor(settings);
   const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent("error:" + checked.error)}`);
-  return reorder(c, c.req.param("id"), 1);
+  if (!checked.ok) return c.redirect(`/admin/links?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
+  return reorder(c, c.req.param("id"), 1, t);
 });
 
 async function reorder(
   c: { env: Env; redirect: (u: string) => Response },
   id: string,
   dir: -1 | 1,
+  t: TranslateFn,
 ): Promise<Response> {
   const store = createStore(c.env);
   const links = (await store.getLinks()).sort((a, b) => a.order - b.order);
@@ -325,25 +371,29 @@ async function reorder(
   links[swap] = tmp;
   const normalized: LinkItem[] = links.map((l, i) => ({ ...l, order: i }));
   await store.setLinks(normalized);
-  return c.redirect("/admin/links?msg=" + encodeURIComponent("ok:Order updated."));
+  return c.redirect("/admin/links?msg=" + encodeURIComponent(okMsg(t, "admin.links.reordered")));
 }
 
 authed.post("/import", async (c) => {
+  const store = createStore(c.env);
+  const settings = await store.getSettings();
+  const t = tFor(settings);
   const checked = await requireCsrf(c);
-  if (!checked.ok) return c.redirect(`/admin/data?msg=${encodeURIComponent("error:" + checked.error)}`);
+  if (!checked.ok) return c.redirect(`/admin/data?msg=${encodeURIComponent(errMsg(t, "admin.error.csrf"))}`);
   const raw = checked.body.json || "";
   try {
     const data = JSON.parse(raw) as Record<string, unknown>;
-    const store = createStore(c.env);
     await store.importAll({
       profile: data.profile as never,
       links: data.links as never,
       settings: data.settings as never,
       analytics: data.analytics as never,
     });
-    return c.redirect("/admin/data?msg=" + encodeURIComponent("ok:Import successful."));
+    const after = await store.getSettings();
+    const tAfter = tFor(after);
+    return c.redirect("/admin/data?msg=" + encodeURIComponent(okMsg(tAfter, "admin.data.imported")));
   } catch {
-    return c.redirect("/admin/data?msg=" + encodeURIComponent("error:Invalid JSON."));
+    return c.redirect("/admin/data?msg=" + encodeURIComponent(errMsg(t, "admin.data.invalidJson")));
   }
 });
 

@@ -1,5 +1,6 @@
 import { escapeHtml } from "../middleware/security";
-import type { Settings } from "../types";
+import { createT, htmlLang } from "../i18n";
+import type { ColorMode, Settings } from "../types";
 import { appCss as css } from "../styles/app.css.js";
 
 export type LayoutOptions = {
@@ -9,25 +10,35 @@ export type LayoutOptions = {
   bodyClass?: string;
   headExtra?: string;
   children: string;
+  /** Override meta description (already plain text; will be escaped) */
+  description?: string;
 };
 
 /**
  * Full HTML document wrapper (SSR). CSS is inlined for zero extra round-trips.
  */
 export function renderLayout(opts: LayoutOptions): string {
-  const themeAttr = opts.settings.darkMode ? "dark" : "light";
+  const colorMode: ColorMode = opts.settings.colorMode || "system";
+  const themeAttr = escapeHtml(colorMode);
+  const colorSchemeMeta =
+    colorMode === "system" ? "light dark" : colorMode === "light" ? "light" : "dark";
+  const lang = escapeHtml(htmlLang(opts.settings.locale));
   const accent = escapeHtml(opts.settings.accentColor || "#6366f1");
   const title = escapeHtml(opts.title);
   const bodyClass = escapeHtml(opts.bodyClass || "");
+  const t = createT(opts.settings.locale);
+  const description = escapeHtml(
+    opts.description ?? t("public.metaDescription", { siteName: opts.siteName }),
+  );
 
   return `<!DOCTYPE html>
-<html lang="en" data-theme="${themeAttr}">
+<html lang="${lang}" data-theme="${themeAttr}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="${themeAttr}" />
+  <meta name="color-scheme" content="${colorSchemeMeta}" />
   <title>${title}</title>
-  <meta name="description" content="${escapeHtml(opts.siteName)} — personal bio links" />
+  <meta name="description" content="${description}" />
   <style>${css}</style>
   <style>:root { --accent: ${accent}; --accent-hover: color-mix(in srgb, ${accent} 80%, white); --accent-soft: color-mix(in srgb, ${accent} 18%, transparent); }</style>
   ${opts.headExtra || ""}

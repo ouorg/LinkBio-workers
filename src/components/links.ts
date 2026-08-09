@@ -2,10 +2,10 @@ import { escapeHtml } from "../middleware/security";
 import type { LinkItem } from "../types";
 import { iconSvg } from "./icons";
 
-export function renderLinks(links: LinkItem[]): string {
+export function renderLinks(links: LinkItem[], emptyLabel = "No links yet.", navLabel = "Links"): string {
   const enabled = links.filter((l) => l.enabled && l.url).sort((a, b) => a.order - b.order);
   if (!enabled.length) {
-    return `<div class="empty">No links yet.</div>`;
+    return `<div class="empty">${escapeHtml(emptyLabel)}</div>`;
   }
 
   const items = enabled
@@ -20,5 +20,5 @@ export function renderLinks(links: LinkItem[]): string {
     })
     .join("\n");
 
-  return `<nav class="links" aria-label="Links">${items}</nav>`;
+  return `<nav class="links" aria-label="${escapeHtml(navLabel)}">${items}</nav>`;
 }

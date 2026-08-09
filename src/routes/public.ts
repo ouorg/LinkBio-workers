@@ -4,6 +4,7 @@ import { renderLinks } from "../components/links";
 import { renderProfileBlock } from "../components/profile";
 import { escapeHtml } from "../middleware/security";
 import { createStore } from "../services/kv";
+import { createT } from "../i18n";
 import type { AuthVariables } from "../middleware/auth";
 import type { Settings } from "../types";
 
@@ -19,9 +20,9 @@ publicRoutes.get("/", async (c) => {
     store.getSettings(),
   ]);
 
-  // Fire-and-forget analytics (do not block TTFB on KV write)
   c.executionCtx.waitUntil(store.incrementPageViews());
 
+  const t = createT(settings.locale);
   const bgStyle =
     settings.background && /^https?:\/\//i.test(settings.background)
       ? ` style="background-image:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.75)),url('${escapeHtml(settings.background)}')"`
@@ -29,7 +30,7 @@ publicRoutes.get("/", async (c) => {
 
   const pageClass = settings.background ? "page page--bg" : "page";
   const isAdmin = c.get("isAdmin");
-  const footer = renderPublicFooter(settings, siteName, isAdmin);
+  const footer = renderPublicFooter(settings, siteName, isAdmin, t);
 
   const html = renderLayout({
     title: `${profile.name || siteName} · ${siteName}`,
@@ -39,7 +40,7 @@ publicRoutes.get("/", async (c) => {
     <main class="${pageClass}"${bgStyle}>
       <div class="card">
         ${renderProfileBlock(profile)}
-        ${renderLinks(links)}
+        ${renderLinks(links, t("public.emptyLinks"), t("public.linksNav"))}
       </div>
       ${footer}
     </main>
@@ -62,16 +63,16 @@ publicRoutes.get("/", async (c) => {
 });
 
 /**
- * Footer rules:
+ * Footer rules (no public Admin link by default — keep admin entry private):
  * - showFooter false or footerMode "off" → hidden
  * - footerMode "auth_only" → only when admin session is present
- * - empty footerText → default lines (site name + admin link)
- * - custom / default with text → use footerText (escaped plain text, newlines → <br>)
+ * - empty footerText → site name only
  */
 export function renderPublicFooter(
   settings: Settings,
   siteName: string,
   isAdmin: boolean,
+  t: (key: string, vars?: Record<string, string | number>) => string,
 ): string {
   if (!settings.showFooter || settings.footerMode === "off") return "";
   if (settings.footerMode === "auth_only" && !isAdmin) return "";
@@ -83,15 +84,12 @@ export function renderPublicFooter(
   if (useCustom && custom) {
     inner = escapeHtml(custom).replace(/\r\n|\n|\r/g, "<br />");
   } else {
-    // Default: project / site name + admin entry
-    inner = `<div>${escapeHtml(siteName)}</div>
-        <div style="margin-top:4px"><a href="/admin">Admin</a></div>`;
+    inner = `<div>${escapeHtml(t("public.footer.site", { siteName }))}</div>`;
   }
 
   return `<footer class="footer">${inner}</footer>`;
 }
 
-/** Health check for deploys / uptime */
 publicRoutes.get("/health", (c) =>
   c.json({
     ok: true,
@@ -100,7 +98,6 @@ publicRoutes.get("/health", (c) =>
   }),
 );
 
-/** robots.txt */
 publicRoutes.get("/robots.txt", (c) => {
   return c.text("User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\n", 200, {
     "Content-Type": "text/plain; charset=utf-8",
