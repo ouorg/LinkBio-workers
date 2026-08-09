@@ -5,7 +5,7 @@
  * Runtime has no repo filesystem: only build-time registry + bundled CSS.
  */
 export type ThemeManifest = {
-  /** Must match folder name (kebab-case): base | minimal | glass | aurora */
+  /** Must match folder name (kebab-case): base | minimal | apple | anthropic | hono-old | … */
   id: string;
   /** English display name (admin UI) */
   name: string;

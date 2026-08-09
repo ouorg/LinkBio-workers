@@ -20,10 +20,8 @@ export const dynamic = "force-dynamic";
 const PREVIEW: Record<string, { a: string; b: string; c: string }> = {
   base: { a: "hsl(239 84% 67%)", b: "hsl(240 5% 20%)", c: "hsl(240 5% 90%)" },
   minimal: { a: "hsl(240 6% 40%)", b: "hsl(0 0% 20%)", c: "hsl(0 0% 92%)" },
-  glass: { a: "hsl(262 83% 68%)", b: "hsl(260 20% 25%)", c: "hsl(260 30% 92%)" },
-  aurora: { a: "hsl(199 89% 48%)", b: "hsl(258 90% 66%)", c: "hsl(200 40% 92%)" },
   /* Legacy Hono UI: indigo + near-black card */
-  "hono-old": { a: "#6366f1", b: "#0a0a0b", c: "#18181b" }, /* Hono legacy SaaS */
+  "hono-old": { a: "#6366f1", b: "#0a0a0b", c: "#18181b" },
   /* Anthropic illustration: clay + oat + ivory / near-black */
   anthropic: { a: "#D97757", b: "#E3DACC", c: "#FAF9F5" },
   /* Apple.com marketing (unofficial) */

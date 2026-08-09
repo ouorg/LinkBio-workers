@@ -30,19 +30,6 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
-    "id": "aurora",
-    "name": "Aurora",
-    "nameZh": "极光",
-    "description": "Vivid cyan–violet accent with soft glow",
-    "version": 1,
-    "tokensFile": "tokens.css",
-    "features": {
-      "blur": false,
-      "gradientBg": true,
-      "customFonts": false
-    }
-  },
-  {
     "id": "base",
     "name": "Base",
     "nameZh": "基础",
@@ -51,19 +38,6 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
-      "gradientBg": true,
-      "customFonts": false
-    }
-  },
-  {
-    "id": "glass",
-    "name": "Glass",
-    "nameZh": "玻璃",
-    "description": "Frosted cards, soft gradient backdrop",
-    "version": 1,
-    "tokensFile": "tokens.css",
-    "features": {
-      "blur": true,
       "gradientBg": true,
       "customFonts": false
     }

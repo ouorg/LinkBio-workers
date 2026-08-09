@@ -18,8 +18,9 @@ src/themes/
     theme.json
     tokens.css
   minimal/
-  glass/
-  aurora/
+  apple/
+  anthropic/
+  hono-old/
 ```
 
 **一个主题 = 一个目录 = `theme.json` + `tokens.css`。**  

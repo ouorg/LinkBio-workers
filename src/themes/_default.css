@@ -9,7 +9,7 @@
  *   --space-toolbar-clear            — top clear zone so content is not under toolbar
  *
  * Color mode: data-theme = system | light | dark
- * Visual pack: data-theme-id = base | minimal | glass | ...
+ * Visual pack: data-theme-id = base | minimal | apple | ...
  */
 
 :root {

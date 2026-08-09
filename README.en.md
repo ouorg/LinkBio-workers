@@ -136,7 +136,7 @@ Full guide and “add a theme in 4 steps”: **[src/themes/README.md](./src/them
 | Attribute | Meaning |
 |-----------|---------|
 | `data-theme` | `system` \| `light` \| `dark` |
-| `data-theme-id` | `base` \| `minimal` \| `glass` \| `aurora` \| `hono-old` \| `anthropic` \| `apple` \| … |
+| `data-theme-id` | `base` \| `minimal` \| `hono-old` \| `anthropic` \| `apple` \| … |
 
 Resolution order: valid `settings.theme` → `env.DEFAULT_THEME` → `base`.
 
@@ -144,7 +144,7 @@ Resolution order: valid `settings.theme` → `env.DEFAULT_THEME` → `base`.
 npm run build:themes   # validate + generate _registry.ts / _bundle.css (all themes)
 ```
 
-Built-in packs: `base`, `minimal`, `glass`, `aurora`, **`hono-old`**, **`anthropic`**, and **`apple`** (Apple-inspired marketing UI, unofficial).
+Built-in packs: `base`, `minimal`, **`hono-old`**, **`anthropic`**, and **`apple`**.
 
 ### Add a theme (4 steps)
 
