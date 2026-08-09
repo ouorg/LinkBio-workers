@@ -69,6 +69,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
+    "id": "nodeseek",
+    "name": "NodeSeek",
+    "nameZh": "节点论坛",
+    "description": "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent (unofficial)",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": false,
+      "customFonts": false
+    }
+  },
+  {
     "id": "qtcool",
     "name": "QT Cool",
     "nameZh": "晴辰酷",
