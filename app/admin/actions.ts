@@ -3,6 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  backupConfigFromForm,
+  restoreFromGist,
+  restoreFromWebDav,
+  runBackup,
+  scheduleBackup,
+} from "@/lib/backup";
 import { getEnv, getStore } from "@/lib/env";
 import { flashErr, flashOk, setFlashCookie } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
@@ -11,6 +18,7 @@ import {
   sanitizeLink,
   sanitizeProfile,
   sanitizeSettings,
+  stripForbiddenSecrets,
 } from "@/lib/kv";
 import {
   constantTimeEqual,
@@ -141,6 +149,7 @@ export async function saveProfileAction(formData: FormData) {
     }),
   );
   revalidatePublic();
+  await scheduleBackup(store);
   await flashRedirect("/admin/profile", flashOk(t("admin.profile.saved")));
 }
 
@@ -164,6 +173,7 @@ export async function saveSettingsAction(formData: FormData) {
   });
   await store.setSettings(next);
   revalidatePublic();
+  await scheduleBackup(store);
   const tNext = createT(next.locale);
   await flashRedirect("/admin/theme", flashOk(tNext("admin.theme.saved")));
 }
@@ -193,6 +203,7 @@ export async function addLinkAction(formData: FormData) {
   links.push(item);
   await store.setLinks(links);
   revalidatePublic();
+  await scheduleBackup(store);
   await flashRedirect("/admin/links", flashOk(t("admin.links.added")));
 }
 
@@ -236,6 +247,7 @@ export async function updateLinkAction(formData: FormData) {
   links[idx] = next;
   await store.setLinks(links);
   revalidatePublic();
+  await scheduleBackup(store);
   await flashRedirect("/admin/links", flashOk(t("admin.links.savedEdit")));
 }
 
@@ -249,6 +261,7 @@ export async function deleteLinkAction(formData: FormData) {
   const links = (await store.getLinks()).filter((l) => l.id !== id);
   await store.setLinks(links.map((l, i) => ({ ...l, order: i })));
   revalidatePublic();
+  await scheduleBackup(store);
   await flashRedirect("/admin/links", flashOk(t("admin.links.deleted")));
 }
 
@@ -262,6 +275,7 @@ export async function toggleLinkAction(formData: FormData) {
   const links = await store.getLinks();
   await store.setLinks(links.map((l) => (l.id === id ? { ...l, enabled: !l.enabled } : l)));
   revalidatePublic();
+  await scheduleBackup(store);
   await flashRedirect("/admin/links", flashOk(t("admin.links.updated")));
 }
 
@@ -284,6 +298,7 @@ export async function reorderLinkAction(formData: FormData) {
   const normalized: LinkItem[] = links.map((l, i) => ({ ...l, order: i }));
   await store.setLinks(normalized);
   revalidatePublic();
+  await scheduleBackup(store);
   await flashRedirect("/admin/links", flashOk(t("admin.links.reordered")));
 }
 
@@ -294,21 +309,97 @@ export async function importDataAction(formData: FormData) {
   }
   const raw = String(formData.get("json") || "");
   try {
-    const data = JSON.parse(raw) as Record<string, unknown>;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const data = stripForbiddenSecrets(parsed);
     const store = await getStore();
     await store.importAll({
       profile: data.profile as never,
       links: data.links as never,
       settings: data.settings as never,
       analytics: data.analytics as never,
+      backup: data.backup as never,
     });
     revalidatePublic();
+    await scheduleBackup(store);
     const after = await store.getSettings();
     const tAfter = createT(after.locale);
     await flashRedirect("/admin/data", flashOk(tAfter("admin.data.imported")));
   } catch {
     await flashRedirect("/admin/data", flashErr(t("admin.data.invalidJson")));
   }
+}
+
+export async function saveBackupConfigAction(formData: FormData) {
+  const t = await tSite();
+  if (!(await requireCsrf(formData))) {
+    await flashRedirect("/admin/data", flashErr(t("admin.error.csrf")));
+  }
+  const store = await getStore();
+  const next = backupConfigFromForm(formData);
+  // Preserve password/token if form left blank (browser may not re-send secrets)
+  const prev = await store.getBackupConfig();
+  if (!String(formData.get("webdavPassword") || "") && prev.webdav.password) {
+    next.webdav.password = prev.webdav.password;
+  }
+  if (!String(formData.get("gistToken") || "") && prev.gist.token) {
+    next.gist.token = prev.gist.token;
+  }
+  await store.setBackupConfig(next);
+  await flashRedirect("/admin/data", flashOk(t("admin.backup.configSaved")));
+}
+
+export async function runBackupNowAction(formData: FormData) {
+  const t = await tSite();
+  if (!(await requireCsrf(formData))) {
+    await flashRedirect("/admin/data", flashErr(t("admin.error.csrf")));
+  }
+  const store = await getStore();
+  const result = await runBackup(store, { source: "manual", force: true });
+  if (result.ok) {
+    const partial = result.error ? ` (${result.error})` : "";
+    await flashRedirect(
+      "/admin/data",
+      flashOk(`${t("admin.backup.runOk")}${partial}`),
+    );
+  }
+  await flashRedirect(
+    "/admin/data",
+    flashErr(result.error || t("admin.backup.runFail")),
+  );
+}
+
+export async function restoreWebDavAction(formData: FormData) {
+  const t = await tSite();
+  if (!(await requireCsrf(formData))) {
+    await flashRedirect("/admin/data", flashErr(t("admin.error.csrf")));
+  }
+  const store = await getStore();
+  const result = await restoreFromWebDav(store);
+  if (result.ok) {
+    revalidatePublic();
+    await flashRedirect("/admin/data", flashOk(t("admin.backup.restoreOk")));
+  }
+  await flashRedirect(
+    "/admin/data",
+    flashErr(result.error || t("admin.backup.restoreFail")),
+  );
+}
+
+export async function restoreGistAction(formData: FormData) {
+  const t = await tSite();
+  if (!(await requireCsrf(formData))) {
+    await flashRedirect("/admin/data", flashErr(t("admin.error.csrf")));
+  }
+  const store = await getStore();
+  const result = await restoreFromGist(store);
+  if (result.ok) {
+    revalidatePublic();
+    await flashRedirect("/admin/data", flashOk(t("admin.backup.restoreOk")));
+  }
+  await flashRedirect(
+    "/admin/data",
+    flashErr(result.error || t("admin.backup.restoreFail")),
+  );
 }
 
 export { flashOk, flashErr };

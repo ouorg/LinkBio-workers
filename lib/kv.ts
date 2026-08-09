@@ -1,11 +1,16 @@
 import {
   DEFAULT_ANALYTICS,
+  DEFAULT_BACKUP_CONFIG,
+  DEFAULT_BACKUP_STATE,
   DEFAULT_LINKS,
   DEFAULT_PROFILE,
   DEFAULT_SETTINGS,
   KV_KEYS,
   LOGIN_RATE_LIMIT,
   type Analytics,
+  type BackupConfig,
+  type BackupPayload,
+  type BackupState,
   type ColorMode,
   type FooterMode,
   type LinkItem,
@@ -110,16 +115,65 @@ export class BioStore {
     return { profile, links, settings, analytics };
   }
 
-  async exportAll(): Promise<SiteData> {
-    return this.getAll();
+  async getBackupConfig(): Promise<BackupConfig> {
+    const raw = await this.getJson<Partial<BackupConfig>>(KV_KEYS.BACKUP_CONFIG);
+    if (!raw) return { ...DEFAULT_BACKUP_CONFIG, webdav: { ...DEFAULT_BACKUP_CONFIG.webdav }, gist: { ...DEFAULT_BACKUP_CONFIG.gist } };
+    return sanitizeBackupConfig(raw);
   }
 
-  async importAll(data: Partial<SiteData>): Promise<void> {
+  async setBackupConfig(config: BackupConfig): Promise<void> {
+    await this.kv.put(KV_KEYS.BACKUP_CONFIG, JSON.stringify(sanitizeBackupConfig(config)));
+  }
+
+  async getBackupState(): Promise<BackupState> {
+    const raw = await this.getJson<Partial<BackupState>>(KV_KEYS.BACKUP_STATE);
+    if (!raw) return { ...DEFAULT_BACKUP_STATE };
+    return sanitizeBackupState(raw);
+  }
+
+  async setBackupState(state: BackupState): Promise<void> {
+    await this.kv.put(KV_KEYS.BACKUP_STATE, JSON.stringify(sanitizeBackupState(state)));
+  }
+
+  /**
+   * Local / remote backup document.
+   * Never includes env secrets (ADMIN_PASSWORD, SESSION_SECRET, …).
+   */
+  async exportBackup(options?: { includeAnalytics?: boolean; includeBackupConfig?: boolean }): Promise<BackupPayload> {
+    const includeAnalytics = options?.includeAnalytics !== false;
+    const includeBackupConfig = options?.includeBackupConfig !== false;
+    const [profile, links, settings, analytics, backup] = await Promise.all([
+      this.getProfile(),
+      this.getLinks(),
+      this.getSettings(),
+      includeAnalytics ? this.getAnalytics() : Promise.resolve(null),
+      includeBackupConfig ? this.getBackupConfig() : Promise.resolve(null),
+    ]);
+    const payload: BackupPayload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      profile,
+      links,
+      settings,
+    };
+    if (analytics) payload.analytics = analytics;
+    if (backup) payload.backup = backup;
+    return payload;
+  }
+
+  async exportAll(): Promise<BackupPayload> {
+    return this.exportBackup({ includeAnalytics: true, includeBackupConfig: true });
+  }
+
+  async importAll(
+    data: Partial<SiteData> & { backup?: Partial<BackupConfig>; version?: number },
+  ): Promise<void> {
     const ops: Promise<void>[] = [];
     if (data.profile) ops.push(this.setProfile(sanitizeProfile(data.profile)));
     if (data.links) ops.push(this.setLinks(data.links.map(sanitizeLink)));
     if (data.settings) ops.push(this.setSettings(sanitizeSettings(data.settings)));
     if (data.analytics) ops.push(this.setAnalytics(sanitizeAnalytics(data.analytics)));
+    if (data.backup) ops.push(this.setBackupConfig(sanitizeBackupConfig(data.backup)));
     await Promise.all(ops);
   }
 
@@ -377,6 +431,75 @@ export function sanitizeUrl(url: string): string {
   } catch {
     return "";
   }
+}
+
+export function sanitizeBackupConfig(input: Partial<BackupConfig>): BackupConfig {
+  const webdavIn: Partial<BackupConfig["webdav"]> =
+    input.webdav && typeof input.webdav === "object" ? input.webdav : {};
+  const gistIn: Partial<BackupConfig["gist"]> =
+    input.gist && typeof input.gist === "object" ? input.gist : {};
+  let minInterval =
+    typeof input.minIntervalSec === "number" && Number.isFinite(input.minIntervalSec)
+      ? Math.floor(input.minIntervalSec)
+      : DEFAULT_BACKUP_CONFIG.minIntervalSec;
+  if (minInterval < 60) minInterval = 60;
+  if (minInterval > 86400 * 7) minInterval = 86400 * 7;
+
+  const filename =
+    str(gistIn.filename, 120).replace(/[^\w.\-()+@ ]/g, "") || DEFAULT_BACKUP_CONFIG.gist.filename;
+
+  return {
+    autoBackup: Boolean(input.autoBackup),
+    minIntervalSec: minInterval,
+    includeAnalytics: input.includeAnalytics !== false,
+    webdav: {
+      enabled: Boolean(webdavIn.enabled),
+      url: sanitizeUrl(str(webdavIn.url, 2000)),
+      username: str(webdavIn.username, 200),
+      password: str(webdavIn.password, 500),
+    },
+    gist: {
+      enabled: Boolean(gistIn.enabled),
+      token: str(gistIn.token, 200),
+      gistId: str(gistIn.gistId, 64).replace(/[^a-fA-F0-9]/g, ""),
+      filename: filename.endsWith(".json") ? filename : `${filename}.json`,
+    },
+  };
+}
+
+export function sanitizeBackupState(input: Partial<BackupState>): BackupState {
+  const targets = Array.isArray(input.lastTargets)
+    ? input.lastTargets.filter((t): t is string => typeof t === "string").map((t) => str(t, 32))
+    : [];
+  const source = input.lastSource === "auto" || input.lastSource === "manual" ? input.lastSource : "";
+  return {
+    lastAttemptAt: str(input.lastAttemptAt, 40),
+    lastSuccessAt: str(input.lastSuccessAt, 40),
+    lastOk: Boolean(input.lastOk),
+    lastError: str(input.lastError, 500),
+    lastTargets: targets.slice(0, 8),
+    lastSource: source,
+  };
+}
+
+/** Reject any accidental secret keys in imported JSON blobs. */
+export function stripForbiddenSecrets(data: Record<string, unknown>): Record<string, unknown> {
+  const forbidden = new Set([
+    "ADMIN_PASSWORD",
+    "SESSION_SECRET",
+    "adminPassword",
+    "sessionSecret",
+    "password",
+    "secret",
+  ]);
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(data)) {
+    if (forbidden.has(k)) continue;
+    // Nested env-like bags
+    if (k === "env" || k === "secrets" || k === "vars") continue;
+    out[k] = v;
+  }
+  return out;
 }
 
 /** Client IP from CF / proxy headers (best-effort). */

@@ -135,13 +135,67 @@ const en: Dict = {
   // Data
   "admin.data.title": "Data · Import / Export",
   "admin.data.hint":
-    "Export a full JSON backup of profile, links, settings, and analytics. Import overwrites existing keys.",
+    "Export JSON includes profile, links, settings, analytics, and optional backup config. Never includes ADMIN_PASSWORD / SESSION_SECRET. Import overwrites matching keys.",
   "admin.data.export": "Export JSON",
   "admin.data.importLabel": "Import JSON",
   "admin.data.import": "Import",
   "admin.data.imported": "Import successful.",
   "admin.data.invalidJson": "Invalid JSON.",
+
+  // Remote backup
+  "admin.backup.title": "Remote backup (optional)",
+  "admin.backup.hint":
+    "WebDAV and Gist can both be enabled; pushes run in parallel. Credentials are stored in KV as plain text you enter — not env secrets. Auto-backup runs after profile/links/settings saves (not analytics). Failures never block saving content.",
+  "admin.backup.autoBackup": "Auto-backup after content saves",
+  "admin.backup.includeAnalytics": "Include analytics in remote payload",
+  "admin.backup.minInterval": "Min interval between auto backups (seconds)",
+  "admin.backup.minIntervalHint": "Minimum 60. Manual backup ignores this.",
+  "admin.backup.webdav": "WebDAV",
+  "admin.backup.webdavEnable": "Enable WebDAV",
+  "admin.backup.webdavUrl": "File URL",
+  "admin.backup.webdavUser": "Username",
+  "admin.backup.webdavPass": "Password / app password",
+  "admin.backup.gist": "GitHub Gist",
+  "admin.backup.gistEnable": "Enable Gist",
+  "admin.backup.gistToken": "Personal access token (gist scope)",
+  "admin.backup.gistId": "Gist ID",
+  "admin.backup.gistIdHint": "Leave empty to create a private gist on first successful backup.",
+  "admin.backup.gistFilename": "Filename in gist",
+  "admin.backup.secretKeep": "Leave blank to keep the previously saved value.",
+  "admin.backup.saveConfig": "Save backup settings",
+  "admin.backup.configSaved": "Backup settings saved.",
+  "admin.backup.runNow": "Backup now",
+  "admin.backup.runOk": "Backup finished.",
+  "admin.backup.runFail": "Backup failed.",
+  "admin.backup.restoreWebdav": "Restore from WebDAV",
+  "admin.backup.restoreGist": "Restore from Gist",
+  "admin.backup.restoreOk": "Restored from remote backup.",
+  "admin.backup.restoreFail": "Restore failed.",
+  "admin.backup.restoreWarn": "Restore overwrites profile / links / settings (and analytics / backup config if present).",
+  "admin.backup.statusNone": "No remote backup has been attempted yet.",
+  "admin.backup.statusOk": "Last run: OK",
+  "admin.backup.statusFail": "Last run: failed",
+  "admin.backup.source": "Source",
+  "admin.backup.targets": "Targets",
+  "admin.backup.lastSuccess": "Last success",
+  "admin.backup.lastAttempt": "Last attempt",
+  "admin.backup.lastError": "Error",
+
   "admin.error.csrf": "Invalid CSRF token. Refresh and try again.",
+
+  // Theme pack descriptions (admin theme picker; key = theme.desc.<id>)
+  "theme.desc.base": "Aurora — clean default with soft gradient canvas",
+  "theme.desc.minimal": "Low-chrome, tight spacing, monochrome accent",
+  "theme.desc.apple":
+    "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links (unofficial)",
+  "theme.desc.anthropic":
+    "Flat illustration palette: oat page, ivory card, clay accent, near-black ink",
+  "theme.desc.hono-old":
+    "Pre-Next Hono public UI: indigo accent, 14px radius, radial glow, centered link buttons",
+  "theme.desc.nodeseek":
+    "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent (unofficial)",
+  "theme.desc.qtcool":
+    "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs (unofficial)",
 };
 
 const zhCN: Dict = {
@@ -267,13 +321,64 @@ const zhCN: Dict = {
   "admin.theme.saved": "主题已保存。",
 
   "admin.data.title": "数据 · 导入 / 导出",
-  "admin.data.hint": "导出完整 JSON 备份（资料、链接、设置、统计）。导入会覆盖已有键。",
+  "admin.data.hint":
+    "导出 JSON 含资料、链接、设置、统计与可选备份配置；绝不包含 ADMIN_PASSWORD / SESSION_SECRET。导入会覆盖对应键。",
   "admin.data.export": "导出 JSON",
   "admin.data.importLabel": "导入 JSON",
   "admin.data.import": "导入",
   "admin.data.imported": "导入成功。",
   "admin.data.invalidJson": "JSON 无效。",
+
+  "admin.backup.title": "远端备份（可选）",
+  "admin.backup.hint":
+    "WebDAV 与 Gist 可同时开启，推送并行执行。凭据以你填写的明文存入 KV（非环境密钥）。自动备份在资料/链接/设置保存后触发（统计递增不触发）。备份失败不会阻断业务保存。",
+  "admin.backup.autoBackup": "内容保存后自动备份",
+  "admin.backup.includeAnalytics": "远端备份包含统计数据",
+  "admin.backup.minInterval": "自动备份最小间隔（秒）",
+  "admin.backup.minIntervalHint": "最小 60 秒。立即备份不受此限制。",
+  "admin.backup.webdav": "WebDAV",
+  "admin.backup.webdavEnable": "启用 WebDAV",
+  "admin.backup.webdavUrl": "文件 URL",
+  "admin.backup.webdavUser": "用户名",
+  "admin.backup.webdavPass": "密码 / 应用专用密码",
+  "admin.backup.gist": "GitHub Gist",
+  "admin.backup.gistEnable": "启用 Gist",
+  "admin.backup.gistToken": "Personal Access Token（需 gist 权限）",
+  "admin.backup.gistId": "Gist ID",
+  "admin.backup.gistIdHint": "留空则在首次成功备份时创建私有 Gist 并写回。",
+  "admin.backup.gistFilename": "Gist 内文件名",
+  "admin.backup.secretKeep": "留空表示保留已保存的值。",
+  "admin.backup.saveConfig": "保存备份设置",
+  "admin.backup.configSaved": "备份设置已保存。",
+  "admin.backup.runNow": "立即备份",
+  "admin.backup.runOk": "备份完成。",
+  "admin.backup.runFail": "备份失败。",
+  "admin.backup.restoreWebdav": "从 WebDAV 恢复",
+  "admin.backup.restoreGist": "从 Gist 恢复",
+  "admin.backup.restoreOk": "已从远端恢复。",
+  "admin.backup.restoreFail": "恢复失败。",
+  "admin.backup.restoreWarn": "恢复会覆盖资料 / 链接 / 设置（若文件中含统计或备份配置也会覆盖）。",
+  "admin.backup.statusNone": "尚未执行过远端备份。",
+  "admin.backup.statusOk": "上次：成功",
+  "admin.backup.statusFail": "上次：失败",
+  "admin.backup.source": "来源",
+  "admin.backup.targets": "目标",
+  "admin.backup.lastSuccess": "上次成功",
+  "admin.backup.lastAttempt": "上次尝试",
+  "admin.backup.lastError": "错误",
+
   "admin.error.csrf": "CSRF 校验失败，请刷新后重试。",
+
+  "theme.desc.base": "极光 — 简洁默认皮肤，带柔和径向光晕",
+  "theme.desc.minimal": "低干扰、紧凑间距、单色强调",
+  "theme.desc.apple":
+    "参考 Apple.com 营销页：冷灰画布、SF 字体栈、蓝色主 CTA + 胶囊链接（非官方）",
+  "theme.desc.anthropic": "扁平插画色板：燕麦色页、象牙卡片、陶土强调、近黑描边",
+  "theme.desc.hono-old": "重构前 Hono 前台：靛蓝强调、14px 圆角、径向光晕、居中链接按钮",
+  "theme.desc.nodeseek":
+    "现代中文技术论坛风：冷灰画布、淡网格、实色卡片、1px 细边框、青蓝主色（非官方）",
+  "theme.desc.qtcool":
+    "参考 qt.cool 的 Neo-brutalism：奶油网格、硬偏移阴影、粗近黑描边、#007AFF 主按钮（非官方）",
 };
 
 const catalogs: Record<Locale, Dict> = {
@@ -305,6 +410,21 @@ export function createT(locale: Locale | string | undefined): TranslateFn {
 
 export function htmlLang(locale: Locale | string | undefined): string {
   return locale === "en" ? "en" : "zh-CN";
+}
+
+/**
+ * Localized theme pack description for admin UI.
+ * Falls back to manifest `description` when no i18n key exists (new themes).
+ */
+export function themeDescription(
+  t: TranslateFn,
+  themeId: string,
+  fallback = "",
+): string {
+  const key = `theme.desc.${themeId}`;
+  const value = t(key);
+  if (value && value !== key) return value;
+  return fallback;
 }
 
 /**

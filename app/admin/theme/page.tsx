@@ -11,7 +11,7 @@ import { isAdminSession } from "@/lib/auth";
 import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
-import { createT } from "@/lib/i18n";
+import { createT, themeDescription } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 import { listThemes, resolveThemeId } from "@/lib/themes";
 
@@ -69,6 +69,7 @@ export default async function ThemePage({
                 {themes.map((th) => {
                   const sw = PREVIEW[th.id] || PREVIEW.base!;
                   const title = localeZh ? th.nameZh : th.name;
+                  const desc = themeDescription(t, th.id, th.description);
                   return (
                     <label key={th.id} className="admin-theme-card">
                       <input
@@ -87,8 +88,8 @@ export default async function ThemePage({
                         {title}{" "}
                         <span className="font-mono text-xs text-kumo-subtle">({th.id})</span>
                       </div>
-                      {th.description ? (
-                        <p className="mt-0.5 text-xs text-kumo-subtle">{th.description}</p>
+                      {desc ? (
+                        <p className="mt-0.5 text-xs text-kumo-subtle">{desc}</p>
                       ) : null}
                     </label>
                   );

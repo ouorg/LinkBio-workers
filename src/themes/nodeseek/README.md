@@ -1,4 +1,4 @@
-# Theme: nodeseek（节点论坛）
+# Theme: nodeseek（NodeSeek）
 
 现代中文技术论坛气质（**非官方**，不使用 NodeSeek 商标/资源）。
 
@@ -20,7 +20,7 @@
 npm run build:themes
 ```
 
-后台 **主题** 页选择 **NodeSeek / 节点论坛**，或：
+后台 **主题** 页选择 **NodeSeek**，或：
 
 - env `DEFAULT_THEME=nodeseek`
 - KV `settings.theme = "nodeseek"`

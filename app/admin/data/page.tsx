@@ -1,7 +1,14 @@
 import { redirect } from "next/navigation";
 import { Button, LinkButton } from "@cloudflare/kumo/components/button";
+import { Input } from "@cloudflare/kumo/components/input";
 import { InputArea } from "@cloudflare/kumo/components/input";
-import { importDataAction } from "../actions";
+import {
+  importDataAction,
+  restoreGistAction,
+  restoreWebDavAction,
+  runBackupNowAction,
+  saveBackupConfigAction,
+} from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { AdminPanel } from "@/components/admin/panel";
@@ -22,11 +29,34 @@ export default async function DataPage({
   if (!(await isAdminSession())) redirect("/admin/login");
   const store = await getStore();
   const env = await getEnv();
-  const settings = await store.getSettings();
+  const [settings, backup, state] = await Promise.all([
+    store.getSettings(),
+    store.getBackupConfig(),
+    store.getBackupState(),
+  ]);
   const t = createT(settings.locale);
   const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
+
+  const statusLine = state.lastAttemptAt
+    ? [
+        state.lastOk ? t("admin.backup.statusOk") : t("admin.backup.statusFail"),
+        state.lastSource ? `${t("admin.backup.source")}: ${state.lastSource}` : "",
+        state.lastTargets.length
+          ? `${t("admin.backup.targets")}: ${state.lastTargets.join(", ")}`
+          : "",
+        state.lastSuccessAt
+          ? `${t("admin.backup.lastSuccess")}: ${state.lastSuccessAt}`
+          : "",
+        state.lastAttemptAt
+          ? `${t("admin.backup.lastAttempt")}: ${state.lastAttemptAt}`
+          : "",
+        state.lastError ? `${t("admin.backup.lastError")}: ${state.lastError}` : "",
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : t("admin.backup.statusNone");
 
   return (
     <div className="admin-shell">
@@ -36,7 +66,8 @@ export default async function DataPage({
           {t("admin.page.data")}
         </h1>
       </header>
-      <AdminPanel title={t("admin.data.title")}>
+
+      <AdminPanel title={t("admin.data.title")} className="mb-6">
         <div className="space-y-4">
           <Flash message={flash} />
           <p className="text-sm text-kumo-subtle">{t("admin.data.hint")}</p>
@@ -52,12 +83,168 @@ export default async function DataPage({
               required
               rows={8}
               className="font-mono text-xs"
-              placeholder='{"profile":{...},"links":[...],"settings":{...}}'
+              placeholder='{"version":1,"profile":{...},"links":[...],"settings":{...},"backup":{...}}'
             />
             <Button type="submit" variant="primary">
               {t("admin.data.import")}
             </Button>
           </form>
+        </div>
+      </AdminPanel>
+
+      <AdminPanel title={t("admin.backup.title")} className="mb-6">
+        <div className="space-y-4">
+          <p className="text-sm text-kumo-subtle">{t("admin.backup.hint")}</p>
+          <p className="rounded-lg border border-kumo-hairline bg-kumo-tint px-3 py-2 text-xs text-kumo-default">
+            {statusLine}
+          </p>
+
+          <form action={saveBackupConfigAction} className="space-y-5">
+            <input type="hidden" name={CSRF_FIELD} value={csrf} />
+
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm text-kumo-default">
+                <input
+                  type="checkbox"
+                  name="autoBackup"
+                  value="1"
+                  defaultChecked={backup.autoBackup}
+                  className="size-4"
+                />
+                {t("admin.backup.autoBackup")}
+              </label>
+              <label className="flex items-center gap-2 text-sm text-kumo-default">
+                <input
+                  type="checkbox"
+                  name="includeAnalytics"
+                  value="1"
+                  defaultChecked={backup.includeAnalytics}
+                  className="size-4"
+                />
+                {t("admin.backup.includeAnalytics")}
+              </label>
+              <Input
+                id="minIntervalSec"
+                name="minIntervalSec"
+                type="number"
+                label={t("admin.backup.minInterval")}
+                defaultValue={String(backup.minIntervalSec)}
+                min={60}
+                max={604800}
+                description={t("admin.backup.minIntervalHint")}
+              />
+            </div>
+
+            <div className="space-y-3 rounded-xl border border-kumo-hairline p-4">
+              <h3 className="text-sm font-semibold text-kumo-strong">{t("admin.backup.webdav")}</h3>
+              <label className="flex items-center gap-2 text-sm text-kumo-default">
+                <input
+                  type="checkbox"
+                  name="webdavEnabled"
+                  value="1"
+                  defaultChecked={backup.webdav.enabled}
+                  className="size-4"
+                />
+                {t("admin.backup.webdavEnable")}
+              </label>
+              <Input
+                id="webdavUrl"
+                name="webdavUrl"
+                type="url"
+                label={t("admin.backup.webdavUrl")}
+                defaultValue={backup.webdav.url}
+                placeholder="https://dav.example.com/.../linkbio.json"
+                required={false}
+              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input
+                  id="webdavUsername"
+                  name="webdavUsername"
+                  label={t("admin.backup.webdavUser")}
+                  defaultValue={backup.webdav.username}
+                  required={false}
+                  autoComplete="off"
+                />
+                <Input
+                  id="webdavPassword"
+                  name="webdavPassword"
+                  type="password"
+                  label={t("admin.backup.webdavPass")}
+                  placeholder={backup.webdav.password ? "••••••••" : ""}
+                  description={t("admin.backup.secretKeep")}
+                  required={false}
+                  autoComplete="new-password"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-3 rounded-xl border border-kumo-hairline p-4">
+              <h3 className="text-sm font-semibold text-kumo-strong">{t("admin.backup.gist")}</h3>
+              <label className="flex items-center gap-2 text-sm text-kumo-default">
+                <input
+                  type="checkbox"
+                  name="gistEnabled"
+                  value="1"
+                  defaultChecked={backup.gist.enabled}
+                  className="size-4"
+                />
+                {t("admin.backup.gistEnable")}
+              </label>
+              <Input
+                id="gistToken"
+                name="gistToken"
+                type="password"
+                label={t("admin.backup.gistToken")}
+                placeholder={backup.gist.token ? "••••••••" : "ghp_…"}
+                description={t("admin.backup.secretKeep")}
+                required={false}
+                autoComplete="new-password"
+              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input
+                  id="gistId"
+                  name="gistId"
+                  label={t("admin.backup.gistId")}
+                  defaultValue={backup.gist.gistId}
+                  description={t("admin.backup.gistIdHint")}
+                  required={false}
+                />
+                <Input
+                  id="gistFilename"
+                  name="gistFilename"
+                  label={t("admin.backup.gistFilename")}
+                  defaultValue={backup.gist.filename}
+                  required={false}
+                />
+              </div>
+            </div>
+
+            <Button type="submit" variant="primary">
+              {t("admin.backup.saveConfig")}
+            </Button>
+          </form>
+
+          <div className="flex flex-wrap gap-2 border-t border-kumo-hairline pt-4">
+            <form action={runBackupNowAction}>
+              <input type="hidden" name={CSRF_FIELD} value={csrf} />
+              <Button type="submit" variant="secondary">
+                {t("admin.backup.runNow")}
+              </Button>
+            </form>
+            <form action={restoreWebDavAction}>
+              <input type="hidden" name={CSRF_FIELD} value={csrf} />
+              <Button type="submit" variant="secondary">
+                {t("admin.backup.restoreWebdav")}
+              </Button>
+            </form>
+            <form action={restoreGistAction}>
+              <input type="hidden" name={CSRF_FIELD} value={csrf} />
+              <Button type="submit" variant="secondary">
+                {t("admin.backup.restoreGist")}
+              </Button>
+            </form>
+          </div>
+          <p className="text-xs text-kumo-subtle">{t("admin.backup.restoreWarn")}</p>
         </div>
       </AdminPanel>
     </div>

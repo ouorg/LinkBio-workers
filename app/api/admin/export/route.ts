@@ -3,6 +3,10 @@ import { getStore } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Download full JSON backup (profile, links, settings, analytics, backup config).
+ * Never includes ADMIN_PASSWORD / SESSION_SECRET / env secrets.
+ */
 export async function GET() {
   if (!(await isAdminSession())) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });

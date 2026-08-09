@@ -70,6 +70,64 @@ export interface SiteData {
   analytics: Analytics;
 }
 
+/** Optional remote backup — credentials stored in KV as plain text (user-configured). */
+export interface WebDavBackupConfig {
+  /** Independent switch; can run with Gist in parallel */
+  enabled: boolean;
+  /** Full WebDAV file URL (e.g. https://dav.example.com/remote.php/dav/files/u/linkbio.json) */
+  url: string;
+  username: string;
+  /** Plaintext password / app password */
+  password: string;
+}
+
+export interface GistBackupConfig {
+  enabled: boolean;
+  /** GitHub personal access token with gist scope */
+  token: string;
+  /** Empty on first run → create private gist and persist id */
+  gistId: string;
+  /** File name inside the gist */
+  filename: string;
+}
+
+export interface BackupConfig {
+  /** After profile/links/settings writes, schedule remote push */
+  autoBackup: boolean;
+  /** Minimum seconds between automatic backups (manual always allowed) */
+  minIntervalSec: number;
+  /** Include analytics counters in remote payload */
+  includeAnalytics: boolean;
+  webdav: WebDavBackupConfig;
+  gist: GistBackupConfig;
+}
+
+/** Last backup run (separate KV key so config form saves do not wipe status). */
+export interface BackupState {
+  lastAttemptAt: string;
+  lastSuccessAt: string;
+  lastOk: boolean;
+  lastError: string;
+  /** Targets that succeeded on last run, e.g. ["webdav","gist"] */
+  lastTargets: string[];
+  lastSource: "auto" | "manual" | "";
+}
+
+/**
+ * Portable backup JSON (local download / remote push / import).
+ * Never includes ADMIN_PASSWORD, SESSION_SECRET, or other env secrets.
+ */
+export interface BackupPayload {
+  version: 1;
+  exportedAt: string;
+  profile: Profile;
+  links: LinkItem[];
+  settings: Settings;
+  analytics?: Analytics;
+  /** Optional remote backup config (may contain user-entered tokens in plain text) */
+  backup?: BackupConfig;
+}
+
 /** KV key names */
 export const KV_KEYS = {
   PROFILE: "profile",
@@ -83,6 +141,10 @@ export const KV_KEYS = {
   ANALYTICS_UPDATED: "analytics:updated",
   /** Login rate-limit: rate:login:<ip> */
   RATE_LOGIN_PREFIX: "rate:login:",
+  /** Optional backup config (WebDAV / Gist) */
+  BACKUP_CONFIG: "backup:config",
+  /** Last backup attempt status */
+  BACKUP_STATE: "backup:state",
 } as const;
 
 export const DEFAULT_PROFILE: Profile = {
@@ -133,6 +195,33 @@ export const DEFAULT_ANALYTICS: Analytics = {
   pageViews: 0,
   linkClicks: {},
   lastUpdated: new Date(0).toISOString(),
+};
+
+export const DEFAULT_BACKUP_CONFIG: BackupConfig = {
+  autoBackup: false,
+  minIntervalSec: 300,
+  includeAnalytics: true,
+  webdav: {
+    enabled: false,
+    url: "",
+    username: "",
+    password: "",
+  },
+  gist: {
+    enabled: false,
+    token: "",
+    gistId: "",
+    filename: "linkbio-backup.json",
+  },
+};
+
+export const DEFAULT_BACKUP_STATE: BackupState = {
+  lastAttemptAt: "",
+  lastSuccessAt: "",
+  lastOk: false,
+  lastError: "",
+  lastTargets: [],
+  lastSource: "",
 };
 
 export type SessionPayload = {
