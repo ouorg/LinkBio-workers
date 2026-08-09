@@ -98,7 +98,7 @@ npm run deploy
 |----------|---------|
 | `SITE_NAME` | Site display name |
 | `SITE_URL` | Canonical public URL (do not leave as localhost in production) |
-| `DEFAULT_THEME` | Default visual theme id (e.g. `base`, `old`) |
+| `DEFAULT_THEME` | Default visual theme id (e.g. `base`, `hono-old`) |
 
 Runtime secrets: `ADMIN_PASSWORD`, `SESSION_SECRET`.
 
@@ -136,7 +136,7 @@ Full guide and “add a theme in 4 steps”: **[src/themes/README.md](./src/them
 | Attribute | Meaning |
 |-----------|---------|
 | `data-theme` | `system` \| `light` \| `dark` |
-| `data-theme-id` | `base` \| `minimal` \| `glass` \| `aurora` \| `old` \| `anthropic` \| … |
+| `data-theme-id` | `base` \| `minimal` \| `glass` \| `aurora` \| `hono-old` \| `anthropic` \| … |
 
 Resolution order: valid `settings.theme` → `env.DEFAULT_THEME` → `base`.
 
@@ -144,7 +144,7 @@ Resolution order: valid `settings.theme` → `env.DEFAULT_THEME` → `base`.
 npm run build:themes   # validate + generate _registry.ts / _bundle.css (all themes)
 ```
 
-Built-in packs: `base`, `minimal`, `glass`, `aurora`, **`old`** (pre-Next.js Hono UI), and **`anthropic`** (Anthropic illustration palette).
+Built-in packs: `base`, `minimal`, `glass`, `aurora`, **`hono-old`** (pre-Next.js Hono UI), and **`anthropic`** (Anthropic illustration palette).
 
 ### Add a theme (4 steps)
 

@@ -29,7 +29,7 @@ export function LinkList({
   }
 
   return (
-    <nav className="flex w-full max-w-md flex-col gap-3" aria-label="Links">
+    <nav className="theme-links flex w-full max-w-md flex-col gap-3" aria-label="Links">
       {enabled.map((link) => {
         const Icon = iconFor(link.icon);
         return (
@@ -57,9 +57,9 @@ export function LinkList({
               "hover:border-primary/40 hover:bg-card hover:shadow-md",
             )}
           >
-            <Icon className="h-5 w-5 shrink-0 opacity-80 group-hover:text-primary" />
+            <Icon className="theme-link-icon h-5 w-5 shrink-0 opacity-80 group-hover:text-primary" />
             <span className="flex-1 truncate text-left">{link.title}</span>
-            <ExternalLink className="h-4 w-4 opacity-40" />
+            <ExternalLink className="theme-link-external h-4 w-4 opacity-40" />
           </a>
         );
       })}

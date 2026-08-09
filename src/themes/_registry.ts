@@ -56,6 +56,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
+    "id": "hono-old",
+    "name": "Hono Old",
+    "nameZh": "Hono 旧版",
+    "description": "UI 重构前 Hono 前台：靛蓝强调、14px 圆角、径向光晕、居中链接按钮",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": true,
+      "customFonts": false
+    }
+  },
+  {
     "id": "minimal",
     "name": "Minimal",
     "nameZh": "极简",
@@ -65,19 +78,6 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "features": {
       "blur": false,
       "gradientBg": false,
-      "customFonts": false
-    }
-  },
-  {
-    "id": "old",
-    "name": "Old",
-    "nameZh": "旧版",
-    "description": "Pre-Next.js Hono UI look (indigo SaaS card, 14px radius, soft radial glow)",
-    "version": 1,
-    "tokensFile": "tokens.css",
-    "features": {
-      "blur": false,
-      "gradientBg": true,
       "customFonts": false
     }
   }

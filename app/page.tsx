@@ -46,11 +46,15 @@ export default async function PublicPage() {
 
   return (
     <>
+      {/*
+        Use a real box (not display:contents) so [data-theme-id] descendant
+        selectors in theme tokens.css apply reliably.
+      */}
       <div
         lang={htmlLang(locale)}
         data-theme={colorMode}
         data-theme-id={themeId}
-        className="contents"
+        className="min-h-screen bg-background text-foreground"
       >
         <ThemeToolbar
           colorMode={colorMode}

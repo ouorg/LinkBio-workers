@@ -316,10 +316,11 @@ export function sanitizeSettings(input: Partial<Settings> & { darkMode?: boolean
   const colorMode = resolveColorMode(input);
   const localeRaw = str(input.locale, 16) as Locale;
   const locale: Locale = LOCALES.includes(localeRaw) ? localeRaw : DEFAULT_SETTINGS.locale;
-  // Visual pack id (src/themes/<id>); migrate legacy "default" → "base"
+  // Visual pack id (src/themes/<id>); migrate legacy ids
   // Keep empty so render can fall through to env.DEFAULT_THEME
   let themeId = str(input.theme, 40);
   if (themeId === "default") themeId = "base";
+  if (themeId === "old") themeId = "hono-old";
 
   return {
     theme: themeId,

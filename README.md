@@ -97,7 +97,7 @@ npm run deploy
 |------|------|
 | `SITE_NAME` | 站点显示名 |
 | `SITE_URL` | 公网 canonical URL（勿用 localhost 作为生产值） |
-| `DEFAULT_THEME` | 默认视觉主题 id（如 `base`、`old`） |
+| `DEFAULT_THEME` | 默认视觉主题 id（如 `base`、`hono-old`） |
 
 运行时密钥（Secret）：`ADMIN_PASSWORD`、`SESSION_SECRET`。
 
@@ -135,7 +135,7 @@ README.en.md         # English
 | HTML 属性 | 含义 |
 |-----------|------|
 | `data-theme` | `system` \| `light` \| `dark` |
-| `data-theme-id` | `base` \| `minimal` \| `glass` \| `aurora` \| `old` \| `anthropic` \| … |
+| `data-theme-id` | `base` \| `minimal` \| `glass` \| `aurora` \| `hono-old` \| `anthropic` \| … |
 
 解析顺序：`settings.theme`（合法 id）→ `env.DEFAULT_THEME` → `base`。
 
@@ -143,7 +143,7 @@ README.en.md         # English
 npm run build:themes   # 校验并生成 _registry.ts / _bundle.css（打包全部主题）
 ```
 
-内置示例：`base`、`minimal`、`glass`、`aurora`、旧版 Hono **`old`**，以及 **`anthropic`（Anthropic 插画风）**。
+内置示例：`base`、`minimal`、`glass`、`aurora`、**`hono-old`（Hono 旧版）**，以及 **`anthropic`（Anthropic 插画风）**。
 
 ## 多语言文档
 

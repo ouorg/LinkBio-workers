@@ -1,0 +1,13 @@
+{
+  "id": "hono-old",
+  "name": "Hono Old",
+  "nameZh": "Hono 旧版",
+  "description": "UI 重构前 Hono 前台：靛蓝强调、14px 圆角、径向光晕、居中链接按钮",
+  "version": 1,
+  "tokensFile": "tokens.css",
+  "features": {
+    "blur": false,
+    "gradientBg": true,
+    "customFonts": false
+  }
+}
