@@ -54,25 +54,40 @@ function IconGlyph({
 }
 
 /**
+ * Apply i18n template for unknown icons: "{id} (custom)" → "foo (custom)".
+ * Must stay serializable — RSC cannot pass functions into Client Components.
+ */
+function applyCustomLabelTemplate(id: string, template?: string): string {
+  if (!template) return id;
+  return template.split("{id}").join(id);
+}
+
+/**
  * Icon picker aligned with admin Kumo chrome:
  * - left preview updates live
  * - dropdown list rows show SVG preview + label
  * - hidden input for Server Action FormData
+ *
+ * Props must be serializable (strings/objects). Do not pass functions from RSC —
+ * Next 15 / OpenNext will throw during flight serialization → HTTP 500.
  */
 export function IconSelect({
   id,
   name = "icon",
   label,
   defaultValue = "link",
-  /** Format custom/unknown icon labels, e.g. t("admin.links.icon.custom", { id }) */
-  formatCustomLabel,
+  /**
+   * Translated template with `{id}` placeholder, e.g. t("admin.links.icon.custom").
+   * Do not pass a formatter function from Server Components.
+   */
+  customLabelTemplate,
   className,
 }: {
   id?: string;
   name?: string;
   label: string;
   defaultValue?: string;
-  formatCustomLabel?: (id: string) => string;
+  customLabelTemplate?: string;
   className?: string;
 }) {
   const autoId = useId();
@@ -97,12 +112,12 @@ export function IconSelect({
     if (!isKnownInitial && initial) {
       list.unshift({
         id: initial,
-        label: formatCustomLabel ? formatCustomLabel(initial) : initial,
+        label: applyCustomLabelTemplate(initial, customLabelTemplate),
         file: resolveLinkIconSrc(initial),
       });
     }
     return list;
-  }, [initial, isKnownInitial, formatCustomLabel]);
+  }, [initial, isKnownInitial, customLabelTemplate]);
 
   const selected = options.find((o) => o.id === value) || options[0]!;
   const previewSrc = resolveLinkIconSrc(selected.id);

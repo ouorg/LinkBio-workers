@@ -161,7 +161,7 @@ export default async function LinksPage({
                             name="icon"
                             label={t("admin.links.icon")}
                             defaultValue={l.icon}
-                            formatCustomLabel={(id) => t("admin.links.icon.custom", { id })}
+                            customLabelTemplate={t("admin.links.icon.custom")}
                           />
                         </div>
                         <Input
@@ -226,7 +226,7 @@ export default async function LinksPage({
                 name="icon"
                 label={t("admin.links.icon")}
                 defaultValue="link"
-                formatCustomLabel={(id) => t("admin.links.icon.custom", { id })}
+                customLabelTemplate={t("admin.links.icon.custom")}
               />
             </div>
             <Input
