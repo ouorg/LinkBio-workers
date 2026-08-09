@@ -1,6 +1,6 @@
 # Theme: qtcool（晴辰酷）
 
-Neo-brutalism 风格，气质参考 [qt.cool/projects](https://qt.cool/projects)（非官方复刻）。
+Neo-brutalism 风格，气质参考 [qt.cool/projects](https://qt.cool/projects)。
 
 ## 视觉
 

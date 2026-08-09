@@ -10,6 +10,7 @@ import {
   runBackup,
   scheduleBackup,
 } from "@/lib/backup";
+import { getAdminUi } from "@/lib/admin-ui";
 import { getEnv, getStore } from "@/lib/env";
 import { flashErr, flashOk, setFlashCookie } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
@@ -20,6 +21,7 @@ import {
   sanitizeSettings,
   stripForbiddenSecrets,
 } from "@/lib/kv";
+import { resolveLocale } from "@/lib/prefs";
 import {
   constantTimeEqual,
   createSessionToken,
@@ -36,9 +38,25 @@ import type { LinkItem } from "@/lib/types";
 import { resolveThemeId } from "@/lib/themes";
 
 async function tSite() {
-  const store = await getStore();
-  const settings = await store.getSettings();
-  return createT(settings.locale);
+  try {
+    const ui = await getAdminUi();
+    return ui.t;
+  } catch {
+    const store = await getStore();
+    const settings = await store.getSettings();
+    const jar = await cookies();
+    const hdrs = await headers();
+    const cookieHeader = jar
+      .getAll()
+      .map((c) => `${c.name}=${encodeURIComponent(c.value)}`)
+      .join("; ");
+    const { locale } = resolveLocale(
+      cookieHeader,
+      hdrs.get("accept-language") || undefined,
+      settings.locale,
+    );
+    return createT(locale);
+  }
 }
 
 async function requireCsrf(formData: FormData) {
@@ -69,8 +87,7 @@ function revalidatePublic() {
 export async function loginAction(formData: FormData) {
   const store = await getStore();
   const env = await getEnv();
-  const settings = await store.getSettings();
-  const t = createT(settings.locale);
+  const t = await tSite();
   const h = await headers();
   const ip = clientIpFromHeaders(h);
 
@@ -154,12 +171,11 @@ export async function saveProfileAction(formData: FormData) {
 }
 
 export async function saveSettingsAction(formData: FormData) {
-  const store = await getStore();
-  const current = await store.getSettings();
-  const t = createT(current.locale);
+  const t = await tSite();
   if (!(await requireCsrf(formData))) {
     await flashRedirect("/admin/theme", flashErr(t("admin.error.csrf")));
   }
+  const store = await getStore();
   const env = await getEnv();
   const next = sanitizeSettings({
     theme: resolveThemeId(String(formData.get("theme") || ""), env.DEFAULT_THEME),
@@ -174,8 +190,8 @@ export async function saveSettingsAction(formData: FormData) {
   await store.setSettings(next);
   revalidatePublic();
   await scheduleBackup(store);
-  const tNext = createT(next.locale);
-  await flashRedirect("/admin/theme", flashOk(tNext("admin.theme.saved")));
+  // Admin UI language follows visitor cookie (toolbar), not site default locale.
+  await flashRedirect("/admin/theme", flashOk(t("admin.theme.saved")));
 }
 
 export async function addLinkAction(formData: FormData) {
@@ -321,9 +337,7 @@ export async function importDataAction(formData: FormData) {
     });
     revalidatePublic();
     await scheduleBackup(store);
-    const after = await store.getSettings();
-    const tAfter = createT(after.locale);
-    await flashRedirect("/admin/data", flashOk(tAfter("admin.data.imported")));
+    await flashRedirect("/admin/data", flashOk(t("admin.data.imported")));
   } catch {
     await flashRedirect("/admin/data", flashErr(t("admin.data.invalidJson")));
   }

@@ -13,10 +13,9 @@ import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
+import { getAdminUi } from "@/lib/admin-ui";
 import { getCsrfToken } from "@/lib/csrf";
-import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
-import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
@@ -27,14 +26,8 @@ export default async function DataPage({
   searchParams: Promise<{ msg?: string }>;
 }) {
   if (!(await isAdminSession())) redirect("/admin/login");
-  const store = await getStore();
-  const env = await getEnv();
-  const [settings, backup, state] = await Promise.all([
-    store.getSettings(),
-    store.getBackupConfig(),
-    store.getBackupState(),
-  ]);
-  const t = createT(settings.locale);
+  const { store, siteName, t } = await getAdminUi();
+  const [backup, state] = await Promise.all([store.getBackupConfig(), store.getBackupState()]);
   const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
@@ -60,7 +53,7 @@ export default async function DataPage({
 
   return (
     <div className="admin-shell">
-      <AdminNav active="data" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
+      <AdminNav active="data" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
           {t("admin.page.data")}

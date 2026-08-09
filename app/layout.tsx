@@ -29,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   let dataTheme = parseColorMode(jar.get(COLOR_COOKIE)?.value) || "system";
   let lang = "zh-CN";
-  let themeId = "base";
+  let themeId = "minimal";
 
   try {
     const store = await getStore();

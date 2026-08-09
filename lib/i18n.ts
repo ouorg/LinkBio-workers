@@ -81,6 +81,7 @@ const en: Dict = {
   "admin.links.add": "Add link",
   "admin.links.fieldTitle": "Title",
   "admin.links.icon": "Icon",
+  "admin.links.icon.custom": "{id} (custom)",
   "admin.links.url": "URL",
   "admin.links.enabled": "Enabled",
   "admin.links.submit": "Add link",
@@ -184,18 +185,21 @@ const en: Dict = {
   "admin.error.csrf": "Invalid CSRF token. Refresh and try again.",
 
   // Theme pack descriptions (admin theme picker; key = theme.desc.<id>)
+  "theme.desc.aurora": "Aurora — clean default with soft gradient canvas",
   "theme.desc.base": "Aurora — clean default with soft gradient canvas",
   "theme.desc.minimal": "Low-chrome, tight spacing, monochrome accent",
   "theme.desc.apple":
-    "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links (unofficial)",
+    "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links",
   "theme.desc.anthropic":
     "Flat illustration palette: oat page, ivory card, clay accent, near-black ink",
   "theme.desc.hono-old":
     "Pre-Next Hono public UI: indigo accent, 14px radius, radial glow, centered link buttons",
   "theme.desc.nodeseek":
-    "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent (unofficial)",
+    "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent",
   "theme.desc.qtcool":
-    "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs (unofficial)",
+    "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs",
+  "theme.desc.liquid-glass":
+    "Liquid Glass–inspired frosted panels, continuous 18–22px radius, system blue",
 };
 
 const zhCN: Dict = {
@@ -271,6 +275,7 @@ const zhCN: Dict = {
   "admin.links.add": "添加链接",
   "admin.links.fieldTitle": "标题",
   "admin.links.icon": "图标",
+  "admin.links.icon.custom": "{id}（自定义）",
   "admin.links.url": "链接地址",
   "admin.links.enabled": "启用",
   "admin.links.submit": "添加链接",
@@ -369,16 +374,19 @@ const zhCN: Dict = {
 
   "admin.error.csrf": "CSRF 校验失败，请刷新后重试。",
 
+  "theme.desc.aurora": "极光 — 简洁默认皮肤，带柔和径向光晕",
   "theme.desc.base": "极光 — 简洁默认皮肤，带柔和径向光晕",
   "theme.desc.minimal": "低干扰、紧凑间距、单色强调",
   "theme.desc.apple":
-    "参考 Apple.com 营销页：冷灰画布、SF 字体栈、蓝色主 CTA + 胶囊链接（非官方）",
+    "参考 Apple.com 营销页：冷灰画布、SF 字体栈、蓝色主 CTA + 胶囊链接",
   "theme.desc.anthropic": "扁平插画色板：燕麦色页、象牙卡片、陶土强调、近黑描边",
   "theme.desc.hono-old": "重构前 Hono 前台：靛蓝强调、14px 圆角、径向光晕、居中链接按钮",
   "theme.desc.nodeseek":
-    "现代中文技术论坛风：冷灰画布、淡网格、实色卡片、1px 细边框、青蓝主色（非官方）",
+    "现代中文技术论坛风：冷灰画布、淡网格、实色卡片、1px 细边框、青蓝主色",
   "theme.desc.qtcool":
-    "参考 qt.cool 的 Neo-brutalism：奶油网格、硬偏移阴影、粗近黑描边、#007AFF 主按钮（非官方）",
+    "参考 qt.cool 的 Neo-brutalism：奶油网格、硬偏移阴影、粗近黑描边、#007AFF 主按钮",
+  "theme.desc.liquid-glass":
+    "液态玻璃：半透明毛玻璃、连续大圆角 18–22px、系统蓝强调",
 };
 
 const catalogs: Record<Locale, Dict> = {

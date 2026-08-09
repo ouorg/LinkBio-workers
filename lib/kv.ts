@@ -373,8 +373,9 @@ export function sanitizeSettings(input: Partial<Settings> & { darkMode?: boolean
   // Visual pack id (src/themes/<id>); migrate legacy ids
   // Keep empty so render can fall through to env.DEFAULT_THEME
   let themeId = str(input.theme, 40);
-  if (themeId === "default") themeId = "base";
+  if (themeId === "default" || themeId === "base") themeId = "aurora";
   if (themeId === "old") themeId = "hono-old";
+  if (themeId === "ios27") themeId = "liquid-glass";
 
   return {
     theme: themeId,

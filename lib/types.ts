@@ -178,7 +178,7 @@ export const DEFAULT_LINKS: LinkItem[] = [
 export const DEFAULT_SETTINGS: Settings = {
   /**
    * Visual pack id (src/themes/<id>).
-   * Empty string = no KV override → use env.DEFAULT_THEME, then "base".
+   * Empty string = no KV override → use env.DEFAULT_THEME, then fallback theme id.
    */
   theme: "",
   colorMode: "system",

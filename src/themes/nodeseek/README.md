@@ -1,6 +1,6 @@
 # Theme: nodeseek（NodeSeek）
 
-现代中文技术论坛气质（**非官方**，不使用 NodeSeek 商标/资源）。
+现代中文技术论坛气质。
 
 ## 视觉
 

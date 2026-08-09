@@ -2,7 +2,7 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "@cloudflare/kumo/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +42,18 @@ function applyColor(mode: ColorMode) {
   document.documentElement.classList.toggle("light", mode === "light");
   const meta = document.querySelector('meta[name="color-scheme"]');
   if (meta) meta.setAttribute("content", mode === "system" ? "light dark" : mode);
+
+  // Sync Kumo admin shell data-mode
+  const root = document.querySelector<HTMLElement>("[data-admin-root]");
+  if (root) {
+    if (mode === "system") {
+      const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.setAttribute("data-mode", dark ? "dark" : "light");
+    } else {
+      root.setAttribute("data-mode", mode);
+    }
+  }
+
   try {
     localStorage.setItem(COLOR_STORAGE_KEY, mode);
   } catch {
@@ -50,15 +62,15 @@ function applyColor(mode: ColorMode) {
   setCookie(COLOR_COOKIE, mode);
 }
 
-/** Shared pure-icon trigger: same size for color + locale */
 const triggerClass = cn(
-  "theme-toolbar-btn size-9 shrink-0 rounded-full border border-border/80 p-0",
+  "size-9 shrink-0 rounded-full p-0",
   "inline-flex items-center justify-center",
-  "bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70",
-  "shadow-sm",
 );
 
-export function ThemeToolbar({
+/**
+ * Same prefs as public ThemeToolbar (cookie + refresh), styled for admin / Kumo.
+ */
+export function AdminPrefsToolbar({
   colorMode,
   localePref,
   labels,
@@ -73,11 +85,10 @@ export function ThemeToolbar({
   const localeShort = localePref === "zh-CN" ? "中" : localePref === "en" ? "EN" : "A";
   const localeLabel =
     localePref === "zh-CN" ? labels.zh : localePref === "en" ? labels.en : labels.auto;
-
   const ColorIcon = colorMode === "light" ? Sun : colorMode === "dark" ? Moon : Monitor;
 
   return (
-    <aside className="theme-toolbar" aria-label={`${labels.color} / ${labels.locale}`}>
+    <aside className="admin-prefs-toolbar" aria-label={`${labels.color} / ${labels.locale}`}>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -85,6 +96,7 @@ export function ThemeToolbar({
             size="sm"
             className={triggerClass}
             aria-label={`${labels.color}: ${colorLabel}`}
+            title={`${labels.color}: ${colorLabel}`}
           >
             <ColorIcon className="h-4 w-4" />
           </Button>
@@ -93,7 +105,7 @@ export function ThemeToolbar({
           align="end"
           sideOffset={8}
           collisionPadding={12}
-          className="z-[60] min-w-[9.5rem]"
+          className="z-[70] min-w-[9.5rem]"
         >
           <DropdownMenuLabel>{labels.color}</DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -125,6 +137,7 @@ export function ThemeToolbar({
             size="sm"
             className={triggerClass}
             aria-label={`${labels.locale}: ${localeLabel}`}
+            title={`${labels.locale}: ${localeLabel}`}
           >
             <span className="text-[11px] font-bold leading-none tracking-tight">{localeShort}</span>
           </Button>
@@ -133,7 +146,7 @@ export function ThemeToolbar({
           align="end"
           sideOffset={8}
           collisionPadding={12}
-          className="z-[60] min-w-[9.5rem]"
+          className="z-[70] min-w-[9.5rem]"
         >
           <DropdownMenuLabel>{labels.locale}</DropdownMenuLabel>
           <DropdownMenuSeparator />

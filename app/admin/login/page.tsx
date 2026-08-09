@@ -5,10 +5,9 @@ import { loginAction } from "../actions";
 import { Flash } from "@/components/admin/flash";
 import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
+import { getAdminUi } from "@/lib/admin-ui";
 import { getCsrfToken } from "@/lib/csrf";
-import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
-import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
@@ -19,23 +18,20 @@ export default async function LoginPage({
   searchParams: Promise<{ msg?: string }>;
 }) {
   if (await isAdminSession()) redirect("/admin");
-  const store = await getStore();
-  const env = await getEnv();
-  const settings = await store.getSettings();
-  const t = createT(settings.locale);
+  const { t, siteName } = await getAdminUi();
   const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-8">
+    <div className="flex min-h-screen items-center justify-center px-4 py-8 pt-16">
       <AdminPanel
         className="w-full max-w-md"
         title={
           <div className="space-y-1">
             <div className="text-base font-semibold text-kumo-strong">{t("admin.login.title")}</div>
             <p className="text-sm font-normal text-kumo-subtle">
-              {t("admin.login.sub", { siteName: env.SITE_NAME || "LinkBio" })}
+              {t("admin.login.sub", { siteName })}
             </p>
           </div>
         }

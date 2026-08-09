@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const themesDir = join(root, "src", "themes");
-const FALLBACK = "base";
+const FALLBACK = "aurora";
 
 function isDir(p) {
   try {
@@ -132,6 +132,11 @@ const registryTs =
   "  return found ?? THEME_MANIFESTS.find((m) => m.id === FALLBACK_THEME_ID)!;\n" +
   "}\n\n" +
   "export function resolveThemeId(id: string | undefined | null, siteDefault?: string | null): string {\n" +
+  "  // Legacy aliases\n" +
+  "  if (id === \"ios27\") id = \"liquid-glass\";\n" +
+  "  if (id === \"base\" || id === \"default\") id = \"aurora\";\n" +
+  "  if (siteDefault === \"ios27\") siteDefault = \"liquid-glass\";\n" +
+  "  if (siteDefault === \"base\" || siteDefault === \"default\") siteDefault = \"aurora\";\n" +
   "  if (id && THEME_IDS.includes(id)) return id;\n" +
   "  if (siteDefault && THEME_IDS.includes(siteDefault)) return siteDefault;\n" +
   "  return FALLBACK_THEME_ID;\n" +

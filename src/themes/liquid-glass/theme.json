@@ -1,0 +1,13 @@
+{
+  "id": "liquid-glass",
+  "name": "Liquid Glass",
+  "nameZh": "Liquid Glass",
+  "description": "Liquid Glass–inspired frosted surfaces, continuous radius, system blue",
+  "version": 1,
+  "tokensFile": "tokens.css",
+  "features": {
+    "blur": true,
+    "gradientBg": true,
+    "customFonts": true
+  }
+}

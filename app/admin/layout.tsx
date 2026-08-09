@@ -1,5 +1,5 @@
-import { cookies } from "next/headers";
-import { COLOR_COOKIE, parseColorMode } from "@/lib/prefs";
+import { AdminPrefsToolbar } from "@/components/admin/prefs-toolbar";
+import { getAdminUi, prefsToolbarLabels } from "@/lib/admin-ui";
 
 /**
  * Map site color preference to Kumo's data-mode (light | dark).
@@ -12,9 +12,29 @@ function modeFromPref(pref: string | null | undefined): "light" | "dark" | "syst
 
 export default async function AdminRootLayout({ children }: { children: React.ReactNode }) {
   // CSRF is issued in middleware — never cookies().set during RSC render (Next 15 → 500).
-  const jar = await cookies();
-  const pref = parseColorMode(jar.get(COLOR_COOKIE)?.value);
-  const mode = modeFromPref(pref);
+  let colorMode: "system" | "light" | "dark" = "system";
+  let localePref: "auto" | "zh-CN" | "en" = "auto";
+  let labels = {
+    color: "Color mode",
+    system: "System",
+    light: "Light",
+    dark: "Dark",
+    locale: "Language",
+    auto: "Auto",
+    zh: "中文",
+    en: "English",
+  };
+
+  try {
+    const ui = await getAdminUi();
+    colorMode = ui.colorMode;
+    localePref = ui.localePref;
+    labels = prefsToolbarLabels(ui.t);
+  } catch {
+    /* bindings unavailable during some tool paths */
+  }
+
+  const mode = modeFromPref(colorMode);
 
   return (
     <div className="admin-kumo" data-mode={mode === "system" ? undefined : mode} data-admin-root>
@@ -25,6 +45,7 @@ export default async function AdminRootLayout({ children }: { children: React.Re
           }}
         />
       ) : null}
+      <AdminPrefsToolbar colorMode={colorMode} localePref={localePref} labels={labels} />
       {children}
     </div>
   );

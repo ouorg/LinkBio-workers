@@ -121,7 +121,7 @@ npm run preview   # OpenNext + workerd 完整 Worker 预览
 |------|------|------|-------------|------|
 | `SITE_NAME` | string | 建议 | `LinkBio` | 站点显示名（后台品牌、页脚等） |
 | `SITE_URL` | string | 建议 | `https://xxx.workers.dev` | 公网 canonical URL；**生产勿填 localhost** |
-| `DEFAULT_THEME` | string | 否 | `base` | KV `settings.theme` 为空/非法时的默认主题 id |
+| `DEFAULT_THEME` | string | 否 | `minimal` | KV `settings.theme` 为空/非法时的默认主题 id（极简） |
 
 ### 2. Worker 运行时 · Secrets（勿提交到 Git）
 
@@ -357,9 +357,9 @@ KV：`backup:config`、`backup:state`。WebDAV 密码 / Gist Token 为你填写�
 | HTML 属性 | 含义 |
 |-----------|------|
 | `data-theme` | `system` \| `light` \| `dark` |
-| `data-theme-id` | `base`（极光）\| `minimal` \| `apple` \| `anthropic` \| `hono-old` \| `nodeseek` \| `qtcool` \| … |
+| `data-theme-id` | `aurora`（极光）\| `minimal` \| `apple` \| `anthropic` \| `hono-old` \| `nodeseek` \| `qtcool` \| `liquid-glass` \| … |
 
-解析顺序：合法 `settings.theme` → `env.DEFAULT_THEME` → `base`。
+解析顺序：合法 `settings.theme` → `env.DEFAULT_THEME`（默认 `minimal`）→ 兜底 `aurora`。
 
 ```bash
 npm run build:themes

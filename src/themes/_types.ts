@@ -5,7 +5,7 @@
  * Runtime has no repo filesystem: only build-time registry + bundled CSS.
  */
 export type ThemeManifest = {
-  /** Must match folder name (kebab-case): base | minimal | apple | anthropic | hono-old | … */
+  /** Must match folder name (kebab-case): aurora | minimal | apple | liquid-glass | … */
   id: string;
   /** English display name (admin UI) */
   name: string;
@@ -41,8 +41,8 @@ export type ThemeListItem = {
   };
 };
 
-/** Always-present fallback pack id (must exist under src/themes/base/) */
-export const FALLBACK_THEME_ID = "base";
+/** Always-present fallback pack id (must exist under src/themes/aurora/) */
+export const FALLBACK_THEME_ID = "aurora";
 
 /**
  * Documented CSS variables a tokens.css may set under [data-theme-id="…"].

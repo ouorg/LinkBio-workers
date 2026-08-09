@@ -20,7 +20,7 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "apple",
     "name": "Apple",
     "nameZh": "Apple 风格",
-    "description": "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links (unofficial)",
+    "description": "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links",
     "version": 2,
     "tokensFile": "tokens.css",
     "features": {
@@ -30,7 +30,7 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
-    "id": "base",
+    "id": "aurora",
     "name": "Aurora",
     "nameZh": "极光",
     "description": "Aurora clean theme",
@@ -56,6 +56,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
+    "id": "liquid-glass",
+    "name": "Liquid Glass",
+    "nameZh": "Liquid Glass",
+    "description": "Liquid Glass–inspired frosted surfaces, continuous radius, system blue",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": true,
+      "gradientBg": true,
+      "customFonts": true
+    }
+  },
+  {
     "id": "minimal",
     "name": "Minimal",
     "nameZh": "极简",
@@ -72,7 +85,7 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "nodeseek",
     "name": "NodeSeek",
     "nameZh": "NodeSeek",
-    "description": "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent (unofficial)",
+    "description": "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent",
     "version": 1,
     "tokensFile": "tokens.css",
     "features": {
@@ -85,7 +98,7 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "qtcool",
     "name": "QT Cool",
     "nameZh": "晴辰酷",
-    "description": "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs (unofficial)",
+    "description": "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs",
     "version": 1,
     "tokensFile": "tokens.css",
     "features": {
@@ -118,6 +131,11 @@ export function getTheme(id: string | undefined | null) {
 }
 
 export function resolveThemeId(id: string | undefined | null, siteDefault?: string | null): string {
+  // Legacy aliases
+  if (id === "ios27") id = "liquid-glass";
+  if (id === "base" || id === "default") id = "aurora";
+  if (siteDefault === "ios27") siteDefault = "liquid-glass";
+  if (siteDefault === "base" || siteDefault === "default") siteDefault = "aurora";
   if (id && THEME_IDS.includes(id)) return id;
   if (siteDefault && THEME_IDS.includes(siteDefault)) return siteDefault;
   return FALLBACK_THEME_ID;

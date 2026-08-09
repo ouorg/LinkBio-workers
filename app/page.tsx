@@ -24,11 +24,24 @@ export async function generateMetadata(): Promise<Metadata> {
     const store = await getStore();
     const env = await getEnv();
     const profile = await store.getProfile();
+    const settings = await store.getSettings();
     const siteName = env.SITE_NAME || "LinkBio";
     const name = truncateName(profile.name || "");
     // absolute avoids root layout default/template overriding page title
     const displayTitle = name ? `${name}-LinkBio` : siteName;
-    const description = createT(undefined)("public.metaDescription", { siteName });
+
+    const jar = await cookies();
+    const hdrs = await headers();
+    const cookieHeader = jar
+      .getAll()
+      .map((c) => `${c.name}=${encodeURIComponent(c.value)}`)
+      .join("; ");
+    const { locale } = resolveLocale(
+      cookieHeader,
+      hdrs.get("accept-language") || undefined,
+      settings.locale,
+    );
+    const description = createT(locale)("public.metaDescription", { siteName });
     return {
       title: { absolute: displayTitle },
       description,

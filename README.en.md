@@ -121,7 +121,7 @@ Three groups: **Wrangler `[vars]`**, **Secrets**, and **local / CI only**.
 |----------|------|----------|-------------------|---------|
 | `SITE_NAME` | string | recommended | `LinkBio` | Display name |
 | `SITE_URL` | string | recommended | `https://xxx.workers.dev` | Canonical public URL (**not** localhost in prod) |
-| `DEFAULT_THEME` | string | no | `base` | Fallback theme id when KV theme empty/invalid |
+| `DEFAULT_THEME` | string | no | `minimal` | Default theme id when KV theme empty/invalid |
 
 ### 2. Worker runtime · Secrets (never commit)
 
@@ -354,9 +354,9 @@ Themes live under `src/themes/<id>/` and are bundled at build time.
 | Attribute | Meaning |
 |-----------|---------|
 | `data-theme` | `system` \| `light` \| `dark` |
-| `data-theme-id` | `base` \| `minimal` \| `apple` \| `anthropic` \| `hono-old` \| `nodeseek` \| `qtcool` \| … |
+| `data-theme-id` | `aurora` \| `minimal` \| `apple` \| `anthropic` \| `hono-old` \| `nodeseek` \| `qtcool` \| `liquid-glass` \| … |
 
-Order: valid `settings.theme` → `env.DEFAULT_THEME` → `base`.
+Order: valid `settings.theme` → `env.DEFAULT_THEME` (default `minimal`) → fallback `aurora`.
 
 ```bash
 npm run build:themes

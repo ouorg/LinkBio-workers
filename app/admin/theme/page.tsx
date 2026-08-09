@@ -8,10 +8,10 @@ import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
+import { getAdminUi } from "@/lib/admin-ui";
 import { getCsrfToken } from "@/lib/csrf";
-import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
-import { createT, themeDescription } from "@/lib/i18n";
+import { themeDescription } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 import { listThemes, resolveThemeId } from "@/lib/themes";
 
@@ -19,14 +19,17 @@ export const dynamic = "force-dynamic";
 
 /** Lightweight preview swatches (not loaded from CSS — admin-only hint) */
 const PREVIEW: Record<string, { a: string; b: string; c: string }> = {
+  aurora: { a: "hsl(239 84% 67%)", b: "hsl(240 5% 20%)", c: "hsl(240 5% 90%)" },
   base: { a: "hsl(239 84% 67%)", b: "hsl(240 5% 20%)", c: "hsl(240 5% 90%)" },
   minimal: { a: "hsl(240 6% 40%)", b: "hsl(0 0% 20%)", c: "hsl(0 0% 92%)" },
   /* Legacy Hono UI: indigo + near-black card */
   "hono-old": { a: "#6366f1", b: "#0a0a0b", c: "#18181b" },
   /* Anthropic illustration: clay + oat + ivory / near-black */
   anthropic: { a: "#D97757", b: "#E3DACC", c: "#FAF9F5" },
-  /* Apple.com marketing (unofficial): blue CTA + cool gray + white */
+  /* Apple.com marketing: blue CTA + cool gray + white */
   apple: { a: "#0071e3", b: "#f5f5f7", c: "#ffffff" },
+  /* Liquid Glass: system blue + soft light surfaces */
+  "liquid-glass": { a: "#007AFF", b: "#E8F1FA", c: "#FFFFFF" },
 };
 
 export default async function ThemePage({
@@ -35,20 +38,17 @@ export default async function ThemePage({
   searchParams: Promise<{ msg?: string }>;
 }) {
   if (!(await isAdminSession())) redirect("/admin/login");
-  const store = await getStore();
-  const env = await getEnv();
-  const settings = await store.getSettings();
-  const t = createT(settings.locale);
+  const { store, env, settings, siteName, t, locale } = await getAdminUi();
   const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
   const themes = listThemes();
   const currentThemeId = resolveThemeId(settings.theme, env.DEFAULT_THEME);
-  const localeZh = settings.locale === "zh-CN";
+  const localeZh = locale === "zh-CN";
 
   return (
     <div className="admin-shell">
-      <AdminNav active="theme" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
+      <AdminNav active="theme" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
           {t("admin.page.theme")}
@@ -63,11 +63,11 @@ export default async function ThemePage({
             <div className="space-y-3">
               <Label>{t("admin.theme.theme")}</Label>
               <p className="text-xs text-kumo-subtle">
-                DEFAULT_THEME={env.DEFAULT_THEME || "base"} · current={currentThemeId}
+                DEFAULT_THEME={env.DEFAULT_THEME || "minimal"} · current={currentThemeId}
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {themes.map((th) => {
-                  const sw = PREVIEW[th.id] || PREVIEW.base!;
+                  const sw = PREVIEW[th.id] || PREVIEW.aurora!;
                   const title = localeZh ? th.nameZh : th.name;
                   const desc = themeDescription(t, th.id, th.description);
                   return (

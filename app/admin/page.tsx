@@ -3,24 +3,19 @@ import { LinkButton } from "@cloudflare/kumo/components/button";
 import { AdminNav } from "@/components/admin/nav";
 import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
+import { getAdminUi } from "@/lib/admin-ui";
 import { getCsrfToken } from "@/lib/csrf";
-import { getEnv, getStore } from "@/lib/env";
-import { createT } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {
   if (!(await isAdminSession())) redirect("/admin/login");
-  const store = await getStore();
-  const env = await getEnv();
-  const siteName = env.SITE_NAME || "LinkBio";
-  const [profile, links, settings, analytics] = await Promise.all([
+  const { store, siteName, t } = await getAdminUi();
+  const [profile, links, analytics] = await Promise.all([
     store.getProfile(),
     store.getLinks(),
-    store.getSettings(),
     store.getAnalytics(),
   ]);
-  const t = createT(settings.locale);
   const csrf = await getCsrfToken();
   const clicks = Object.values(analytics.linkClicks).reduce((a, b) => a + b, 0);
 

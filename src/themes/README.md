@@ -14,13 +14,14 @@ src/themes/
   _registry.ts        # 构建生成 — 勿手改
   _bundle.css         # 构建生成 — 勿手改
   _default.css        # 布局/组件结构（与皮肤无关）
-  base/               # 内置兜底，必须存在
+  aurora/             # 内置兜底（极光），必须存在
     theme.json
     tokens.css
   minimal/
   apple/
   anthropic/
   hono-old/
+  liquid-glass/
 ```
 
 **一个主题 = 一个目录 = `theme.json` + `tokens.css`。**  
@@ -30,7 +31,7 @@ src/themes/
 
 ## 新增主题（4 步）
 
-1. **复制** `base/` → `my-theme/`（文件夹名 = kebab-case id）
+1. **复制** `aurora/` → `my-theme/`（文件夹名 = kebab-case id）
 2. **改** `theme.json`：`id`（必须等于文件夹名）、`name`、`nameZh`、`description`
 3. **改** `tokens.css`：只覆盖下方约定的 CSS 变量（挂在 `[data-theme-id="my-theme"]`）
 4. **构建**：`npm run build:themes`（`dev` / `build` / `typecheck` 会自动跑）

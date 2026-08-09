@@ -15,10 +15,9 @@ import { Flash } from "@/components/admin/flash";
 import { IconSelect } from "@/components/admin/icon-select";
 import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
+import { getAdminUi } from "@/lib/admin-ui";
 import { getCsrfToken } from "@/lib/csrf";
-import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
-import { createT } from "@/lib/i18n";
 import { resolveLinkIconSrc } from "@/lib/icons";
 import { CSRF_FIELD } from "@/lib/security";
 
@@ -30,10 +29,8 @@ export default async function LinksPage({
   searchParams: Promise<{ msg?: string; edit?: string }>;
 }) {
   if (!(await isAdminSession())) redirect("/admin/login");
-  const store = await getStore();
-  const env = await getEnv();
-  const [links, settings] = await Promise.all([store.getLinks(), store.getSettings()]);
-  const t = createT(settings.locale);
+  const { store, siteName, t } = await getAdminUi();
+  const links = await store.getLinks();
   const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
@@ -43,7 +40,7 @@ export default async function LinksPage({
 
   return (
     <div className="admin-shell">
-      <AdminNav active="links" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
+      <AdminNav active="links" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
           {t("admin.page.links")}
@@ -164,6 +161,7 @@ export default async function LinksPage({
                             name="icon"
                             label={t("admin.links.icon")}
                             defaultValue={l.icon}
+                            formatCustomLabel={(id) => t("admin.links.icon.custom", { id })}
                           />
                         </div>
                         <Input
@@ -228,6 +226,7 @@ export default async function LinksPage({
                 name="icon"
                 label={t("admin.links.icon")}
                 defaultValue="link"
+                formatCustomLabel={(id) => t("admin.links.icon.custom", { id })}
               />
             </div>
             <Input

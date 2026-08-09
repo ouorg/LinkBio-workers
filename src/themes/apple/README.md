@@ -1,6 +1,6 @@
 # Theme: apple（Apple 风格）
 
-参考 [Apple.com](https://www.apple.com) 营销页气质的**非官方**视觉包（非 Apple 商标授权）。
+参考 [Apple.com](https://www.apple.com) 营销页气质的视觉包。
 
 ## 色板
 
