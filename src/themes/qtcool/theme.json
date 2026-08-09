@@ -1,0 +1,13 @@
+{
+  "id": "qtcool",
+  "name": "QT Cool",
+  "nameZh": "晴辰酷",
+  "description": "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs (unofficial)",
+  "version": 1,
+  "tokensFile": "tokens.css",
+  "features": {
+    "blur": false,
+    "gradientBg": false,
+    "customFonts": false
+  }
+}
