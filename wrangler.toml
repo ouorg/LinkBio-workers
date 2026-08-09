@@ -1,54 +1,30 @@
-# LinkBio-workers — Cloudflare Workers configuration
-# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
-
+# LinkBio-workers — Next.js on Cloudflare Workers (OpenNext)
 name = "linkbio-workers"
-main = "src/index.ts"
+main = ".open-next/worker.js"
 compatibility_date = "2025-05-01"
-compatibility_flags = ["nodejs_compat"]
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# ── KV Namespace ──────────────────────────────────────────────
-# NEVER commit real namespace IDs.
-# Placeholders below are replaced / overridden depending on deploy path:
-#
-# 1) Local Wrangler
-#    npx wrangler kv namespace create BIO_KV
-#    npx wrangler kv namespace create BIO_KV --preview
-#    Put the returned ids into id / preview_id (local only; keep out of git)
-#    or use: wrangler dev --remote  with Dashboard bindings.
-#
-# 2) Cloudflare Dashboard / Workers Builds (Git connect)
-#    Workers → Settings → Bindings → KV → bind name BIO_KV to a namespace.
-#    Dashboard binding is authoritative; you can leave placeholders in git.
-#
-# 3) GitHub Actions (this repo workflow)
-#    Set repository Variable (or Secret) BIO_KV_ID = <namespace id>
-#    Optional: BIO_KV_PREVIEW_ID (defaults to BIO_KV_ID)
-#    The workflow injects them into wrangler.toml before `wrangler deploy`.
-#
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# Self-reference (required by OpenNext Cloudflare)
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "linkbio-workers"
+
+# ── App KV (profile / links / settings / analytics) ───────────
+# Placeholders injected by CI or replaced locally — never commit real IDs.
 [[kv_namespaces]]
 binding = "BIO_KV"
 id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
 preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_ID"
 
-# ── Non-secret Variables (override in Dashboard / CI as needed) ─
 [vars]
 SITE_NAME = "LinkBio"
-# Canonical public URL of this Worker (https://…). Override after deploy.
-# Do not leave this as localhost in production.
 SITE_URL = "https://YOUR_SUBDOMAIN.workers.dev"
 DEFAULT_THEME = "default"
 
-# ── Secrets (set via CLI or Dashboard — never commit real values) ─
-# wrangler secret put ADMIN_PASSWORD
-# wrangler secret put SESSION_SECRET
-#
-# Required runtime secrets:
-#   ADMIN_PASSWORD  — Admin login password
-#   SESSION_SECRET  — Random string for signing session cookies
-#
-# CI-only (GitHub Secrets — not Worker runtime):
-#   CF_API_TOKEN / CLOUDFLARE_API_TOKEN
-#   CF_ACCOUNT_ID / CLOUDFLARE_ACCOUNT_ID
-#   BIO_KV_ID (Variable or Secret) — real KV namespace id for deploy
-#
-# Local development secrets: copy .dev.vars.example → .dev.vars
+# Secrets (wrangler secret put ...):
+#   ADMIN_PASSWORD
+#   SESSION_SECRET

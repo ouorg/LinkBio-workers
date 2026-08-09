@@ -24,8 +24,11 @@ node_modules/
 # -----------------------------------------------------------------------------
 dist/
 .wrangler/
+.open-next/
+.next/
 .dev.vars
 *.tsbuildinfo
+_legacy_hono/
 
 # -----------------------------------------------------------------------------
 # Environment & secrets (keep local only)

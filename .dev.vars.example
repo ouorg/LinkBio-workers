@@ -1,5 +1,4 @@
-# Copy this file to .dev.vars for local development (wrangler dev).
-# .dev.vars is gitignored — never commit real secrets.
-
+# Copy to .dev.vars (gitignored)
+NEXTJS_ENV=development
 ADMIN_PASSWORD=change-me-admin
 SESSION_SECRET=dev-session-secret-change-me-to-random-string
