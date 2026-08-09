@@ -20,20 +20,20 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "apple",
     "name": "Apple",
     "nameZh": "Apple 风格",
-    "description": "Inspired by Apple.com marketing UI: cool gray canvas, white cards, SF stack, capsule links (unofficial)",
-    "version": 1,
+    "description": "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links (unofficial)",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
-      "blur": false,
+      "blur": true,
       "gradientBg": false,
       "customFonts": true
     }
   },
   {
     "id": "base",
-    "name": "Base",
-    "nameZh": "基础",
-    "description": "Default clean theme",
+    "name": "Aurora",
+    "nameZh": "极光",
+    "description": "Aurora clean theme",
     "version": 1,
     "tokensFile": "tokens.css",
     "features": {

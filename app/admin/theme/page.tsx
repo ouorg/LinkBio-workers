@@ -25,7 +25,7 @@ const PREVIEW: Record<string, { a: string; b: string; c: string }> = {
   "hono-old": { a: "#6366f1", b: "#0a0a0b", c: "#18181b" },
   /* Anthropic illustration: clay + oat + ivory / near-black */
   anthropic: { a: "#D97757", b: "#E3DACC", c: "#FAF9F5" },
-  /* Apple.com marketing (unofficial) */
+  /* Apple.com marketing (unofficial): blue CTA + cool gray + white */
   apple: { a: "#0071e3", b: "#f5f5f7", c: "#ffffff" },
 };
 

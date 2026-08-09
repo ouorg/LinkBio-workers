@@ -435,72 +435,79 @@
 
 /* === apple/tokens.css === */
 /*
- * Theme: apple — marketing-style skin inspired by Apple.com (unofficial).
+ * Theme: apple — Apple.com marketing-inspired (unofficial).
  *
- * Light: bg #f5f5f7, surface #ffffff, text #1d1d1f, accent #0071e3
- * Dark:  bg #000000, surface #1d1d1f, text #f5f5f7, accent #2997ff
+ * Light: canvas #f5f5f7 · surface #fff · ink #1d1d1f · secondary #6e6e73 · blue #0071e3
+ * Dark:  canvas #000 · surface #1d1d1f · ink #f5f5f7 · secondary #a1a1a6 · blue #2997ff
  *
- * Capsule links (border-radius: 980px), light shadows, title weight 600.
+ * Signature: SF stack, generous whitespace, pill CTAs (980px), soft elevation, tight tracking.
  */
 
 [data-theme-id="apple"] {
-  /* SF Pro / PingFang-oriented system stack */
   --theme-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI",
     "Segoe UI", Roboto, sans-serif;
+  /* Continuous corners like product tiles */
   --theme-radius: 12px;
-  --theme-card-radius: 18px;
+  --theme-card-radius: 28px;
   --theme-link-radius: 980px;
-  --theme-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --theme-border-opacity: 1;
-  /* Apple blue light #0071e3 */
+  --theme-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 0, 0, 0.04);
+  --theme-border-opacity: 0;
+  /* Apple blue #0071e3 */
   --primary: 211 100% 44%;
   --ring: 211 100% 44%;
   --primary-foreground: 0 0% 100%;
+  --destructive: 0 84% 50%;
+
   font-family: var(--theme-font);
   -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.01em;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
+  /* Apple-like content column */
+  --theme-content-max: 26rem;
 }
 
-/* ── Light ─────────────────────────────────────────────────── */
+/* ── Light (apple.com default marketing canvas) ─────────────── */
 [data-theme-id="apple"][data-theme="light"] {
   /* #f5f5f7 */
-  --background: 240 5% 96%;
+  --background: 240 4% 96%;
   /* #1d1d1f */
-  --foreground: 240 3% 12%;
-  /* #ffffff */
+  --foreground: 240 4% 11%;
+  /* pure white tile */
   --card: 0 0% 100%;
-  --card-foreground: 240 3% 12%;
+  --card-foreground: 240 4% 11%;
   --popover: 0 0% 100%;
-  --popover-foreground: 240 3% 12%;
-  --secondary: 240 5% 96%;
-  --secondary-foreground: 240 3% 12%;
-  --muted: 240 5% 96%;
-  --muted-foreground: 240 2% 40%;
-  --accent: 240 5% 96%;
-  --accent-foreground: 240 3% 12%;
+  --popover-foreground: 240 4% 11%;
+  /* #e8e8ed-ish */
+  --secondary: 240 5% 92%;
+  --secondary-foreground: 240 4% 11%;
+  --muted: 240 5% 92%;
+  /* #6e6e73 */
+  --muted-foreground: 240 2% 44%;
+  --accent: 240 5% 92%;
+  --accent-foreground: 240 4% 11%;
   --border: 240 4% 90%;
   --input: 240 4% 90%;
   --primary: 211 100% 44%;
   --ring: 211 100% 44%;
-  --theme-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --theme-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
-/* ── Dark ──────────────────────────────────────────────────── */
+/* ── Dark (true black product pages) ────────────────────────── */
 [data-theme-id="apple"][data-theme="dark"] {
-  /* #000000 */
   --background: 0 0% 0%;
   /* #f5f5f7 */
   --foreground: 240 5% 96%;
   /* #1d1d1f */
-  --card: 240 3% 12%;
+  --card: 240 4% 11%;
   --card-foreground: 240 5% 96%;
-  --popover: 240 3% 12%;
+  --popover: 240 4% 11%;
   --popover-foreground: 240 5% 96%;
   --secondary: 240 3% 14%;
   --secondary-foreground: 240 5% 96%;
   --muted: 240 3% 14%;
-  --muted-foreground: 240 4% 65%;
+  /* #a1a1a6 */
+  --muted-foreground: 240 3% 64%;
   --accent: 240 3% 14%;
   --accent-foreground: 240 5% 96%;
   --border: 240 3% 18%;
@@ -508,167 +515,294 @@
   /* #2997ff */
   --primary: 210 100% 58%;
   --ring: 210 100% 58%;
-  --theme-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+  --theme-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
-/* ── System ────────────────────────────────────────────────── */
+/* ── System follows OS ──────────────────────────────────────── */
 [data-theme-id="apple"][data-theme="system"] {
   --background: 0 0% 0%;
   --foreground: 240 5% 96%;
-  --card: 240 3% 12%;
+  --card: 240 4% 11%;
   --card-foreground: 240 5% 96%;
-  --popover: 240 3% 12%;
+  --popover: 240 4% 11%;
   --popover-foreground: 240 5% 96%;
   --secondary: 240 3% 14%;
   --secondary-foreground: 240 5% 96%;
   --muted: 240 3% 14%;
-  --muted-foreground: 240 4% 65%;
+  --muted-foreground: 240 3% 64%;
   --accent: 240 3% 14%;
   --accent-foreground: 240 5% 96%;
   --border: 240 3% 18%;
   --input: 240 3% 18%;
   --primary: 210 100% 58%;
   --ring: 210 100% 58%;
-  --theme-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+  --theme-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 @media (prefers-color-scheme: light) {
   [data-theme-id="apple"][data-theme="system"] {
-    --background: 240 5% 96%;
-    --foreground: 240 3% 12%;
+    --background: 240 4% 96%;
+    --foreground: 240 4% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 240 3% 12%;
+    --card-foreground: 240 4% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 3% 12%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 3% 12%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 2% 40%;
-    --accent: 240 5% 96%;
-    --accent-foreground: 240 3% 12%;
+    --popover-foreground: 240 4% 11%;
+    --secondary: 240 5% 92%;
+    --secondary-foreground: 240 4% 11%;
+    --muted: 240 5% 92%;
+    --muted-foreground: 240 2% 44%;
+    --accent: 240 5% 92%;
+    --accent-foreground: 240 4% 11%;
     --border: 240 4% 90%;
     --input: 240 4% 90%;
     --primary: 211 100% 44%;
     --ring: 211 100% 44%;
-    --theme-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --theme-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.06);
   }
 }
 
-/* Page: cool gray canvas — spacing from _default.css (responsive) */
+/* ── Page shell ─────────────────────────────────────────────── */
+
 [data-theme-id="apple"] .theme-page {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }
 
 [data-theme-id="apple"] .theme-page--gradient {
+  /* No radial glow — Apple pages stay flat canvas */
   background-image: none;
   background-color: hsl(var(--background));
 }
 
 [data-theme-id="apple"] .theme-stack {
-  max-width: 28rem;
+  max-width: var(--theme-content-max, 26rem);
+  gap: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  [data-theme-id="apple"] .theme-stack {
+    gap: 2rem;
+  }
+}
+
+/* Soft product “tile” grouping profile + links */
+[data-theme-id="apple"] .theme-card {
+  border-radius: var(--theme-card-radius);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   gap: 1.5rem;
 }
 
-/* Profile title: weight 600, tight tracking */
+/* ── Profile (product hero-ish) ─────────────────────────────── */
+
+[data-theme-id="apple"] .theme-profile {
+  gap: 0.875rem;
+  padding-inline: 0.5rem;
+}
+
 [data-theme-id="apple"] .theme-profile h1 {
   font-weight: 600;
-  letter-spacing: -0.022em;
-  font-size: 1.75rem;
-  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  line-height: 1.1;
   color: hsl(var(--foreground));
 }
 
 [data-theme-id="apple"] .theme-profile .theme-username {
-  font-size: 1.05rem;
+  font-size: 1.0625rem;
   font-weight: 400;
   color: hsl(var(--muted-foreground));
   letter-spacing: -0.01em;
+  margin-top: 0.15rem;
 }
 
 [data-theme-id="apple"] .theme-profile .theme-bio {
-  font-size: 1.05rem;
-  line-height: 1.47;
+  font-size: 1.0625rem;
+  line-height: 1.47059;
   font-weight: 400;
   letter-spacing: -0.016em;
   color: hsl(var(--muted-foreground));
+  max-width: 22rem;
+  margin-inline: auto;
 }
 
-/* Soft white card feel on cool canvas */
-[data-theme-id="apple"] .theme-card {
-  border-radius: var(--theme-card-radius);
+[data-theme-id="apple"] .theme-meta {
+  gap: 0.35rem 1rem;
+  font-size: 0.8125rem;
+  letter-spacing: -0.01em;
 }
 
+[data-theme-id="apple"] .theme-meta a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+[data-theme-id="apple"] .theme-meta a:hover {
+  opacity: 0.72;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Avatar: no harsh ring — soft elevation like device photography */
 [data-theme-id="apple"] .theme-avatar {
-  border: 0;
+  width: 7rem;
+  height: 7rem;
+  border: 0 !important;
   box-shadow: var(--theme-shadow);
   background: hsl(var(--card));
 }
 
 [data-theme-id="apple"] .theme-avatar-fallback {
-  border: 0;
+  border: 0 !important;
   box-shadow: var(--theme-shadow);
-  background: hsl(var(--primary));
-  color: #fff;
+  background: linear-gradient(180deg, hsl(var(--secondary)) 0%, hsl(var(--muted)) 100%);
+  color: hsl(var(--foreground));
   font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 1.75rem;
+  letter-spacing: -0.03em;
 }
 
-/* Capsule link buttons — signature Apple marketing CTA shape */
+/* ── Link pills (marketing CTAs) ────────────────────────────── */
+
 [data-theme-id="apple"] .theme-links {
-  gap: 0.875rem;
+  gap: 0.75rem;
+  width: 100%;
 }
 
 [data-theme-id="apple"] a.theme-link {
   justify-content: center;
-  min-height: 3rem;
-  padding: 0.875rem 1.5rem;
+  min-height: 3.25rem;
+  padding: 0.9rem 1.35rem;
   border-radius: 980px;
   border: none;
+  /* White / elevated surface on cool canvas — like secondary buttons */
   background: hsl(var(--card));
   color: hsl(var(--foreground));
   font-weight: 400;
-  font-size: 1.05rem;
+  font-size: 1.0625rem;
   letter-spacing: -0.016em;
   box-shadow: var(--theme-shadow);
   transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    background 0.22s cubic-bezier(0.25, 0.1, 0.25, 1),
+    color 0.22s cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 0.22s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.22s cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 0.22s ease;
+}
+
+/* First link = primary blue CTA (Learn more / Buy style) */
+[data-theme-id="apple"] a.theme-link:first-child {
+  background: hsl(var(--primary));
+  color: #fff;
+  box-shadow: 0 2px 8px color-mix(in srgb, hsl(var(--primary)) 35%, transparent);
+  font-weight: 400;
+}
+
+[data-theme-id="apple"] a.theme-link:first-child .theme-link-icon {
+  color: #fff;
+  opacity: 0.95;
+}
+
+[data-theme-id="apple"] a.theme-link:first-child .theme-link-external {
+  color: #fff;
+  opacity: 0.45;
+}
+
+[data-theme-id="apple"] a.theme-link:first-child:hover {
+  background: color-mix(in srgb, hsl(var(--primary)) 88%, #000);
+  color: #fff;
+  box-shadow: 0 4px 18px color-mix(in srgb, hsl(var(--primary)) 40%, transparent);
+  transform: scale(1.015);
 }
 
 [data-theme-id="apple"] a.theme-link:hover {
-  background: color-mix(in srgb, hsl(var(--primary)) 8%, hsl(var(--card)));
+  background: color-mix(in srgb, hsl(var(--card)) 92%, hsl(var(--foreground)));
   color: hsl(var(--primary));
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  transform: scale(1.01);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: scale(1.015);
 }
 
 [data-theme-id="apple"] a.theme-link:active {
-  transform: scale(0.99);
+  transform: scale(0.985);
+  opacity: 0.92;
+}
+
+[data-theme-id="apple"] a.theme-link:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 3px;
 }
 
 [data-theme-id="apple"] a.theme-link .theme-link-icon {
   color: hsl(var(--primary));
   opacity: 1;
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
-/* Optional: primary-style solid CTA look for first link only — keep soft white for all */
+/* Quieter external glyph — Apple UIs rarely show “leave site” chrome */
+[data-theme-id="apple"] a.theme-link .theme-link-external {
+  width: 0.9rem;
+  height: 0.9rem;
+  opacity: 0.28;
+  transition: opacity 0.2s ease;
+}
+
+[data-theme-id="apple"] a.theme-link:hover .theme-link-external {
+  opacity: 0.5;
+}
+
+/* Dark: secondary pills use elevated gray, not pure black */
+[data-theme-id="apple"][data-theme="dark"] a.theme-link:not(:first-child),
+[data-theme-id="apple"][data-theme="system"] a.theme-link:not(:first-child) {
+  background: hsl(var(--card));
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme-id="apple"][data-theme="system"] a.theme-link:not(:first-child) {
+    background: hsl(var(--card));
+  }
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
 
 [data-theme-id="apple"] .theme-footer {
   font-size: 0.75rem;
-  color: hsl(var(--muted-foreground));
+  line-height: 1.33337;
   letter-spacing: -0.01em;
+  color: hsl(var(--muted-foreground));
+  opacity: 0.9;
+  padding-top: 2rem;
 }
 
-/* Toolbar pills */
-[data-theme-id="apple"] aside button {
-  border-radius: 980px;
-  border: none;
+/* ── Toolbar (match pill language) ──────────────────────────── */
+
+[data-theme-id="apple"] aside.theme-toolbar button,
+[data-theme-id="apple"] .theme-toolbar-btn {
+  border-radius: 980px !important;
+  border: none !important;
   box-shadow: var(--theme-shadow);
-  background: hsl(var(--card));
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--foreground));
   font-weight: 400;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+[data-theme-id="apple"] aside.theme-toolbar button:hover,
+[data-theme-id="apple"] .theme-toolbar-btn:hover {
+  background: color-mix(in srgb, hsl(var(--card)) 90%, hsl(var(--foreground))) !important;
+}
+
+/* Dropdown menus: frosted panels */
+[data-theme-id="apple"] [data-radix-menu-content],
+[data-theme-id="apple"] [role="menu"] {
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
 }
 
 /* === base/tokens.css === */
