@@ -96,6 +96,11 @@ const en: Dict = {
   "admin.links.updated": "Link updated.",
   "admin.links.reordered": "Order updated.",
   "admin.links.invalidUrl": "Invalid URL. Use http(s) only.",
+  "admin.links.edit": "Edit",
+  "admin.links.saveEdit": "Save changes",
+  "admin.links.savedEdit": "Link saved.",
+  "admin.links.cancelEdit": "Cancel",
+  "admin.links.notFound": "Link not found.",
 
   // Theme form
   "admin.theme.title": "Theme & appearance",
@@ -227,6 +232,11 @@ const zhCN: Dict = {
   "admin.links.updated": "链接已更新。",
   "admin.links.reordered": "顺序已更新。",
   "admin.links.invalidUrl": "无效 URL，仅支持 http(s)。",
+  "admin.links.edit": "编辑",
+  "admin.links.saveEdit": "保存修改",
+  "admin.links.savedEdit": "链接已保存。",
+  "admin.links.cancelEdit": "取消",
+  "admin.links.notFound": "未找到该链接。",
 
   "admin.theme.title": "主题与外观",
   "admin.theme.theme": "主题风格",

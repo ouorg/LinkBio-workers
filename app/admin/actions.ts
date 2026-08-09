@@ -196,6 +196,49 @@ export async function addLinkAction(formData: FormData) {
   await flashRedirect("/admin/links", flashOk(t("admin.links.added")));
 }
 
+/** Update title/url/icon/enabled by id; keep order and id unchanged. */
+export async function updateLinkAction(formData: FormData) {
+  const t = await tSite();
+  if (!(await requireCsrf(formData))) {
+    await flashRedirect("/admin/links", flashErr(t("admin.error.csrf")));
+  }
+  const id = String(formData.get("id") || "").trim();
+  if (!id) {
+    await flashRedirect("/admin/links", flashErr(t("admin.links.notFound")));
+  }
+  const store = await getStore();
+  const links = await store.getLinks();
+  const idx = links.findIndex((l) => l.id === id);
+  if (idx < 0) {
+    await flashRedirect("/admin/links", flashErr(t("admin.links.notFound")));
+  }
+  const prev = links[idx]!;
+  const next = sanitizeLink(
+    {
+      id: prev.id,
+      title: String(formData.get("title") || ""),
+      url: String(formData.get("url") || ""),
+      icon: String(formData.get("icon") || prev.icon || "link"),
+      order: prev.order,
+      enabled: formData.get("enabled") === "1",
+    },
+    prev.order,
+  );
+  // sanitizeLink may regenerate id — force preserve
+  next.id = prev.id;
+  next.order = prev.order;
+  if (!next.url) {
+    await flashRedirect(
+      `/admin/links?edit=${encodeURIComponent(id)}`,
+      flashErr(t("admin.links.invalidUrl")),
+    );
+  }
+  links[idx] = next;
+  await store.setLinks(links);
+  revalidatePublic();
+  await flashRedirect("/admin/links", flashOk(t("admin.links.savedEdit")));
+}
+
 export async function deleteLinkAction(formData: FormData) {
   const t = await tSite();
   if (!(await requireCsrf(formData))) {
