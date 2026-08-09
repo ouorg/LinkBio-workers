@@ -1,4 +1,5 @@
-import { Alert } from "@/components/ui/alert";
+import { Banner } from "@cloudflare/kumo/components/banner";
+import { CheckCircleIcon, WarningCircleIcon } from "@phosphor-icons/react/dist/ssr";
 
 export function Flash({ message }: { message?: string }) {
   if (!message) return null;
@@ -8,5 +9,19 @@ export function Flash({ message }: { message?: string }) {
     : message.startsWith("ok:")
       ? message.slice(3)
       : message;
-  return <Alert variant={isError ? "destructive" : "success"} className="mb-4">{text}</Alert>;
+  return (
+    <Banner
+      className="mb-4"
+      size="sm"
+      variant={isError ? "error" : "default"}
+      icon={
+        isError ? (
+          <WarningCircleIcon weight="fill" className="size-4" />
+        ) : (
+          <CheckCircleIcon weight="fill" className="size-4" />
+        )
+      }
+      title={text}
+    />
+  );
 }

@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
+import { Banner } from "@cloudflare/kumo/components/banner";
+import { Button } from "@cloudflare/kumo/components/button";
+import { Input } from "@cloudflare/kumo/components/input";
+import { LayerCard } from "@cloudflare/kumo/components/layer-card";
+import { WarningCircleIcon } from "@phosphor-icons/react/dist/ssr";
 import { loginAction, ensureCsrfCookie } from "../actions";
-import { Alert } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
 import { createT } from "@/lib/i18n";
@@ -28,36 +28,44 @@ export default async function LoginPage({
   const msg = raw.startsWith("error:") ? raw.slice(6) : raw.startsWith("ok:") ? raw.slice(3) : raw;
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>{t("admin.login.title")}</CardTitle>
-          <CardDescription>
-            {t("admin.login.sub", { siteName: env.SITE_NAME || "LinkBio" })}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {msg ? <Alert variant="destructive" className="mb-4">{msg}</Alert> : null}
+    <div className="flex min-h-screen items-center justify-center px-4 py-8">
+      <LayerCard className="w-full max-w-md">
+        <LayerCard.Secondary>
+          <div className="space-y-1">
+            <div className="text-base font-semibold text-kumo-strong">{t("admin.login.title")}</div>
+            <p className="text-sm text-kumo-subtle">
+              {t("admin.login.sub", { siteName: env.SITE_NAME || "LinkBio" })}
+            </p>
+          </div>
+        </LayerCard.Secondary>
+        <LayerCard.Primary>
+          {msg ? (
+            <Banner
+              className="mb-4"
+              size="sm"
+              variant="error"
+              icon={<WarningCircleIcon weight="fill" className="size-4" />}
+              title={msg}
+            />
+          ) : null}
           <form action={loginAction} className="space-y-4">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
-            <div className="space-y-2">
-              <Label htmlFor="password">{t("admin.login.password")}</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                autoComplete="current-password"
-                autoFocus
-              />
-              <p className="text-xs text-muted-foreground">{t("admin.login.hint")}</p>
-            </div>
-            <Button type="submit" className="w-full">
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              label={t("admin.login.password")}
+              description={t("admin.login.hint")}
+              required
+              autoComplete="current-password"
+              autoFocus
+            />
+            <Button type="submit" variant="primary" className="w-full">
               {t("admin.login.submit")}
             </Button>
           </form>
-        </CardContent>
-      </Card>
+        </LayerCard.Primary>
+      </LayerCard>
     </div>
   );
 }

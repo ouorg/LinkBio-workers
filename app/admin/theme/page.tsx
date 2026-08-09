@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
+import { Button } from "@cloudflare/kumo/components/button";
+import { Input } from "@cloudflare/kumo/components/input";
+import { InputArea } from "@cloudflare/kumo/components/input";
+import { Label } from "@cloudflare/kumo/components/label";
+import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import { ensureCsrfCookie, saveSettingsAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
 import { createT } from "@/lib/i18n";
@@ -45,24 +45,24 @@ export default async function ThemePage({
   const localeZh = settings.locale === "zh-CN";
 
   return (
-    <div className="admin-shell" data-theme-id={currentThemeId}>
+    <div className="admin-shell">
       <AdminNav active="theme" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.theme")}</h1>
-        <p className="text-sm text-muted-foreground">{t("admin.subtitle")}</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+          {t("admin.page.theme")}
+        </h1>
+        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
       </header>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("admin.theme.title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <LayerCard>
+        <LayerCard.Secondary>{t("admin.theme.title")}</LayerCard.Secondary>
+        <LayerCard.Primary>
           <Flash message={sp.msg} />
           <form action={saveSettingsAction} className="space-y-6">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
 
             <div className="space-y-3">
               <Label>{t("admin.theme.theme")}</Label>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-kumo-subtle">
                 DEFAULT_THEME={env.DEFAULT_THEME || "base"} · current={currentThemeId}
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -74,10 +74,10 @@ export default async function ThemePage({
                       key={th.id}
                       className={cn(
                         "cursor-pointer rounded-xl border p-3 transition",
-                        "hover:border-primary/50",
+                        "hover:border-kumo-focus/40",
                         currentThemeId === th.id
-                          ? "border-primary bg-primary/5 ring-2 ring-primary/30"
-                          : "border-border",
+                          ? "border-kumo-focus bg-kumo-tint ring-2 ring-kumo-focus/30"
+                          : "border-kumo-hairline",
                       )}
                     >
                       <input
@@ -92,12 +92,12 @@ export default async function ThemePage({
                         <span className="h-6 flex-1 rounded-md" style={{ background: sw.b }} />
                         <span className="h-6 flex-1 rounded-md" style={{ background: sw.c }} />
                       </div>
-                      <div className="text-sm font-medium">
+                      <div className="text-sm font-medium text-kumo-default">
                         {title}{" "}
-                        <span className="font-mono text-xs text-muted-foreground">({th.id})</span>
+                        <span className="font-mono text-xs text-kumo-subtle">({th.id})</span>
                       </div>
                       {th.description ? (
-                        <p className="mt-0.5 text-xs text-muted-foreground">{th.description}</p>
+                        <p className="mt-0.5 text-xs text-kumo-subtle">{th.description}</p>
                       ) : null}
                     </label>
                   );
@@ -106,33 +106,31 @@ export default async function ThemePage({
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="accentColor">{t("admin.theme.accent")}</Label>
-                <Input
-                  id="accentColor"
-                  name="accentColor"
-                  defaultValue={settings.accentColor}
-                  pattern="#[0-9a-fA-F]{3,8}"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="background">{t("admin.theme.background")}</Label>
-                <Input
-                  id="background"
-                  name="background"
-                  type="url"
-                  defaultValue={settings.background}
-                />
-              </div>
+              <Input
+                id="accentColor"
+                name="accentColor"
+                label={t("admin.theme.accent")}
+                defaultValue={settings.accentColor}
+                pattern="#[0-9a-fA-F]{3,8}"
+                required={false}
+              />
+              <Input
+                id="background"
+                name="background"
+                type="url"
+                label={t("admin.theme.background")}
+                defaultValue={settings.background}
+                required={false}
+              />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="colorMode">{t("admin.theme.colorMode")}</Label>
+                <Label>{t("admin.theme.colorMode")}</Label>
                 <select
                   id="colorMode"
                   name="colorMode"
                   defaultValue={settings.colorMode}
-                  className="flex h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
+                  className="admin-select"
                 >
                   <option value="system">{t("admin.theme.colorMode.system")}</option>
                   <option value="light">{t("admin.theme.colorMode.light")}</option>
@@ -140,37 +138,38 @@ export default async function ThemePage({
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="locale">{t("admin.theme.locale")}</Label>
+                <Label>{t("admin.theme.locale")}</Label>
                 <select
                   id="locale"
                   name="locale"
                   defaultValue={settings.locale}
-                  className="flex h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
+                  className="admin-select"
                 >
                   <option value="zh-CN">{t("admin.theme.locale.zhCN")}</option>
                   <option value="en">{t("admin.theme.locale.en")}</option>
                 </select>
               </div>
             </div>
-            <div className="space-y-3 rounded-xl border border-border p-4">
-              <h2 className="font-medium">{t("admin.theme.footerTitle")}</h2>
-              <p className="text-xs text-muted-foreground">{t("admin.theme.footerHint")}</p>
-              <label className="flex items-center gap-2 text-sm">
+            <div className="space-y-3 rounded-xl border border-kumo-hairline p-4">
+              <h2 className="font-medium text-kumo-strong">{t("admin.theme.footerTitle")}</h2>
+              <p className="text-xs text-kumo-subtle">{t("admin.theme.footerHint")}</p>
+              <label className="flex items-center gap-2 text-sm text-kumo-default">
                 <input
                   type="checkbox"
                   name="showFooter"
                   value="1"
                   defaultChecked={settings.showFooter && settings.footerMode !== "off"}
+                  className="size-4"
                 />
                 {t("admin.theme.showFooter")}
               </label>
               <div className="space-y-2">
-                <Label htmlFor="footerMode">{t("admin.theme.footerMode")}</Label>
+                <Label>{t("admin.theme.footerMode")}</Label>
                 <select
                   id="footerMode"
                   name="footerMode"
                   defaultValue={settings.footerMode}
-                  className="flex h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
+                  className="admin-select"
                 >
                   <option value="default">{t("admin.theme.footerMode.default")}</option>
                   <option value="custom">{t("admin.theme.footerMode.custom")}</option>
@@ -178,22 +177,24 @@ export default async function ThemePage({
                   <option value="off">{t("admin.theme.footerMode.off")}</option>
                 </select>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="footerText">{t("admin.theme.footerText")}</Label>
-                <Textarea
-                  id="footerText"
-                  name="footerText"
-                  defaultValue={settings.footerText}
-                  maxLength={500}
-                  placeholder={t("admin.theme.footerTextPlaceholder")}
-                />
-                <p className="text-xs text-muted-foreground">{t("admin.theme.footerTextHint")}</p>
-              </div>
+              <InputArea
+                id="footerText"
+                name="footerText"
+                label={t("admin.theme.footerText")}
+                defaultValue={settings.footerText}
+                maxLength={500}
+                placeholder={t("admin.theme.footerTextPlaceholder")}
+                description={t("admin.theme.footerTextHint")}
+                rows={3}
+                required={false}
+              />
             </div>
-            <Button type="submit">{t("admin.theme.save")}</Button>
+            <Button type="submit" variant="primary">
+              {t("admin.theme.save")}
+            </Button>
           </form>
-        </CardContent>
-      </Card>
+        </LayerCard.Primary>
+      </LayerCard>
     </div>
   );
 }

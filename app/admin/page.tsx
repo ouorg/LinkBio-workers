@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LinkButton } from "@cloudflare/kumo/components/button";
+import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import { ensureCsrfCookie } from "./actions";
 import { AdminNav } from "@/components/admin/nav";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
 import { createT } from "@/lib/i18n";
@@ -29,79 +28,69 @@ export default async function AdminOverviewPage() {
     <div className="admin-shell">
       <AdminNav active="overview" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.overview")}</h1>
-        <p className="text-sm text-muted-foreground">{t("admin.subtitle")}</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+          {t("admin.page.overview")}
+        </h1>
+        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
       </header>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {t("admin.stats.pageViews")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-3xl font-semibold">{analytics.pageViews}</CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {t("admin.stats.linkClicks")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-3xl font-semibold">{clicks}</CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {t("admin.stats.lastUpdated")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm font-medium">{analytics.lastUpdated || "—"}</CardContent>
-        </Card>
+        <LayerCard className="p-4">
+          <p className="text-sm font-medium text-kumo-subtle">{t("admin.stats.pageViews")}</p>
+          <p className="mt-1 text-3xl font-semibold text-kumo-strong">{analytics.pageViews}</p>
+        </LayerCard>
+        <LayerCard className="p-4">
+          <p className="text-sm font-medium text-kumo-subtle">{t("admin.stats.linkClicks")}</p>
+          <p className="mt-1 text-3xl font-semibold text-kumo-strong">{clicks}</p>
+        </LayerCard>
+        <LayerCard className="p-4">
+          <p className="text-sm font-medium text-kumo-subtle">{t("admin.stats.lastUpdated")}</p>
+          <p className="mt-1 text-sm font-medium text-kumo-default">
+            {analytics.lastUpdated || "—"}
+          </p>
+        </LayerCard>
       </div>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>{t("admin.overview.quickLinks")}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/admin/profile">{t("admin.overview.editProfile")}</Link>
-          </Button>
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/admin/links">{t("admin.overview.manageLinks")}</Link>
-          </Button>
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/admin/theme">{t("admin.overview.theme")}</Link>
-          </Button>
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/admin/data">{t("admin.overview.data")}</Link>
-          </Button>
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/" target="_blank">
+      <LayerCard className="mb-6">
+        <LayerCard.Secondary>{t("admin.overview.quickLinks")}</LayerCard.Secondary>
+        <LayerCard.Primary>
+          <div className="flex flex-wrap gap-2">
+            <LinkButton href="/admin/profile" variant="secondary" size="sm">
+              {t("admin.overview.editProfile")}
+            </LinkButton>
+            <LinkButton href="/admin/links" variant="secondary" size="sm">
+              {t("admin.overview.manageLinks")}
+            </LinkButton>
+            <LinkButton href="/admin/theme" variant="secondary" size="sm">
+              {t("admin.overview.theme")}
+            </LinkButton>
+            <LinkButton href="/admin/data" variant="secondary" size="sm">
+              {t("admin.overview.data")}
+            </LinkButton>
+            <LinkButton href="/" target="_blank" rel="noopener noreferrer" variant="secondary" size="sm">
               {t("admin.overview.viewPublic")}
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+            </LinkButton>
+          </div>
+        </LayerCard.Primary>
+      </LayerCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("admin.overview.currentProfile")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <p>
-            <strong>{profile.name}</strong>
-            {profile.username ? ` · @${profile.username}` : ""}
-          </p>
-          <p className="text-muted-foreground">{profile.bio}</p>
-          <p className="text-muted-foreground">
-            {t("admin.overview.enabledLinks", {
-              count: links.filter((l) => l.enabled).length,
-            })}
-          </p>
-        </CardContent>
-      </Card>
+      <LayerCard>
+        <LayerCard.Secondary>{t("admin.overview.currentProfile")}</LayerCard.Secondary>
+        <LayerCard.Primary>
+          <div className="space-y-2 text-sm">
+            <p className="text-kumo-default">
+              <strong className="text-kumo-strong">{profile.name}</strong>
+              {profile.username ? ` · @${profile.username}` : ""}
+            </p>
+            <p className="text-kumo-subtle">{profile.bio}</p>
+            <p className="text-kumo-subtle">
+              {t("admin.overview.enabledLinks", {
+                count: links.filter((l) => l.enabled).length,
+              })}
+            </p>
+          </div>
+        </LayerCard.Primary>
+      </LayerCard>
     </div>
   );
 }

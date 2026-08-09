@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { Button } from "@cloudflare/kumo/components/button";
 import { logoutAction } from "@/app/admin/actions";
-import { Button } from "@/components/ui/button";
 import { CSRF_FIELD } from "@/lib/security";
 import type { TranslateFn } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -27,9 +27,9 @@ export function AdminNav({
   return (
     <nav className="admin-nav">
       <div className="min-w-0 shrink">
-        <div className="truncate text-sm font-semibold tracking-tight">
+        <div className="truncate text-sm font-semibold tracking-tight text-kumo-strong">
           {t("admin.brand")}
-          <span className="ml-2 font-normal text-muted-foreground">{siteName}</span>
+          <span className="ml-2 font-normal text-kumo-subtle">{siteName}</span>
         </div>
       </div>
       <div className="admin-nav-links">
@@ -40,8 +40,8 @@ export function AdminNav({
             className={cn(
               "inline-flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors",
               active === item.key
-                ? "bg-primary/15 font-medium text-primary"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "bg-kumo-tint font-medium text-kumo-strong"
+                : "text-kumo-subtle hover:bg-kumo-tint hover:text-kumo-default",
             )}
           >
             {t(`admin.nav.${item.key}`)}
@@ -49,13 +49,13 @@ export function AdminNav({
         ))}
         <Link
           href="/"
-          className="inline-flex items-center rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="inline-flex items-center rounded-lg px-3 py-1.5 text-sm text-kumo-subtle hover:bg-kumo-tint hover:text-kumo-default"
         >
           {t("admin.nav.public")}
         </Link>
         <form action={logoutAction} className="inline-flex">
           <input type="hidden" name={CSRF_FIELD} value={csrf} />
-          <Button type="submit" variant="ghost" size="sm" className="text-destructive">
+          <Button type="submit" variant="ghost" size="sm" className="!text-kumo-danger">
             {t("admin.nav.logout")}
           </Button>
         </form>

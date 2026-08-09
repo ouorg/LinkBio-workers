@@ -1,12 +1,11 @@
 import { redirect } from "next/navigation";
+import { Button } from "@cloudflare/kumo/components/button";
+import { Input } from "@cloudflare/kumo/components/input";
+import { InputArea } from "@cloudflare/kumo/components/input";
+import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import { ensureCsrfCookie, saveProfileAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
 import { createT } from "@/lib/i18n";
@@ -31,48 +30,77 @@ export default async function ProfilePage({
     <div className="admin-shell">
       <AdminNav active="profile" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.profile")}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+          {t("admin.page.profile")}
+        </h1>
       </header>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("admin.profile.title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <LayerCard>
+        <LayerCard.Secondary>{t("admin.profile.title")}</LayerCard.Secondary>
+        <LayerCard.Primary>
           <Flash message={sp.msg} />
           <form action={saveProfileAction} className="space-y-4">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="name">{t("admin.profile.name")}</Label>
-                <Input id="name" name="name" defaultValue={profile.name} required maxLength={80} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="username">{t("admin.profile.username")}</Label>
-                <Input id="username" name="username" defaultValue={profile.username} maxLength={40} />
-              </div>
+              <Input
+                id="name"
+                name="name"
+                label={t("admin.profile.name")}
+                defaultValue={profile.name}
+                required
+                maxLength={80}
+              />
+              <Input
+                id="username"
+                name="username"
+                label={t("admin.profile.username")}
+                defaultValue={profile.username}
+                maxLength={40}
+                required={false}
+              />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="bio">{t("admin.profile.bio")}</Label>
-              <Textarea id="bio" name="bio" defaultValue={profile.bio} maxLength={500} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="avatar">{t("admin.profile.avatar")}</Label>
-              <Input id="avatar" name="avatar" type="url" defaultValue={profile.avatar} maxLength={2000} />
-            </div>
+            <InputArea
+              id="bio"
+              name="bio"
+              label={t("admin.profile.bio")}
+              defaultValue={profile.bio}
+              maxLength={500}
+              rows={4}
+              required={false}
+            />
+            <Input
+              id="avatar"
+              name="avatar"
+              type="url"
+              label={t("admin.profile.avatar")}
+              defaultValue={profile.avatar}
+              maxLength={2000}
+              required={false}
+            />
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="location">{t("admin.profile.location")}</Label>
-                <Input id="location" name="location" defaultValue={profile.location} maxLength={120} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">{t("admin.profile.email")}</Label>
-                <Input id="email" name="email" type="email" defaultValue={profile.email} maxLength={120} />
-              </div>
+              <Input
+                id="location"
+                name="location"
+                label={t("admin.profile.location")}
+                defaultValue={profile.location}
+                maxLength={120}
+                required={false}
+              />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                label={t("admin.profile.email")}
+                defaultValue={profile.email}
+                maxLength={120}
+                required={false}
+              />
             </div>
-            <Button type="submit">{t("admin.profile.save")}</Button>
+            <Button type="submit" variant="primary">
+              {t("admin.profile.save")}
+            </Button>
           </form>
-        </CardContent>
-      </Card>
+        </LayerCard.Primary>
+      </LayerCard>
     </div>
   );
 }
