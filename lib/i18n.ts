@@ -1,4 +1,4 @@
-import type { Locale } from "../types";
+import type { Locale } from "./types";
 
 type Dict = Record<string, string>;
 

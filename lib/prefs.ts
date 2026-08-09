@@ -53,18 +53,16 @@ export function resolveColorMode(
   return "system";
 }
 
-/**
- * Locale preference (what the toolbar shows): cookie or auto.
- */
+/** Locale preference (what the toolbar shows): cookie or auto. */
 export function resolveLocalePref(cookieHeader: string | undefined): LocalePref {
   return parseLocalePref(getCookie(cookieHeader, LOCALE_COOKIE)) ?? "auto";
 }
 
 /**
  * Effective UI locale for SSR:
- * 1. cookie zh-CN | en â†?locked
- * 2. cookie auto â†?Accept-Language â†?site default â†?zh-CN
- * 3. no cookie â†?site default â†?Accept-Language â†?zh-CN
+ * 1. cookie zh-CN | en -> locked
+ * 2. cookie auto -> Accept-Language -> site default -> zh-CN
+ * 3. no cookie -> site default -> Accept-Language -> zh-CN
  */
 export function resolveLocale(
   cookieHeader: string | undefined,
@@ -78,13 +76,11 @@ export function resolveLocale(
     return { pref, locale: pref };
   }
 
-  // auto (explicit cookie) â€?browser first
   if (getCookie(cookieHeader, LOCALE_COOKIE) === "auto") {
     const fromAl = localeFromAcceptLanguage(acceptLanguage);
     return { pref: "auto", locale: fromAl || site || "zh-CN" };
   }
 
-  // no cookie â€?site default first, then browser
   if (site) return { pref: "auto", locale: site };
   return {
     pref: "auto",
