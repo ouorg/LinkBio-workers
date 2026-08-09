@@ -292,6 +292,136 @@ select {
   border-bottom-color: var(--text-secondary);
 }
 
+/* ── Public theme / locale toolbar (top-right) ───────────────── */
+
+.theme-toolbar {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 50;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.theme-toolbar__group {
+  position: relative;
+  pointer-events: auto;
+}
+
+.theme-toolbar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-toolbar__btn:hover,
+.theme-toolbar__btn:focus-visible {
+  background: var(--bg-card);
+  border-color: var(--text-muted);
+  outline: none;
+}
+
+.theme-toolbar__icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.theme-toolbar__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.35rem;
+  padding: 0 4px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.theme-toolbar__text {
+  font-size: 0.8rem;
+  font-weight: 550;
+  max-width: 6.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.theme-toolbar__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 9.5rem;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.theme-toolbar__menu[hidden] {
+  display: none !important;
+}
+
+.theme-toolbar__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.theme-toolbar__item:hover,
+.theme-toolbar__item:focus-visible {
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.theme-toolbar__item.is-active {
+  font-weight: 650;
+  color: var(--accent);
+}
+
+@media (max-width: 520px) {
+  .theme-toolbar {
+    top: 8px;
+    right: 8px;
+    gap: 6px;
+  }
+
+  .theme-toolbar__btn {
+    min-height: 34px;
+    padding: 6px 8px;
+  }
+
+  .theme-toolbar__text {
+    display: none;
+  }
+}
+
 /* ── Admin shell ─────────────────────────────────────────────── */
 
 .admin-body {

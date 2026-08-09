@@ -8,6 +8,14 @@ const en: Dict = {
   "public.metaDescription": "{siteName} — personal bio links",
   "public.linksNav": "Links",
   "public.footer.site": "{siteName}",
+  "public.toolbar.color": "Color mode",
+  "public.toolbar.color.system": "System",
+  "public.toolbar.color.light": "Light",
+  "public.toolbar.color.dark": "Dark",
+  "public.toolbar.locale": "Language",
+  "public.toolbar.locale.auto": "Auto",
+  "public.toolbar.locale.zh": "中文",
+  "public.toolbar.locale.en": "English",
 
   // Admin shell
   "admin.brand": "LinkBio",
@@ -134,6 +142,14 @@ const zhCN: Dict = {
   "public.metaDescription": "{siteName} — 个人主页链接",
   "public.linksNav": "链接",
   "public.footer.site": "{siteName}",
+  "public.toolbar.color": "颜色模式",
+  "public.toolbar.color.system": "跟随系统",
+  "public.toolbar.color.light": "浅色",
+  "public.toolbar.color.dark": "深色",
+  "public.toolbar.locale": "语言",
+  "public.toolbar.locale.auto": "自动",
+  "public.toolbar.locale.zh": "中文",
+  "public.toolbar.locale.en": "English",
 
   "admin.brand": "LinkBio",
   "admin.subtitle": "管理你的个人主页内容与外观。",
@@ -275,4 +291,31 @@ export function createT(locale: Locale | string | undefined): TranslateFn {
 
 export function htmlLang(locale: Locale | string | undefined): string {
   return locale === "en" ? "en" : "zh-CN";
+}
+
+/**
+ * Map Accept-Language to supported locales.
+ * Any `zh*` tag → zh-CN; otherwise first matching en; else null.
+ */
+export function localeFromAcceptLanguage(header: string | undefined): Locale | null {
+  if (!header) return null;
+  const parts = header.split(",").map((p) => {
+    const [tag, ...params] = p.trim().split(";");
+    let q = 1;
+    for (const param of params) {
+      const m = param.trim().match(/^q=([0-9.]+)$/i);
+      if (m) q = Number(m[1]) || 0;
+    }
+    return { tag: (tag || "").toLowerCase(), q };
+  });
+  parts.sort((a, b) => b.q - a.q);
+  for (const { tag } of parts) {
+    if (!tag) continue;
+    if (tag === "zh" || tag.startsWith("zh-")) return "zh-CN";
+  }
+  for (const { tag } of parts) {
+    if (!tag) continue;
+    if (tag === "en" || tag.startsWith("en-")) return "en";
+  }
+  return null;
 }

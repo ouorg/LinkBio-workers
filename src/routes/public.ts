@@ -2,9 +2,11 @@ import { Hono } from "hono";
 import { htmlResponse, renderLayout } from "../components/layout";
 import { renderLinks } from "../components/links";
 import { renderProfileBlock } from "../components/profile";
+import { colorFoucScript, renderToolbar } from "../components/toolbar";
 import { escapeHtml } from "../middleware/security";
 import { createStore } from "../services/kv";
 import { createT } from "../i18n";
+import { resolveColorMode, resolveLocale } from "../utils/prefs";
 import type { AuthVariables } from "../middleware/auth";
 import type { Settings } from "../types";
 
@@ -22,7 +24,15 @@ publicRoutes.get("/", async (c) => {
 
   c.executionCtx.waitUntil(store.incrementPageViews());
 
-  const t = createT(settings.locale);
+  const cookie = c.req.header("Cookie");
+  const colorMode = resolveColorMode(cookie, settings.colorMode);
+  const { pref: localePref, locale } = resolveLocale(
+    cookie,
+    c.req.header("Accept-Language"),
+    settings.locale,
+  );
+  const t = createT(locale);
+
   const bgStyle =
     settings.background && /^https?:\/\//i.test(settings.background)
       ? ` style="background-image:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.75)),url('${escapeHtml(settings.background)}')"`
@@ -31,12 +41,17 @@ publicRoutes.get("/", async (c) => {
   const pageClass = settings.background ? "page page--bg" : "page";
   const isAdmin = c.get("isAdmin");
   const footer = renderPublicFooter(settings, siteName, isAdmin, t);
+  const toolbar = renderToolbar({ colorMode, localePref, t });
 
   const html = renderLayout({
     title: `${profile.name || siteName} · ${siteName}`,
     siteName,
     settings,
+    colorMode,
+    locale,
+    headExtra: colorFoucScript(),
     children: `
+    ${toolbar}
     <main class="${pageClass}"${bgStyle}>
       <div class="card">
         ${renderProfileBlock(profile)}

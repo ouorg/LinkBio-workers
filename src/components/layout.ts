@@ -1,12 +1,16 @@
 import { escapeHtml } from "../middleware/security";
 import { createT, htmlLang } from "../i18n";
-import type { ColorMode, Settings } from "../types";
+import type { ColorMode, Locale, Settings } from "../types";
 import { appCss as css } from "../styles/app.css.js";
 
 export type LayoutOptions = {
   title: string;
   siteName: string;
   settings: Settings;
+  /** Effective theme after cookie/site resolution (defaults to settings.colorMode) */
+  colorMode?: ColorMode;
+  /** Effective locale after cookie/Accept-Language/site resolution */
+  locale?: Locale;
   bodyClass?: string;
   headExtra?: string;
   children: string;
@@ -18,15 +22,16 @@ export type LayoutOptions = {
  * Full HTML document wrapper (SSR). CSS is inlined for zero extra round-trips.
  */
 export function renderLayout(opts: LayoutOptions): string {
-  const colorMode: ColorMode = opts.settings.colorMode || "system";
+  const colorMode: ColorMode = opts.colorMode || opts.settings.colorMode || "system";
+  const locale: Locale = opts.locale || opts.settings.locale || "zh-CN";
   const themeAttr = escapeHtml(colorMode);
   const colorSchemeMeta =
     colorMode === "system" ? "light dark" : colorMode === "light" ? "light" : "dark";
-  const lang = escapeHtml(htmlLang(opts.settings.locale));
+  const lang = escapeHtml(htmlLang(locale));
   const accent = escapeHtml(opts.settings.accentColor || "#6366f1");
   const title = escapeHtml(opts.title);
   const bodyClass = escapeHtml(opts.bodyClass || "");
-  const t = createT(opts.settings.locale);
+  const t = createT(locale);
   const description = escapeHtml(
     opts.description ?? t("public.metaDescription", { siteName: opts.siteName }),
   );
