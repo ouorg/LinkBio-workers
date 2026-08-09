@@ -11,6 +11,7 @@ import {
   scheduleBackup,
 } from "@/lib/backup";
 import { getAdminUi } from "@/lib/admin-ui";
+import { translateBackupError } from "@/lib/backup-i18n";
 import { getEnv, getStore } from "@/lib/env";
 import { flashErr, flashOk, setFlashCookie } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
@@ -370,15 +371,21 @@ export async function runBackupNowAction(formData: FormData) {
   const store = await getStore();
   const result = await runBackup(store, { source: "manual", force: true });
   if (result.ok) {
-    const partial = result.error ? ` (${result.error})` : "";
-    await flashRedirect(
-      "/admin/data",
-      flashOk(`${t("admin.backup.runOk")}${partial}`),
-    );
+    if (result.error) {
+      await flashRedirect(
+        "/admin/data",
+        flashOk(
+          t("admin.backup.runOkPartial", {
+            details: translateBackupError(t, result.error),
+          }),
+        ),
+      );
+    }
+    await flashRedirect("/admin/data", flashOk(t("admin.backup.runOk")));
   }
   await flashRedirect(
     "/admin/data",
-    flashErr(result.error || t("admin.backup.runFail")),
+    flashErr(translateBackupError(t, result.error) || t("admin.backup.runFail")),
   );
 }
 
@@ -395,7 +402,7 @@ export async function restoreWebDavAction(formData: FormData) {
   }
   await flashRedirect(
     "/admin/data",
-    flashErr(result.error || t("admin.backup.restoreFail")),
+    flashErr(translateBackupError(t, result.error) || t("admin.backup.restoreFail")),
   );
 }
 
@@ -412,7 +419,7 @@ export async function restoreGistAction(formData: FormData) {
   }
   await flashRedirect(
     "/admin/data",
-    flashErr(result.error || t("admin.backup.restoreFail")),
+    flashErr(translateBackupError(t, result.error) || t("admin.backup.restoreFail")),
   );
 }
 

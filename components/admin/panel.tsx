@@ -21,16 +21,17 @@ export function AdminPanel({
     return (
       <div
         className={cn(
-          "flex w-full flex-col overflow-hidden rounded-lg bg-kumo-elevated text-base ring ring-kumo-hairline",
+          /* overflow-visible: allow popovers/dropdowns (e.g. IconSelect) to escape */
+          "flex w-full flex-col overflow-visible rounded-lg bg-kumo-elevated text-base ring ring-kumo-hairline",
           className,
         )}
       >
-        <div className="-my-2 flex items-center gap-2 bg-kumo-elevated p-4 text-base font-medium text-kumo-subtle">
+        <div className="-my-2 flex items-center gap-2 rounded-t-lg bg-kumo-elevated p-4 text-base font-medium text-kumo-subtle">
           {title}
         </div>
         <div
           className={cn(
-            "relative flex flex-col gap-2 overflow-hidden rounded-lg bg-kumo-base p-4 pr-3 text-inherit ring ring-kumo-fill",
+            "relative flex flex-col gap-2 overflow-visible rounded-lg bg-kumo-base p-4 pr-3 text-inherit ring ring-kumo-fill",
             bodyClassName,
           )}
         >
@@ -43,7 +44,7 @@ export function AdminPanel({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-lg bg-kumo-base p-4 shadow-xs ring ring-kumo-line",
+        "overflow-visible rounded-lg bg-kumo-base p-4 shadow-xs ring ring-kumo-line",
         className,
       )}
     >

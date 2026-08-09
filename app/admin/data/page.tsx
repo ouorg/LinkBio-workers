@@ -14,6 +14,11 @@ import { Flash } from "@/components/admin/flash";
 import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
 import { getAdminUi } from "@/lib/admin-ui";
+import {
+  translateBackupError,
+  translateBackupSource,
+  translateBackupTarget,
+} from "@/lib/backup-i18n";
 import { getCsrfToken } from "@/lib/csrf";
 import { resolveAdminFlash } from "@/lib/flash";
 import { CSRF_FIELD } from "@/lib/security";
@@ -35,9 +40,13 @@ export default async function DataPage({
   const statusLine = state.lastAttemptAt
     ? [
         state.lastOk ? t("admin.backup.statusOk") : t("admin.backup.statusFail"),
-        state.lastSource ? `${t("admin.backup.source")}: ${state.lastSource}` : "",
+        state.lastSource
+          ? `${t("admin.backup.source")}: ${translateBackupSource(t, state.lastSource)}`
+          : "",
         state.lastTargets.length
-          ? `${t("admin.backup.targets")}: ${state.lastTargets.join(", ")}`
+          ? `${t("admin.backup.targets")}: ${state.lastTargets
+              .map((x) => translateBackupTarget(t, x))
+              .join(", ")}`
           : "",
         state.lastSuccessAt
           ? `${t("admin.backup.lastSuccess")}: ${state.lastSuccessAt}`
@@ -45,7 +54,9 @@ export default async function DataPage({
         state.lastAttemptAt
           ? `${t("admin.backup.lastAttempt")}: ${state.lastAttemptAt}`
           : "",
-        state.lastError ? `${t("admin.backup.lastError")}: ${state.lastError}` : "",
+        state.lastError
+          ? `${t("admin.backup.lastError")}: ${translateBackupError(t, state.lastError)}`
+          : "",
       ]
         .filter(Boolean)
         .join(" · ")
@@ -76,7 +87,7 @@ export default async function DataPage({
               required
               rows={8}
               className="font-mono text-xs"
-              placeholder='{"version":1,"profile":{...},"links":[...],"settings":{...},"backup":{...}}'
+              placeholder={t("admin.data.importPlaceholder")}
             />
             <Button type="submit" variant="primary">
               {t("admin.data.import")}
@@ -146,7 +157,7 @@ export default async function DataPage({
                 type="url"
                 label={t("admin.backup.webdavUrl")}
                 defaultValue={backup.webdav.url}
-                placeholder="https://dav.example.com/.../linkbio.json"
+                placeholder={t("admin.backup.webdavUrlPlaceholder")}
                 required={false}
               />
               <div className="grid gap-3 sm:grid-cols-2">
@@ -188,7 +199,9 @@ export default async function DataPage({
                 name="gistToken"
                 type="password"
                 label={t("admin.backup.gistToken")}
-                placeholder={backup.gist.token ? "••••••••" : "ghp_…"}
+                placeholder={
+                  backup.gist.token ? "••••••••" : t("admin.backup.gistTokenPlaceholder")
+                }
                 description={t("admin.backup.secretKeep")}
                 required={false}
                 autoComplete="new-password"

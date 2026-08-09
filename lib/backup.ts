@@ -37,11 +37,16 @@ function basicAuth(user: string, pass: string): string {
   return `Basic ${btoa(bin)}`;
 }
 
+/** Stable error codes for i18n (UI translates via lib/backup-i18n). */
+function errCode(code: string, ...args: Array<string | number>): string {
+  return args.length ? `err.${code}|${args.join("|")}` : `err.${code}`;
+}
+
 async function pushWebDav(
   cfg: WebDavBackupConfig,
   body: string,
 ): Promise<BackupTargetResult> {
-  if (!cfg.url) return { target: "webdav", ok: false, error: "WebDAV URL is empty" };
+  if (!cfg.url) return { target: "webdav", ok: false, error: errCode("webdav_url_empty") };
   try {
     const headers: Record<string, string> = {
       "Content-Type": "application/json; charset=utf-8",
@@ -59,7 +64,7 @@ async function pushWebDav(
       return {
         target: "webdav",
         ok: false,
-        error: `WebDAV HTTP ${res.status}${text ? `: ${text.slice(0, 120)}` : ""}`,
+        error: errCode("webdav_http", res.status, text.slice(0, 120)),
       };
     }
     return { target: "webdav", ok: true };
@@ -67,13 +72,13 @@ async function pushWebDav(
     return {
       target: "webdav",
       ok: false,
-      error: e instanceof Error ? e.message : "WebDAV request failed",
+      error: e instanceof Error ? errCode("network", e.message) : errCode("webdav_failed"),
     };
   }
 }
 
 async function pullWebDav(cfg: WebDavBackupConfig): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
-  if (!cfg.url) return { ok: false, error: "WebDAV URL is empty" };
+  if (!cfg.url) return { ok: false, error: errCode("webdav_url_empty") };
   try {
     const headers: Record<string, string> = { Accept: "application/json, text/plain, */*" };
     if (cfg.username || cfg.password) {
@@ -81,11 +86,14 @@ async function pullWebDav(cfg: WebDavBackupConfig): Promise<{ ok: true; text: st
     }
     const res = await fetch(cfg.url, { method: "GET", headers });
     if (!res.ok) {
-      return { ok: false, error: `WebDAV HTTP ${res.status}` };
+      return { ok: false, error: errCode("webdav_http", res.status) };
     }
     return { ok: true, text: await res.text() };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "WebDAV fetch failed" };
+    return {
+      ok: false,
+      error: e instanceof Error ? errCode("network", e.message) : errCode("webdav_fetch_failed"),
+    };
   }
 }
 
@@ -93,7 +101,7 @@ async function pushGist(
   cfg: GistBackupConfig,
   body: string,
 ): Promise<BackupTargetResult> {
-  if (!cfg.token) return { target: "gist", ok: false, error: "Gist token is empty" };
+  if (!cfg.token) return { target: "gist", ok: false, error: errCode("gist_token_empty") };
   const filename = cfg.filename || "linkbio-backup.json";
   const headers = {
     Accept: "application/vnd.github+json",
@@ -117,7 +125,7 @@ async function pushGist(
         return {
           target: "gist",
           ok: false,
-          error: `Gist HTTP ${res.status}${text ? `: ${text.slice(0, 120)}` : ""}`,
+          error: errCode("gist_http", res.status, text.slice(0, 120)),
         };
       }
       return { target: "gist", ok: true, gistId: cfg.gistId };
@@ -137,17 +145,17 @@ async function pushGist(
       return {
         target: "gist",
         ok: false,
-        error: `Gist create HTTP ${res.status}${text ? `: ${text.slice(0, 120)}` : ""}`,
+        error: errCode("gist_create_http", res.status, text.slice(0, 120)),
       };
     }
     const json = (await res.json()) as { id?: string };
-    if (!json.id) return { target: "gist", ok: false, error: "Gist create: missing id" };
+    if (!json.id) return { target: "gist", ok: false, error: errCode("gist_create_no_id") };
     return { target: "gist", ok: true, gistId: json.id };
   } catch (e) {
     return {
       target: "gist",
       ok: false,
-      error: e instanceof Error ? e.message : "Gist request failed",
+      error: e instanceof Error ? errCode("network", e.message) : errCode("gist_failed"),
     };
   }
 }
@@ -155,8 +163,8 @@ async function pushGist(
 async function pullGist(
   cfg: GistBackupConfig,
 ): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
-  if (!cfg.token) return { ok: false, error: "Gist token is empty" };
-  if (!cfg.gistId) return { ok: false, error: "Gist id is empty" };
+  if (!cfg.token) return { ok: false, error: errCode("gist_token_empty") };
+  if (!cfg.gistId) return { ok: false, error: errCode("gist_id_empty") };
   const filename = cfg.filename || "linkbio-backup.json";
   try {
     const res = await fetch(`https://api.github.com/gists/${cfg.gistId}`, {
@@ -167,12 +175,12 @@ async function pullGist(
         "User-Agent": "LinkBio-workers-backup",
       },
     });
-    if (!res.ok) return { ok: false, error: `Gist HTTP ${res.status}` };
+    if (!res.ok) return { ok: false, error: errCode("gist_http", res.status) };
     const json = (await res.json()) as {
       files?: Record<string, { content?: string; truncated?: boolean; raw_url?: string }>;
     };
     const file = json.files?.[filename] || Object.values(json.files || {})[0];
-    if (!file) return { ok: false, error: "Gist has no files" };
+    if (!file) return { ok: false, error: errCode("gist_no_files") };
     if (file.content && !file.truncated) return { ok: true, text: file.content };
     if (file.raw_url) {
       const raw = await fetch(file.raw_url, {
@@ -181,12 +189,15 @@ async function pullGist(
           "User-Agent": "LinkBio-workers-backup",
         },
       });
-      if (!raw.ok) return { ok: false, error: `Gist raw HTTP ${raw.status}` };
+      if (!raw.ok) return { ok: false, error: errCode("gist_raw_http", raw.status) };
       return { ok: true, text: await raw.text() };
     }
-    return { ok: false, error: "Gist file content unavailable" };
+    return { ok: false, error: errCode("gist_content_unavailable") };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "Gist fetch failed" };
+    return {
+      ok: false,
+      error: e instanceof Error ? errCode("network", e.message) : errCode("gist_fetch_failed"),
+    };
   }
 }
 
@@ -221,7 +232,7 @@ export async function runBackup(
       ...DEFAULT_BACKUP_STATE,
       lastAttemptAt: now,
       lastOk: false,
-      lastError: "No backup target enabled",
+      lastError: errCode("no_target"),
       lastSource: source,
       lastTargets: [],
     };
@@ -255,7 +266,11 @@ export async function runBackup(
     lastAttemptAt: now,
     lastSuccessAt: ok ? now : (await store.getBackupState()).lastSuccessAt,
     lastOk: ok,
-    lastError: ok ? (errors.length ? `Partial: ${errors.join("; ")}` : "") : errors.join("; ") || "Backup failed",
+    lastError: ok
+      ? errors.length
+        ? `partial:${errors.join("; ")}`
+        : ""
+      : errors.join("; ") || errCode("backup_failed"),
     lastTargets: okTargets,
     lastSource: source,
   };
@@ -330,7 +345,7 @@ export async function applyBackupJson(
   try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     if (!parsed || typeof parsed !== "object") {
-      return { ok: false, error: "Invalid backup JSON" };
+      return { ok: false, error: errCode("invalid_json") };
     }
     const clean = stripForbiddenSecrets(parsed);
     await store.importAll({
@@ -344,7 +359,7 @@ export async function applyBackupJson(
   } catch (e) {
     return {
       ok: false,
-      error: e instanceof Error ? e.message : "Failed to apply backup",
+      error: e instanceof Error ? errCode("network", e.message) : errCode("apply_failed"),
     };
   }
 }
