@@ -156,4 +156,4 @@ npm run build:themes   # 校验并生成 _registry.ts / _bundle.css（打包全�
 
 ## 许可证
 
-MIT
+[GNU General Public License v3.0 or later](./LICENSE)（GPL-3.0-or-later）

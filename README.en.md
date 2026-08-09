@@ -164,4 +164,4 @@ In-app UI defaults to **`zh-CN`**. Switch to English in Admin → Theme, or use 
 
 ## License
 
-MIT
+[GNU General Public License v3.0 or later](./LICENSE) (GPL-3.0-or-later)
