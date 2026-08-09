@@ -2,6 +2,9 @@ import { getStore } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
+const FETCH_TIMEOUT_MS = 2500;
+const MAX_AVATAR_BYTES = 512 * 1024; // 512 KiB — keep favicon payload small
+
 function escapeXml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -14,7 +17,6 @@ function escapeXml(s: string): string {
 function firstLetter(name: string): string {
   const t = name.trim();
   if (!t) return "L";
-  // Prefer first Unicode letter/number grapheme-ish: first code point
   return Array.from(t)[0]!.toUpperCase();
 }
 
@@ -28,8 +30,9 @@ function svgCircleLetter(letter: string): string {
 </svg>`;
 }
 
-function svgCircleAvatar(url: string): string {
-  const href = escapeXml(url);
+/** Favicon SVG with embedded data: URL only — browsers block external <image href> in tab icons. */
+function svgCircleAvatarDataUrl(dataUrl: string): string {
+  const href = escapeXml(dataUrl);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
   <defs>
@@ -40,17 +43,92 @@ function svgCircleAvatar(url: string): string {
 </svg>`;
 }
 
+function bytesToBase64(bytes: Uint8Array): string {
+  // Chunk to avoid call-stack limits on large buffers
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+function normalizeMime(contentType: string | null, url: string): string | null {
+  const raw = (contentType || "").split(";")[0]?.trim().toLowerCase() || "";
+  if (raw === "image/jpeg" || raw === "image/jpg" || raw === "image/png" || raw === "image/webp" || raw === "image/gif") {
+    return raw === "image/jpg" ? "image/jpeg" : raw;
+  }
+  // Guess from extension when server omits/wrong type
+  const path = url.split("?")[0]?.toLowerCase() || "";
+  if (path.endsWith(".png")) return "image/png";
+  if (path.endsWith(".webp")) return "image/webp";
+  if (path.endsWith(".gif")) return "image/gif";
+  if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+  // GitHub avatars often return image/jpeg without extension
+  if (raw.startsWith("image/")) return raw;
+  return null;
+}
+
+/**
+ * Fetch avatar and return data:image/...;base64,... for SVG embedding.
+ * Never return an external https URL (favicon SVG external images are blocked).
+ */
+async function fetchAvatarDataUrl(avatarUrl: string): Promise<string | null> {
+  let parsed: URL;
+  try {
+    parsed = new URL(avatarUrl);
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return null;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch(parsed.toString(), {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: {
+        Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+        "User-Agent": "LinkBio-workers-favicon/1.0",
+      },
+    });
+    if (!res.ok) return null;
+
+    const len = Number(res.headers.get("content-length") || 0);
+    if (len > MAX_AVATAR_BYTES) return null;
+
+    const buf = new Uint8Array(await res.arrayBuffer());
+    if (!buf.byteLength || buf.byteLength > MAX_AVATAR_BYTES) return null;
+
+    const mime = normalizeMime(res.headers.get("content-type"), parsed.toString());
+    if (!mime) return null;
+
+    // Reject SVG/HTML payloads disguised as images (would re-introduce external refs / XSS surface)
+    if (mime === "image/svg+xml" || mime.includes("svg")) return null;
+
+    const b64 = bytesToBase64(buf);
+    return `data:${mime};base64,${b64}`;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function GET() {
   let svg = svgCircleLetter("L");
   try {
     const store = await getStore();
     const profile = await store.getProfile();
+    const letter = firstLetter(profile.name || "");
     const avatar = (profile.avatar || "").trim();
-    // Prefer https for favicon safety; allow http for local/dev avatars
+
     if (/^https?:\/\//i.test(avatar)) {
-      svg = svgCircleAvatar(avatar);
+      const dataUrl = await fetchAvatarDataUrl(avatar);
+      svg = dataUrl ? svgCircleAvatarDataUrl(dataUrl) : svgCircleLetter(letter);
     } else {
-      svg = svgCircleLetter(firstLetter(profile.name || ""));
+      svg = svgCircleLetter(letter);
     }
   } catch {
     /* fallback letter L */
