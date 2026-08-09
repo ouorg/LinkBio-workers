@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { Button, LinkButton } from "@cloudflare/kumo/components/button";
 import { InputArea } from "@cloudflare/kumo/components/input";
-import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import { importDataAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
+import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
 import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
@@ -36,33 +36,30 @@ export default async function DataPage({
           {t("admin.page.data")}
         </h1>
       </header>
-      <LayerCard>
-        <LayerCard.Secondary>{t("admin.data.title")}</LayerCard.Secondary>
-        <LayerCard.Primary>
-          <div className="space-y-4">
-            <Flash message={flash} />
-            <p className="text-sm text-kumo-subtle">{t("admin.data.hint")}</p>
-            <LinkButton href="/api/admin/export" variant="secondary">
-              {t("admin.data.export")}
-            </LinkButton>
-            <form action={importDataAction} className="space-y-3">
-              <input type="hidden" name={CSRF_FIELD} value={csrf} />
-              <InputArea
-                id="json"
-                name="json"
-                label={t("admin.data.importLabel")}
-                required
-                rows={8}
-                className="font-mono text-xs"
-                placeholder='{"profile":{...},"links":[...],"settings":{...}}'
-              />
-              <Button type="submit" variant="primary">
-                {t("admin.data.import")}
-              </Button>
-            </form>
-          </div>
-        </LayerCard.Primary>
-      </LayerCard>
+      <AdminPanel title={t("admin.data.title")}>
+        <div className="space-y-4">
+          <Flash message={flash} />
+          <p className="text-sm text-kumo-subtle">{t("admin.data.hint")}</p>
+          <LinkButton href="/api/admin/export" variant="secondary">
+            {t("admin.data.export")}
+          </LinkButton>
+          <form action={importDataAction} className="space-y-3">
+            <input type="hidden" name={CSRF_FIELD} value={csrf} />
+            <InputArea
+              id="json"
+              name="json"
+              label={t("admin.data.importLabel")}
+              required
+              rows={8}
+              className="font-mono text-xs"
+              placeholder='{"profile":{...},"links":[...],"settings":{...}}'
+            />
+            <Button type="submit" variant="primary">
+              {t("admin.data.import")}
+            </Button>
+          </form>
+        </div>
+      </AdminPanel>
     </div>
   );
 }

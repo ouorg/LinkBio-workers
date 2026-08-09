@@ -3,10 +3,10 @@ import { Button } from "@cloudflare/kumo/components/button";
 import { Input } from "@cloudflare/kumo/components/input";
 import { InputArea } from "@cloudflare/kumo/components/input";
 import { Label } from "@cloudflare/kumo/components/label";
-import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import { saveSettingsAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
+import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
 import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
@@ -55,9 +55,7 @@ export default async function ThemePage({
         </h1>
         <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
       </header>
-      <LayerCard>
-        <LayerCard.Secondary>{t("admin.theme.title")}</LayerCard.Secondary>
-        <LayerCard.Primary>
+      <AdminPanel title={t("admin.theme.title")}>
           <Flash message={flash} />
           <form action={saveSettingsAction} className="space-y-6">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
@@ -186,8 +184,7 @@ export default async function ThemePage({
               {t("admin.theme.save")}
             </Button>
           </form>
-        </LayerCard.Primary>
-      </LayerCard>
+      </AdminPanel>
     </div>
   );
 }

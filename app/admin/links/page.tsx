@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { Badge } from "@cloudflare/kumo/components/badge";
 import { Button, LinkButton } from "@cloudflare/kumo/components/button";
 import { Input } from "@cloudflare/kumo/components/input";
-import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import {
   addLinkAction,
   deleteLinkAction,
@@ -14,6 +13,7 @@ import {
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { IconSelect } from "@/components/admin/icon-select";
+import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
 import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
@@ -49,9 +49,7 @@ export default async function LinksPage({
           {t("admin.page.links")}
         </h1>
       </header>
-      <LayerCard className="mb-6">
-        <LayerCard.Secondary>{t("admin.links.title")}</LayerCard.Secondary>
-        <LayerCard.Primary>
+      <AdminPanel title={t("admin.links.title")} className="mb-6">
           <div className="space-y-3">
             <Flash message={flash} />
             {sorted.length === 0 ? (
@@ -203,8 +201,7 @@ export default async function LinksPage({
               })
             )}
           </div>
-        </LayerCard.Primary>
-      </LayerCard>
+      </AdminPanel>
 
       {editId && !editing ? (
         <p className="mb-4 text-sm text-kumo-subtle">
@@ -215,9 +212,7 @@ export default async function LinksPage({
         </p>
       ) : null}
 
-      <LayerCard>
-        <LayerCard.Secondary>{t("admin.links.add")}</LayerCard.Secondary>
-        <LayerCard.Primary>
+      <AdminPanel title={t("admin.links.add")}>
           <form action={addLinkAction} className="space-y-4">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
             <div className="grid gap-4 sm:grid-cols-2">
@@ -254,8 +249,7 @@ export default async function LinksPage({
               </Button>
             </div>
           </form>
-        </LayerCard.Primary>
-      </LayerCard>
+      </AdminPanel>
     </div>
   );
 }

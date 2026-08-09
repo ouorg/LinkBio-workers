@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { Button } from "@cloudflare/kumo/components/button";
 import { Input } from "@cloudflare/kumo/components/input";
-import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import { loginAction } from "../actions";
 import { Flash } from "@/components/admin/flash";
+import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
 import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
@@ -29,35 +29,35 @@ export default async function LoginPage({
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8">
-      <LayerCard className="w-full max-w-md">
-        <LayerCard.Secondary>
+      <AdminPanel
+        className="w-full max-w-md"
+        title={
           <div className="space-y-1">
             <div className="text-base font-semibold text-kumo-strong">{t("admin.login.title")}</div>
-            <p className="text-sm text-kumo-subtle">
+            <p className="text-sm font-normal text-kumo-subtle">
               {t("admin.login.sub", { siteName: env.SITE_NAME || "LinkBio" })}
             </p>
           </div>
-        </LayerCard.Secondary>
-        <LayerCard.Primary>
-          <Flash message={flash} />
-          <form action={loginAction} className="space-y-4">
-            <input type="hidden" name={CSRF_FIELD} value={csrf} />
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              label={t("admin.login.password")}
-              description={t("admin.login.hint")}
-              required
-              autoComplete="current-password"
-              autoFocus
-            />
-            <Button type="submit" variant="primary" className="w-full">
-              {t("admin.login.submit")}
-            </Button>
-          </form>
-        </LayerCard.Primary>
-      </LayerCard>
+        }
+      >
+        <Flash message={flash} />
+        <form action={loginAction} className="space-y-4">
+          <input type="hidden" name={CSRF_FIELD} value={csrf} />
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            label={t("admin.login.password")}
+            description={t("admin.login.hint")}
+            required
+            autoComplete="current-password"
+            autoFocus
+          />
+          <Button type="submit" variant="primary" className="w-full">
+            {t("admin.login.submit")}
+          </Button>
+        </form>
+      </AdminPanel>
     </div>
   );
 }

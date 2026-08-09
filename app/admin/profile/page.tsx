@@ -2,10 +2,10 @@ import { redirect } from "next/navigation";
 import { Button } from "@cloudflare/kumo/components/button";
 import { Input } from "@cloudflare/kumo/components/input";
 import { InputArea } from "@cloudflare/kumo/components/input";
-import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import { saveProfileAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
+import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
 import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
@@ -37,73 +37,70 @@ export default async function ProfilePage({
           {t("admin.page.profile")}
         </h1>
       </header>
-      <LayerCard>
-        <LayerCard.Secondary>{t("admin.profile.title")}</LayerCard.Secondary>
-        <LayerCard.Primary>
-          <Flash message={flash} />
-          <form action={saveProfileAction} className="space-y-4">
-            <input type="hidden" name={CSRF_FIELD} value={csrf} />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                id="name"
-                name="name"
-                label={t("admin.profile.name")}
-                defaultValue={profile.name}
-                required
-                maxLength={80}
-              />
-              <Input
-                id="username"
-                name="username"
-                label={t("admin.profile.username")}
-                defaultValue={profile.username}
-                maxLength={40}
-                required={false}
-              />
-            </div>
-            <InputArea
-              id="bio"
-              name="bio"
-              label={t("admin.profile.bio")}
-              defaultValue={profile.bio}
-              maxLength={500}
-              rows={4}
+      <AdminPanel title={t("admin.profile.title")}>
+        <Flash message={flash} />
+        <form action={saveProfileAction} className="space-y-4">
+          <input type="hidden" name={CSRF_FIELD} value={csrf} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Input
+              id="name"
+              name="name"
+              label={t("admin.profile.name")}
+              defaultValue={profile.name}
+              required
+              maxLength={80}
+            />
+            <Input
+              id="username"
+              name="username"
+              label={t("admin.profile.username")}
+              defaultValue={profile.username}
+              maxLength={40}
+              required={false}
+            />
+          </div>
+          <InputArea
+            id="bio"
+            name="bio"
+            label={t("admin.profile.bio")}
+            defaultValue={profile.bio}
+            maxLength={500}
+            rows={4}
+            required={false}
+          />
+          <Input
+            id="avatar"
+            name="avatar"
+            type="url"
+            label={t("admin.profile.avatar")}
+            defaultValue={profile.avatar}
+            maxLength={2000}
+            required={false}
+          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Input
+              id="location"
+              name="location"
+              label={t("admin.profile.location")}
+              defaultValue={profile.location}
+              maxLength={120}
               required={false}
             />
             <Input
-              id="avatar"
-              name="avatar"
-              type="url"
-              label={t("admin.profile.avatar")}
-              defaultValue={profile.avatar}
-              maxLength={2000}
+              id="email"
+              name="email"
+              type="email"
+              label={t("admin.profile.email")}
+              defaultValue={profile.email}
+              maxLength={120}
               required={false}
             />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                id="location"
-                name="location"
-                label={t("admin.profile.location")}
-                defaultValue={profile.location}
-                maxLength={120}
-                required={false}
-              />
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                label={t("admin.profile.email")}
-                defaultValue={profile.email}
-                maxLength={120}
-                required={false}
-              />
-            </div>
-            <Button type="submit" variant="primary">
-              {t("admin.profile.save")}
-            </Button>
-          </form>
-        </LayerCard.Primary>
-      </LayerCard>
+          </div>
+          <Button type="submit" variant="primary">
+            {t("admin.profile.save")}
+          </Button>
+        </form>
+      </AdminPanel>
     </div>
   );
 }
