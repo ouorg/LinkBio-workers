@@ -150,8 +150,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "xandroid",
     "name": "X Android",
     "nameZh": "X Android",
-    "description": "X timeline feed — pure white/black, zero-radius full-width rows, hairline dividers, #1D9BF0 accent only",
-    "version": 2,
+    "description": "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows, short transitions",
+    "version": 1,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,

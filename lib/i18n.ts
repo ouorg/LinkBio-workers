@@ -243,7 +243,7 @@ const en: Dict = {
   "theme.desc.liquid-glass":
     "Liquid glass — high blur, translucent panels, top highlights, cool cyan-blue, fluid hover",
   "theme.desc.xandroid":
-    "X timeline — pure white/black, zero-radius full-width rows, hairline dividers, #1D9BF0 only",
+    "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows",
   "theme.desc.md3":
     "Material 3 baseline — purple #6750A4, tonal surfaces, Roboto, 12/16/24 shape, filled first CTA",
   "theme.desc.miuix":
@@ -472,7 +472,8 @@ const zhCN: Dict = {
   "theme.desc.nodeseek": "技术论坛行：冷灰网格、实色卡、每行左侧青绿 accent bar、中文字体",
   "theme.desc.qtcool": "新粗野贴纸：奶油网格、3px 描边、硬偏移 5–8px、黄橙点缀",
   "theme.desc.liquid-glass": "液态玻璃：高 blur、半透明面板、顶高光、冷青蓝、液面 hover",
-  "theme.desc.xandroid": "X 时间线：纯白/纯黑、零圆角全宽行、发丝分割、#1D9BF0 仅强调",
+  "theme.desc.xandroid":
+    "X Android 重写气质：实色白/纯黑、中性灰、#1D9BF0 仅强调、约 14px 圆角、时间线链接列表",
   "theme.desc.md3": "Material 3：紫 #6750A4、tonal 表面、Roboto、12/16/24、首链 filled",
   "theme.desc.miuix": "HyperOS：独占 #3482FF、大 squircle、高密度干净表面、蓝调软 elevation",
   "theme.desc.rin":

@@ -16,22 +16,22 @@
   --theme-font: "Chirp", "TwitterChirp", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei UI", sans-serif;
-  /* Card may round; links forced square (timeline) */
-  --theme-radius: 0;
-  --theme-card-radius: 0;
+  /* ~14px card chrome; links stay square (timeline) */
+  --theme-radius: 14px;
+  --theme-card-radius: 14px;
   --theme-link-radius: 0;
   --theme-shadow: none;
   --theme-border-opacity: 1;
-  /* #1D9BF0 ≈ hsl(203 88% 53%) — accent only, never large fills */
+  /* #1D9BF0 ≈ hsl(203 88% 53%) */
   --primary: 203 88% 53%;
   --ring: 203 88% 53%;
   --primary-foreground: 0 0% 100%;
-  --theme-content-max: 37.5rem; /* denser feed column */
+  --theme-content-max: 28rem;
 
   --xa-blue: #1d9bf0;
   --xa-hover: rgba(15, 20, 25, 0.03);
   --xa-divider: hsl(var(--border));
-  --xa-transition: 100ms ease;
+  --xa-transition: 120ms ease;
 
   font-family: var(--theme-font);
   -webkit-font-smoothing: antialiased;
@@ -247,18 +247,18 @@
 [data-theme-id="xandroid"] a.theme-link {
   justify-content: flex-start;
   align-items: center;
-  min-height: 2.85rem;
-  padding: 0.7rem 1rem;
-  border-radius: 0 !important;
-  border: none !important;
-  border-bottom: 1px solid hsl(var(--border)) !important;
-  background: transparent !important;
+  min-height: 3.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid hsl(var(--border));
+  background: transparent;
   color: hsl(var(--foreground));
   font-weight: 500;
   font-size: 0.9375rem;
   letter-spacing: -0.01em;
   box-shadow: none !important;
-  gap: 0.7rem;
+  gap: 0.75rem;
   transition:
     background-color var(--xa-transition),
     color var(--xa-transition);
