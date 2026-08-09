@@ -35,27 +35,33 @@ Browser → /admin → Auth middleware → KV update
 
 ```
 LinkBio-workers/
-├── src/
-│   ├── index.ts              # Worker entry (Hono app)
+├── src/                      # Worker source (committed)
+│   ├── index.ts              # Entry (Hono app)
 │   ├── types.ts              # Domain types + defaults
-│   ├── routes/
-│   │   ├── public.ts         # Public bio page, health
-│   │   ├── admin.ts          # Admin pages + form posts
-│   │   └── api.ts            # JSON API + click beacon
-│   ├── middleware/
-│   │   ├── auth.ts           # Session gate
-│   │   └── security.ts       # CSP, CSRF, HTML escape
-│   ├── services/
-│   │   ├── kv.ts             # BIO_KV typed store
-│   │   └── session.ts        # HMAC signed cookies
+│   ├── routes/               # public / admin / api
+│   ├── middleware/           # auth + security
+│   ├── services/             # KV + session
 │   ├── components/           # Public SSR fragments
-│   ├── admin/                # Admin dashboard + forms
-│   └── styles/
-├── .github/workflows/deploy.yml
+│   ├── admin/                # Admin UI
+│   └── styles/               # app.css (+ generated app.css.ts)
+├── scripts/sync-css.mjs      # CSS → TS inliner
+├── .github/workflows/        # Deploy CI
+├── .gitignore                # Excludes node_modules, dist, secrets
+├── .dev.vars.example         # Local secrets template
+├── package.json              # Dependency manifest (not node_modules)
+├── package-lock.json         # Locked versions for npm ci
 ├── wrangler.toml
-├── package.json
 └── README.md
 ```
+
+### What is NOT in the repo
+
+| Path | Why |
+| ---- | --- |
+| `node_modules/` | Install with `npm ci` / `npm install` |
+| `dist/` | Build output (`npm run build`) |
+| `.wrangler/` | Local Wrangler / Miniflare state |
+| `.dev.vars` | Local secrets (copy from `.dev.vars.example`) |
 
 ## Quick start (local)
 
