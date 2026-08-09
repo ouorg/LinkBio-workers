@@ -13,22 +13,22 @@
   --theme-radius: 1.25rem;
   --theme-card-radius: 1.5rem;
   --theme-link-radius: 1.15rem;
-  /* Hard offset shadow — no blur (neo-brutal) */
-  --theme-shadow: 4px 4px 0 #1a1a1a;
+  /* Hard offset shadow — exaggerated neo-brutal (no blur) */
+  --theme-shadow: 5px 5px 0 #1a1a1a;
   --theme-border-opacity: 1;
-  /* iOS-ish system blue #007AFF */
+  /* Punchy CTA blue #007AFF */
   --primary: 211 100% 50%;
   --ring: 211 100% 50%;
   --primary-foreground: 0 0% 100%;
-  /* Accent dots: warm yellow / orange */
+  /* Sticker palette: warm yellow / orange */
   --qtcool-ink: 0 0% 10%;
   --qtcool-cream: 42 45% 94%;
   --qtcool-yellow: 48 96% 53%;
   --qtcool-orange: 28 95% 55%;
-  --qtcool-border-w: 2.5px;
-  --qtcool-shadow: 4px 4px 0 hsl(var(--qtcool-ink));
-  --qtcool-shadow-hover: 6px 6px 0 hsl(var(--qtcool-ink));
-  --qtcool-shadow-active: 1px 1px 0 hsl(var(--qtcool-ink));
+  --qtcool-border-w: 3px;
+  --qtcool-shadow: 5px 5px 0 hsl(var(--qtcool-ink));
+  --qtcool-shadow-hover: 8px 8px 0 hsl(var(--qtcool-ink));
+  --qtcool-shadow-active: 2px 2px 0 hsl(var(--qtcool-ink));
 
   font-family: var(--theme-font);
   -webkit-font-smoothing: antialiased;
@@ -56,39 +56,39 @@
   --primary: 211 100% 50%;
   --ring: 211 100% 50%;
   --destructive: 0 80% 48%;
-  --theme-shadow: 4px 4px 0 #1a1a1a;
+  --theme-shadow: 5px 5px 0 #1a1a1a;
   --qtcool-ink: 0 0% 10%;
-  --qtcool-shadow: 4px 4px 0 #1a1a1a;
-  --qtcool-shadow-hover: 6px 6px 0 #1a1a1a;
-  --qtcool-shadow-active: 1px 1px 0 #1a1a1a;
+  --qtcool-shadow: 5px 5px 0 #1a1a1a;
+  --qtcool-shadow-hover: 8px 8px 0 #1a1a1a;
+  --qtcool-shadow-active: 2px 2px 0 #1a1a1a;
 }
 
 /* ── Dark ───────────────────────────────────────────────────── */
 [data-theme-id="qtcool"][data-theme="dark"] {
-  /* deep charcoal canvas */
-  --background: 240 6% 8%;
-  --foreground: 42 30% 94%;
-  --card: 240 5% 12%;
-  --card-foreground: 42 30% 94%;
-  --popover: 240 5% 12%;
-  --popover-foreground: 42 30% 94%;
-  --secondary: 240 5% 16%;
-  --secondary-foreground: 42 30% 94%;
-  --muted: 240 5% 16%;
-  --muted-foreground: 40 10% 70%;
-  --accent: 28 40% 18%;
-  --accent-foreground: 42 30% 94%;
-  /* near-cream stroke on dark for brutal pop */
-  --border: 42 25% 88%;
-  --input: 42 25% 88%;
-  --primary: 211 100% 55%;
-  --ring: 211 100% 55%;
+  /* deep charcoal + cream ink geometry */
+  --background: 240 8% 6%;
+  --foreground: 42 35% 94%;
+  --card: 240 6% 10%;
+  --card-foreground: 42 35% 94%;
+  --popover: 240 6% 10%;
+  --popover-foreground: 42 35% 94%;
+  --secondary: 240 5% 14%;
+  --secondary-foreground: 42 35% 94%;
+  --muted: 240 5% 14%;
+  --muted-foreground: 40 14% 72%;
+  --accent: 28 45% 16%;
+  --accent-foreground: 42 35% 94%;
+  /* cream stroke on charcoal — sticker pop */
+  --border: 42 30% 90%;
+  --input: 42 30% 90%;
+  --primary: 211 100% 58%;
+  --ring: 211 100% 58%;
   --destructive: 0 72% 55%;
-  --theme-shadow: 4px 4px 0 #f0e6d2;
-  --qtcool-ink: 42 25% 88%;
-  --qtcool-shadow: 4px 4px 0 #f0e6d2;
-  --qtcool-shadow-hover: 6px 6px 0 #f0e6d2;
-  --qtcool-shadow-active: 1px 1px 0 #f0e6d2;
+  --theme-shadow: 5px 5px 0 #f0e6d2;
+  --qtcool-ink: 42 30% 90%;
+  --qtcool-shadow: 5px 5px 0 #f0e6d2;
+  --qtcool-shadow-hover: 8px 8px 0 #f0e6d2;
+  --qtcool-shadow-active: 2px 2px 0 #f0e6d2;
 }
 
 /* ── System (default dark pack; light via media) ────────────── */
@@ -109,11 +109,11 @@
   --input: 42 25% 88%;
   --primary: 211 100% 55%;
   --ring: 211 100% 55%;
-  --theme-shadow: 4px 4px 0 #f0e6d2;
-  --qtcool-ink: 42 25% 88%;
-  --qtcool-shadow: 4px 4px 0 #f0e6d2;
-  --qtcool-shadow-hover: 6px 6px 0 #f0e6d2;
-  --qtcool-shadow-active: 1px 1px 0 #f0e6d2;
+  --theme-shadow: 5px 5px 0 #f0e6d2;
+  --qtcool-ink: 42 30% 90%;
+  --qtcool-shadow: 5px 5px 0 #f0e6d2;
+  --qtcool-shadow-hover: 8px 8px 0 #f0e6d2;
+  --qtcool-shadow-active: 2px 2px 0 #f0e6d2;
 }
 
 @media (prefers-color-scheme: light) {
@@ -134,11 +134,11 @@
     --input: 0 0% 10%;
     --primary: 211 100% 50%;
     --ring: 211 100% 50%;
-    --theme-shadow: 4px 4px 0 #1a1a1a;
+    --theme-shadow: 5px 5px 0 #1a1a1a;
     --qtcool-ink: 0 0% 10%;
-    --qtcool-shadow: 4px 4px 0 #1a1a1a;
-    --qtcool-shadow-hover: 6px 6px 0 #1a1a1a;
-    --qtcool-shadow-active: 1px 1px 0 #1a1a1a;
+    --qtcool-shadow: 5px 5px 0 #1a1a1a;
+    --qtcool-shadow-hover: 8px 8px 0 #1a1a1a;
+    --qtcool-shadow-active: 2px 2px 0 #1a1a1a;
   }
 }
 
@@ -305,14 +305,15 @@
 
 [data-theme-id="qtcool"] a.theme-link:hover {
   box-shadow: var(--qtcool-shadow-hover);
-  transform: translate(-1px, -1px);
-  background: color-mix(in srgb, hsl(var(--card)) 92%, hsl(var(--qtcool-yellow)));
+  transform: translate(-2px, -2px);
+  background: color-mix(in srgb, hsl(var(--card)) 88%, hsl(var(--qtcool-yellow)));
 }
 
 [data-theme-id="qtcool"] a.theme-link:first-child:hover {
   background: color-mix(in srgb, hsl(var(--primary)) 88%, #000);
   color: #fff;
   box-shadow: var(--qtcool-shadow-hover);
+  transform: translate(-2px, -2px);
 }
 
 [data-theme-id="qtcool"] a.theme-link:active {

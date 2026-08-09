@@ -2,8 +2,8 @@
   "id": "qtcool",
   "name": "QT Cool",
   "nameZh": "晴辰酷",
-  "description": "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs",
-  "version": 1,
+  "description": "Neo-brutal stickers — cream grid, 3px ink stroke, hard 5–8px offset shadow, yellow/orange pops, blue CTA",
+  "version": 2,
   "tokensFile": "tokens.css",
   "features": {
     "blur": false,

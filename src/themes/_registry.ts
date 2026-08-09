@@ -7,8 +7,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "anthropic",
     "name": "Anthropic Art",
     "nameZh": "Anthropic 插画风",
-    "description": "Flat illustration palette: oat page, ivory card, clay accent, near-black ink",
-    "version": 1,
+    "description": "Editorial paper feel — oat page, ivory notes, clay accent, serif type, thick ink strokes, no shadow",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
@@ -20,11 +20,11 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "apple",
     "name": "Apple",
     "nameZh": "Apple 风格",
-    "description": "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links",
-    "version": 2,
+    "description": "Apple.com product marketing — solid cool-gray canvas, SF stack, 28px tiles, pill CTAs, first-link primary blue",
+    "version": 3,
     "tokensFile": "tokens.css",
     "features": {
-      "blur": true,
+      "blur": false,
       "gradientBg": false,
       "customFonts": true
     }
@@ -33,8 +33,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "aurora",
     "name": "Aurora",
     "nameZh": "极光",
-    "description": "Aurora clean theme",
-    "version": 1,
+    "description": "Northern lights default — cool teal–indigo primary, soft radial aurora canvas, dreamy elevation",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
@@ -44,10 +44,10 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
   },
   {
     "id": "hono-old",
-    "name": "Hono Old",
-    "nameZh": "Hono 旧版",
-    "description": "UI 重构前 Hono 前台：靛蓝强调、14px 圆角、径向光晕、居中链接按钮",
-    "version": 1,
+    "name": "Hono Classic",
+    "nameZh": "Hono 经典",
+    "description": "Linear/Vercel-style dark — near-black canvas, sharp indigo, strong radial glow, centered link buttons",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
@@ -58,9 +58,9 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
   {
     "id": "liquid-glass",
     "name": "Liquid Glass",
-    "nameZh": "Liquid Glass",
-    "description": "Liquid Glass–inspired frosted surfaces, continuous radius, system blue",
-    "version": 1,
+    "nameZh": "液态玻璃",
+    "description": "Liquid glassmorphism — high blur, translucent panels, top highlights, cool cyan-blue, fluid hover",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": true,
@@ -72,8 +72,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "md3",
     "name": "Material 3",
     "nameZh": "Material 3",
-    "description": "Google Material Design 3 baseline — tonal surfaces, expressive rounded shape, soft elevation, Roboto stack. Official seed #6750A4.",
-    "version": 1,
+    "description": "Material Design 3 baseline — purple seed #6750A4, tonal surfaces, Roboto, 12/16/24 shape, filled first CTA",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
@@ -85,8 +85,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "minimal",
     "name": "Minimal",
     "nameZh": "极简",
-    "description": "Low-chrome, tight spacing, monochrome accent",
-    "version": 1,
+    "description": "Ultra-minimal — near-square corners, no shadows/borders, monochrome ink, tight spacing",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
@@ -98,8 +98,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "miuix",
     "name": "Miuix",
     "nameZh": "小米 HyperOS",
-    "description": "Xiaomi HyperOS / Miuix design language — #3482FF primary, squircle-inspired radii, clean tonal surfaces, soft elevation. Inspired by compose-miuix-ui/miuix.",
-    "version": 1,
+    "description": "HyperOS / Miuix — exclusive #3482FF, large squircle radii, dense clean surfaces, soft blue elevation",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": true,
@@ -111,8 +111,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "nodeseek",
     "name": "NodeSeek",
     "nameZh": "NodeSeek",
-    "description": "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent",
-    "version": 1,
+    "description": "Chinese tech-forum rows — cool-gray grid, solid cards, teal accent bar on every link, CJK system fonts",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
@@ -124,8 +124,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "qtcool",
     "name": "QT Cool",
     "nameZh": "晴辰酷",
-    "description": "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs",
-    "version": 1,
+    "description": "Neo-brutal stickers — cream grid, 3px ink stroke, hard 5–8px offset shadow, yellow/orange pops, blue CTA",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
@@ -137,8 +137,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "id": "xandroid",
     "name": "X Android",
     "nameZh": "X Android",
-    "description": "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows, short transitions",
-    "version": 1,
+    "description": "X timeline feed — pure white/black, zero-radius full-width rows, hairline dividers, #1D9BF0 accent only",
+    "version": 2,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,

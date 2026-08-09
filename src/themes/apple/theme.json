@@ -2,11 +2,11 @@
   "id": "apple",
   "name": "Apple",
   "nameZh": "Apple 风格",
-  "description": "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links",
-  "version": 2,
+  "description": "Apple.com product marketing — solid cool-gray canvas, SF stack, 28px tiles, pill CTAs, first-link primary blue",
+  "version": 3,
   "tokensFile": "tokens.css",
   "features": {
-    "blur": true,
+    "blur": false,
     "gradientBg": false,
     "customFonts": true
   }

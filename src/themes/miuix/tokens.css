@@ -12,10 +12,10 @@
   --theme-font: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 
-  /* Squircle-ish continuous radii */
-  --theme-radius: 1rem; /* 16px */
-  --theme-card-radius: 1.25rem; /* 20px */
-  --theme-link-radius: 1.75rem; /* 28px */
+  /* Squircle-ish continuous radii (larger than MD3 / apple pills) */
+  --theme-radius: 1.125rem; /* 18px */
+  --theme-card-radius: 1.375rem; /* 22px */
+  --theme-link-radius: 1.875rem; /* 30px */
 
   /* Soft elevation + HyperOS-like frost */
   --theme-shadow: 0 4px 16px rgb(0 0 0 / 0.06), 0 1px 4px rgb(0 0 0 / 0.04);
@@ -203,7 +203,7 @@
 
 /* Links: soft elevated pills (secondary-container feel) */
 [data-theme-id="miuix"] .theme-links {
-  gap: 0.7rem;
+  gap: 0.55rem; /* denser — Chinese system habit */
 }
 
 [data-theme-id="miuix"] a.theme-link {

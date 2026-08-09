@@ -149,13 +149,14 @@
   }
 }
 
-/* Soft product “tile” grouping profile + links */
+/* Soft product “tile” — solid white surface (not glass) */
 [data-theme-id="apple"] .theme-card {
   border-radius: var(--theme-card-radius);
-  background: transparent;
+  background: hsl(var(--card));
   border: none;
-  box-shadow: none;
+  box-shadow: var(--theme-shadow);
   gap: 1.5rem;
+  padding: 1.5rem 1.15rem 1.65rem;
 }
 
 /* ── Profile (product hero-ish) ─────────────────────────────── */
@@ -342,6 +343,7 @@
 
 /* ── Toolbar (match pill language) ──────────────────────────── */
 
+/* Solid chrome — differentiate from liquid-glass frosted toolbar */
 [data-theme-id="apple"] aside.theme-toolbar button,
 [data-theme-id="apple"] .theme-toolbar-btn {
   border-radius: 980px !important;
@@ -350,8 +352,8 @@
   background: hsl(var(--card)) !important;
   color: hsl(var(--foreground));
   font-weight: 400;
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 [data-theme-id="apple"] aside.theme-toolbar button:hover,

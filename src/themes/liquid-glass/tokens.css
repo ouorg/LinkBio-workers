@@ -12,26 +12,27 @@
   --theme-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
     "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI",
     "Segoe UI", Roboto, sans-serif;
-  --theme-radius: 18px;
-  --theme-card-radius: 22px;
-  --theme-link-radius: 18px;
-  --theme-shadow: 0 8px 32px rgba(15, 23, 42, 0.1), 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  --theme-radius: 20px;
+  --theme-card-radius: 24px;
+  --theme-link-radius: 20px;
+  --theme-shadow: 0 10px 40px rgba(15, 23, 42, 0.12), 0 1px 0 rgba(255, 255, 255, 0.45) inset;
   --theme-border-opacity: 1;
-  --theme-blur: 28px;
-  /* System blue-ish #0A84FF / light #007AFF */
-  --primary: 211 100% 50%;
-  --ring: 211 100% 50%;
+  /* higher blur = more “liquid” */
+  --theme-blur: 36px;
+  /* cool system cyan-blue (distinct from apple #0071e3 / miuix #3482FF) */
+  --primary: 205 100% 52%;
+  --ring: 205 100% 52%;
   --primary-foreground: 0 0% 100%;
   --destructive: 0 84% 50%;
 
-  /* Glass helpers */
-  --lg-glass-bg: rgba(255, 255, 255, 0.55);
-  --lg-glass-border: rgba(255, 255, 255, 0.55);
-  --lg-glass-highlight: rgba(255, 255, 255, 0.65);
+  /* Glass helpers — more translucent */
+  --lg-glass-bg: rgba(255, 255, 255, 0.42);
+  --lg-glass-border: rgba(255, 255, 255, 0.58);
+  --lg-glass-highlight: rgba(255, 255, 255, 0.7);
   --lg-glass-solid: hsl(0 0% 100%);
-  --lg-link-bg: rgba(255, 255, 255, 0.48);
+  --lg-link-bg: rgba(255, 255, 255, 0.38);
   --lg-link-solid: hsl(0 0% 100%);
-  --lg-transition: 180ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  --lg-transition: 220ms cubic-bezier(0.22, 1, 0.36, 1);
 
   font-family: var(--theme-font);
   -webkit-font-smoothing: antialiased;
@@ -57,25 +58,23 @@
   --accent-foreground: 211 100% 36%;
   --border: 210 20% 88%;
   --input: 210 20% 88%;
-  --primary: 211 100% 50%;
-  --ring: 211 100% 50%;
-  --theme-shadow: 0 10px 40px rgba(15, 40, 80, 0.1), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-  --lg-glass-bg: rgba(255, 255, 255, 0.58);
-  --lg-glass-border: rgba(255, 255, 255, 0.62);
+  --primary: 205 100% 50%;
+  --ring: 205 100% 50%;
+  --theme-shadow: 0 12px 44px rgba(15, 40, 80, 0.12), 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+  --lg-glass-bg: rgba(255, 255, 255, 0.4);
+  --lg-glass-border: rgba(255, 255, 255, 0.65);
   --lg-glass-highlight: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.72) 0%,
-    rgba(255, 255, 255, 0.08) 42%,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(255, 255, 255, 0.12) 38%,
     transparent 100%
   );
   --lg-glass-solid: hsl(0 0% 100%);
-  --lg-link-bg: rgba(255, 255, 255, 0.5);
+  --lg-link-bg: rgba(255, 255, 255, 0.36);
   --lg-link-solid: hsl(0 0% 100%);
-  --lg-page-glow: radial-gradient(
-    ellipse 90% 55% at 50% -10%,
-    rgba(10, 132, 255, 0.16),
-    transparent 62%
-  );
+  --lg-page-glow:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(56, 180, 255, 0.18), transparent 62%),
+    radial-gradient(ellipse 55% 40% at 85% 80%, rgba(180, 140, 255, 0.1), transparent 55%);
 }
 
 /* ── Dark (first-class liquid glass on deep material) ───────── */
@@ -94,25 +93,23 @@
   --accent-foreground: 210 100% 72%;
   --border: 220 10% 22%;
   --input: 220 10% 22%;
-  --primary: 210 100% 60%;
-  --ring: 210 100% 60%;
-  --theme-shadow: 0 12px 48px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.08) inset;
-  --lg-glass-bg: rgba(40, 44, 52, 0.55);
-  --lg-glass-border: rgba(255, 255, 255, 0.14);
+  --primary: 205 100% 64%;
+  --ring: 205 100% 64%;
+  --theme-shadow: 0 14px 52px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  --lg-glass-bg: rgba(36, 40, 52, 0.42);
+  --lg-glass-border: rgba(255, 255, 255, 0.16);
   --lg-glass-highlight: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.04) 40%,
     transparent 100%
   );
   --lg-glass-solid: hsl(220 12% 14%);
-  --lg-link-bg: rgba(48, 52, 62, 0.55);
+  --lg-link-bg: rgba(44, 48, 62, 0.42);
   --lg-link-solid: hsl(220 12% 16%);
-  --lg-page-glow: radial-gradient(
-    ellipse 90% 50% at 50% -8%,
-    rgba(10, 132, 255, 0.22),
-    transparent 60%
-  );
+  --lg-page-glow:
+    radial-gradient(ellipse 90% 50% at 50% -8%, rgba(56, 180, 255, 0.26), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 15% 85%, rgba(160, 120, 255, 0.12), transparent 55%);
 }
 
 /* ── System ─────────────────────────────────────────────────── */
@@ -131,25 +128,23 @@
   --accent-foreground: 210 100% 72%;
   --border: 220 10% 22%;
   --input: 220 10% 22%;
-  --primary: 210 100% 60%;
-  --ring: 210 100% 60%;
-  --theme-shadow: 0 12px 48px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.08) inset;
-  --lg-glass-bg: rgba(40, 44, 52, 0.55);
-  --lg-glass-border: rgba(255, 255, 255, 0.14);
+  --primary: 205 100% 64%;
+  --ring: 205 100% 64%;
+  --theme-shadow: 0 14px 52px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  --lg-glass-bg: rgba(36, 40, 52, 0.42);
+  --lg-glass-border: rgba(255, 255, 255, 0.16);
   --lg-glass-highlight: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.04) 40%,
     transparent 100%
   );
   --lg-glass-solid: hsl(220 12% 14%);
-  --lg-link-bg: rgba(48, 52, 62, 0.55);
+  --lg-link-bg: rgba(44, 48, 62, 0.42);
   --lg-link-solid: hsl(220 12% 16%);
-  --lg-page-glow: radial-gradient(
-    ellipse 90% 50% at 50% -8%,
-    rgba(10, 132, 255, 0.22),
-    transparent 60%
-  );
+  --lg-page-glow:
+    radial-gradient(ellipse 90% 50% at 50% -8%, rgba(56, 180, 255, 0.26), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 15% 85%, rgba(160, 120, 255, 0.12), transparent 55%);
 }
 
 @media (prefers-color-scheme: light) {
@@ -168,25 +163,23 @@
     --accent-foreground: 211 100% 36%;
     --border: 210 20% 88%;
     --input: 210 20% 88%;
-    --primary: 211 100% 50%;
-    --ring: 211 100% 50%;
-    --theme-shadow: 0 10px 40px rgba(15, 40, 80, 0.1), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-    --lg-glass-bg: rgba(255, 255, 255, 0.58);
-    --lg-glass-border: rgba(255, 255, 255, 0.62);
+    --primary: 205 100% 50%;
+    --ring: 205 100% 50%;
+    --theme-shadow: 0 12px 44px rgba(15, 40, 80, 0.12), 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+    --lg-glass-bg: rgba(255, 255, 255, 0.4);
+    --lg-glass-border: rgba(255, 255, 255, 0.65);
     --lg-glass-highlight: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.72) 0%,
-      rgba(255, 255, 255, 0.08) 42%,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(255, 255, 255, 0.12) 38%,
       transparent 100%
     );
     --lg-glass-solid: hsl(0 0% 100%);
-    --lg-link-bg: rgba(255, 255, 255, 0.5);
+    --lg-link-bg: rgba(255, 255, 255, 0.36);
     --lg-link-solid: hsl(0 0% 100%);
-    --lg-page-glow: radial-gradient(
-      ellipse 90% 55% at 50% -10%,
-      rgba(10, 132, 255, 0.16),
-      transparent 62%
-    );
+    --lg-page-glow:
+      radial-gradient(ellipse 90% 55% at 50% -10%, rgba(56, 180, 255, 0.18), transparent 62%),
+      radial-gradient(ellipse 55% 40% at 85% 80%, rgba(180, 140, 255, 0.1), transparent 55%);
   }
 }
 
@@ -350,10 +343,23 @@
 }
 
 [data-theme-id="liquid-glass"] a.theme-link:hover {
-  border-color: color-mix(in srgb, var(--lg-glass-border) 55%, hsl(var(--primary)));
-  box-shadow: 0 8px 28px rgba(10, 132, 255, 0.12);
-  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--lg-glass-border) 45%, hsl(var(--primary)));
+  box-shadow:
+    0 10px 32px rgba(56, 180, 255, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  transform: translateY(-2px) scale(1.01);
   color: hsl(var(--primary));
+}
+
+/* “liquid” shimmer on hover highlight */
+[data-theme-id="liquid-glass"] a.theme-link:hover::before {
+  opacity: 0.9;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.35) 45%,
+    transparent 70%
+  );
 }
 
 [data-theme-id="liquid-glass"] a.theme-link:active {

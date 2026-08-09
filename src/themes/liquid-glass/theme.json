@@ -1,9 +1,9 @@
 {
   "id": "liquid-glass",
   "name": "Liquid Glass",
-  "nameZh": "Liquid Glass",
-  "description": "Liquid Glass–inspired frosted surfaces, continuous radius, system blue",
-  "version": 1,
+  "nameZh": "液态玻璃",
+  "description": "Liquid glassmorphism — high blur, translucent panels, top highlights, cool cyan-blue, fluid hover",
+  "version": 2,
   "tokensFile": "tokens.css",
   "features": {
     "blur": true,

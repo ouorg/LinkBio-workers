@@ -185,27 +185,30 @@ const en: Dict = {
   "admin.error.csrf": "Invalid CSRF token. Refresh and try again.",
 
   // Theme pack descriptions (admin theme picker; key = theme.desc.<id>)
-  "theme.desc.aurora": "Aurora — clean default with soft gradient canvas",
-  "theme.desc.base": "Aurora — clean default with soft gradient canvas",
-  "theme.desc.minimal": "Low-chrome, tight spacing, monochrome accent",
+  "theme.desc.aurora":
+    "Northern lights default — cool teal–indigo, multi-stop aurora glow, dreamy elevation",
+  "theme.desc.base":
+    "Northern lights default — cool teal–indigo, multi-stop aurora glow, dreamy elevation",
+  "theme.desc.minimal":
+    "Ultra-minimal — near-square corners, no shadows/borders, monochrome ink, tight spacing",
   "theme.desc.apple":
-    "Apple.com-inspired marketing UI: cool gray canvas, SF stack, blue primary CTA + pill links",
+    "Apple.com marketing — solid cool-gray tiles, SF stack, pill CTAs, first-link primary blue",
   "theme.desc.anthropic":
-    "Flat illustration palette: oat page, ivory card, clay accent, near-black ink",
+    "Editorial paper — oat page, ivory notes, clay accent, serif type, thick ink, no shadow",
   "theme.desc.hono-old":
-    "Pre-Next Hono public UI: indigo accent, 14px radius, radial glow, centered link buttons",
+    "Linear/Vercel-style dark — near-black, sharp indigo, strong radial glow, centered buttons",
   "theme.desc.nodeseek":
-    "Modern Chinese tech-forum UI: cool-gray canvas, soft grid, solid cards, 1px borders, teal accent",
+    "Tech-forum rows — cool-gray grid, solid cards, teal accent bar on every link, CJK fonts",
   "theme.desc.qtcool":
-    "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs",
+    "Neo-brutal stickers — cream grid, 3px ink, hard 5–8px offset shadow, yellow/orange pops",
   "theme.desc.liquid-glass":
-    "Liquid Glass–inspired frosted panels, continuous 18–22px radius, system blue",
+    "Liquid glass — high blur, translucent panels, top highlights, cool cyan-blue, fluid hover",
   "theme.desc.xandroid":
-    "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows",
+    "X timeline — pure white/black, zero-radius full-width rows, hairline dividers, #1D9BF0 only",
   "theme.desc.md3":
-    "Google Material Design 3 baseline — tonal surfaces, rounded shape, soft elevation, Roboto. Seed #6750A4",
+    "Material 3 baseline — purple #6750A4, tonal surfaces, Roboto, 12/16/24 shape, filled first CTA",
   "theme.desc.miuix":
-    "Xiaomi HyperOS / Miuix — #3482FF primary, squircle radii, clean surfaces, soft elevation + light blur",
+    "HyperOS / Miuix — exclusive #3482FF, large squircle, dense clean surfaces, soft blue elevation",
 };
 
 const zhCN: Dict = {
@@ -380,25 +383,18 @@ const zhCN: Dict = {
 
   "admin.error.csrf": "CSRF 校验失败，请刷新后重试。",
 
-  "theme.desc.aurora": "极光 — 简洁默认皮肤，带柔和径向光晕",
-  "theme.desc.base": "极光 — 简洁默认皮肤，带柔和径向光晕",
-  "theme.desc.minimal": "低干扰、紧凑间距、单色强调",
-  "theme.desc.apple":
-    "参考 Apple.com 营销页：冷灰画布、SF 字体栈、蓝色主 CTA + 胶囊链接",
-  "theme.desc.anthropic": "扁平插画色板：燕麦色页、象牙卡片、陶土强调、近黑描边",
-  "theme.desc.hono-old": "重构前 Hono 前台：靛蓝强调、14px 圆角、径向光晕、居中链接按钮",
-  "theme.desc.nodeseek":
-    "现代中文技术论坛风：冷灰画布、淡网格、实色卡片、1px 细边框、青蓝主色",
-  "theme.desc.qtcool":
-    "参考 qt.cool 的 Neo-brutalism：奶油网格、硬偏移阴影、粗近黑描边、#007AFF 主按钮",
-  "theme.desc.liquid-glass":
-    "液态玻璃：半透明毛玻璃、连续大圆角 18–22px、系统蓝强调",
-  "theme.desc.xandroid":
-    "X Android 重写气质：实色白/纯黑、中性灰、#1D9BF0 仅强调、约 14px 圆角、时间线链接列表",
-  "theme.desc.md3":
-    "Google Material Design 3 基线：色调表面、圆润 Shape、轻 Elevation、Roboto。种子色 #6750A4",
-  "theme.desc.miuix":
-    "小米 HyperOS / Miuix：主色 #3482FF、Squircle 大圆角、干净表面、轻阴影与轻微毛玻璃",
+  "theme.desc.aurora": "极光默认：冷青–靛紫、多层径向极光、梦幻阴影",
+  "theme.desc.base": "极光默认：冷青–靛紫、多层径向极光、梦幻阴影",
+  "theme.desc.minimal": "极致极简：近直角、无阴影无描边、单色墨、紧凑间距",
+  "theme.desc.apple": "Apple 营销页：实色冷灰 tile、SF、胶囊 CTA、首链主色蓝",
+  "theme.desc.anthropic": "编辑纸质感：燕麦页、象牙便签、黏土强调、衬线、厚描边无阴影",
+  "theme.desc.hono-old": "Linear/Vercel 暗色：近纯黑、锐利 indigo、强径向光晕、居中按钮",
+  "theme.desc.nodeseek": "技术论坛行：冷灰网格、实色卡、每行左侧青绿 accent bar、中文字体",
+  "theme.desc.qtcool": "新粗野贴纸：奶油网格、3px 描边、硬偏移 5–8px、黄橙点缀",
+  "theme.desc.liquid-glass": "液态玻璃：高 blur、半透明面板、顶高光、冷青蓝、液面 hover",
+  "theme.desc.xandroid": "X 时间线：纯白/纯黑、零圆角全宽行、发丝分割、#1D9BF0 仅强调",
+  "theme.desc.md3": "Material 3：紫 #6750A4、tonal 表面、Roboto、12/16/24、首链 filled",
+  "theme.desc.miuix": "HyperOS：独占 #3482FF、大 squircle、高密度干净表面、蓝调软 elevation",
 };
 
 const catalogs: Record<Locale, Dict> = {

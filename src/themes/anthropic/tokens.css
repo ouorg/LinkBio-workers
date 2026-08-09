@@ -10,16 +10,24 @@
 
 [data-theme-id="anthropic"] {
   --theme-font: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
-    "Times New Roman", ui-serif, Georgia, serif;
-  --theme-radius: 0.35rem;
-  --theme-card-radius: 0.5rem;
-  --theme-link-radius: 0.4rem;
+    "Times New Roman", ui-serif, Georgia, "Noto Serif SC", "Songti SC", serif;
+  /* paper-note corners — smaller than most packs */
+  --theme-radius: 0.3rem;
+  --theme-card-radius: 0.4rem;
+  --theme-link-radius: 0.35rem;
   --theme-shadow: none;
   --theme-border-opacity: 1;
+  --theme-content-max: 26rem;
   /* clay #D97757 */
   --primary: 14 65% 59%;
   --ring: 14 65% 59%;
   --primary-foreground: 0 0% 100%;
+  --an-stroke: 2.5px;
+  --an-transition: 100ms ease;
+
+  font-family: var(--theme-font);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
 }
 
 /* ── Light: oat page + ivory card + clay ───────────────────── */
@@ -102,43 +110,109 @@
   }
 }
 
-/* Flat illustration chrome — thicker strokes, no glow */
-[data-theme-id="anthropic"] .theme-link {
-  border-width: 2px;
-  border-style: solid;
-  border-color: hsl(var(--border));
-  background: hsl(var(--card));
-  box-shadow: none;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
-}
-
-[data-theme-id="anthropic"] .theme-link:hover {
-  background: color-mix(in srgb, hsl(var(--primary)) 14%, hsl(var(--card)));
-  border-color: hsl(var(--primary));
-  transform: none;
-}
-
-[data-theme-id="anthropic"] .theme-avatar {
-  border-width: 2.5px;
-  border-style: solid;
-  border-color: hsl(var(--border));
-  box-shadow: none;
-  background: hsl(var(--card));
-}
-
-[data-theme-id="anthropic"] .theme-card {
-  border: 2px solid hsl(var(--border));
-  box-shadow: none;
-  background: hsl(var(--card));
+/* Flat illustration chrome — paper notes, thick ink, no glow */
+[data-theme-id="anthropic"] .theme-page {
+  background-color: hsl(var(--background));
+  background-image: none;
+  color: hsl(var(--foreground));
 }
 
 [data-theme-id="anthropic"] .theme-page--gradient {
-  /* no gradient — flat oat / near-black only */
   background-image: none;
 }
 
+[data-theme-id="anthropic"] .theme-card {
+  border: var(--an-stroke) solid hsl(var(--border));
+  box-shadow: none;
+  background: hsl(var(--card));
+  border-radius: var(--theme-card-radius);
+  padding: 1.2rem 1rem 1.3rem;
+  gap: 1rem;
+}
+
+[data-theme-id="anthropic"] .theme-profile h1 {
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.4rem, 3.5vw, 1.75rem);
+}
+
+[data-theme-id="anthropic"] .theme-profile .theme-bio {
+  font-style: italic;
+  line-height: 1.55;
+}
+
+[data-theme-id="anthropic"] .theme-meta a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+[data-theme-id="anthropic"] .theme-links {
+  gap: 0.55rem;
+}
+
+/* Sticky-note / card links */
+[data-theme-id="anthropic"] a.theme-link {
+  border-width: var(--an-stroke);
+  border-style: solid;
+  border-color: hsl(var(--border));
+  border-radius: var(--theme-link-radius);
+  background: hsl(var(--card));
+  box-shadow: none !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  justify-content: flex-start;
+  transition:
+    background var(--an-transition),
+    border-color var(--an-transition),
+    color var(--an-transition);
+}
+
+[data-theme-id="anthropic"] a.theme-link:hover {
+  background: color-mix(in srgb, hsl(var(--primary)) 12%, hsl(var(--card)));
+  border-color: hsl(var(--primary));
+  transform: none;
+  box-shadow: none !important;
+}
+
+[data-theme-id="anthropic"] a.theme-link .theme-link-icon {
+  color: hsl(var(--primary));
+}
+
+[data-theme-id="anthropic"] .theme-avatar {
+  border-width: var(--an-stroke) !important;
+  border-style: solid !important;
+  border-color: hsl(var(--border)) !important;
+  box-shadow: none !important;
+  background: hsl(var(--card));
+  border-radius: 0.35rem !important; /* not full circle — illustration cutout feel */
+}
+
+[data-theme-id="anthropic"] .theme-avatar-fallback {
+  border-width: var(--an-stroke) !important;
+  border-style: solid !important;
+  border-color: hsl(var(--border)) !important;
+  box-shadow: none !important;
+  border-radius: 0.35rem !important;
+  background: hsl(var(--primary));
+  color: #fff;
+  font-family: var(--theme-font);
+  font-weight: 700;
+}
+
 [data-theme-id="anthropic"] .theme-footer {
+  font-family: var(--theme-font);
+  font-style: italic;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+[data-theme-id="anthropic"] aside.theme-toolbar button,
+[data-theme-id="anthropic"] .theme-toolbar-btn {
+  border-radius: 0.35rem !important;
+  border: 2px solid hsl(var(--border)) !important;
+  box-shadow: none !important;
+  background: hsl(var(--card)) !important;
+  backdrop-filter: none !important;
   font-family: var(--theme-font);
 }
