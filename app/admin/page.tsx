@@ -26,7 +26,7 @@ export default async function AdminOverviewPage() {
   const clicks = Object.values(analytics.linkClicks).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="admin-shell">
       <AdminNav active="overview" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.overview")}</h1>

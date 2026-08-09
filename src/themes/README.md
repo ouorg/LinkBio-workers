@@ -86,7 +86,20 @@ src/themes/
 [data-theme-id="my-theme"][data-theme="dark"] { ... }
 ```
 
-结构 class 用 `_default.css` 中的：`.theme-page`、`.theme-link`、`.theme-avatar`、`.theme-card`、`.theme-footer`。
+结构 class 用 `_default.css` 中的：`.theme-page`、`.theme-link`、`.theme-avatar`、`.theme-card`、`.theme-footer`、`.theme-toolbar`。
+
+### 响应式边距（勿在主题里写死死 padding 顶栏）
+
+`_default.css` 提供自适应间距变量（含 `safe-area`）：
+
+| 变量 | 用途 |
+|------|------|
+| `--space-page-x` / `--space-page-x-end` | 左右页边距 |
+| `--space-toolbar-clear` | **顶栏避让区**（防止工具条挡住头像） |
+| `--space-stack` / `--space-links` | 区块 / 链接间距 |
+| `--space-touch-min` | 可点元素最小高度（≈44px） |
+
+主题 `tokens.css` 若覆盖 `.theme-page` 的 padding，**请保留 `padding-top: var(--space-toolbar-clear)`**，否则右上角颜色/语言按钮会压住内容。
 
 用户在后台设置的 **accentColor** 仍可在运行时覆盖 `--primary`（若以后接上 inline 覆盖）；主题提供默认品牌色即可。
 

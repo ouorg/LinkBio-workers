@@ -39,10 +39,7 @@ function setCookie(name: string, value: string) {
 function applyColor(mode: ColorMode) {
   document.documentElement.setAttribute("data-theme", mode);
   document.documentElement.classList.toggle("dark", mode === "dark");
-  document.documentElement.classList.toggle(
-    "light",
-    mode === "light",
-  );
+  document.documentElement.classList.toggle("light", mode === "light");
   const meta = document.querySelector('meta[name="color-scheme"]');
   if (meta) meta.setAttribute("content", mode === "system" ? "light dark" : mode);
   try {
@@ -71,21 +68,32 @@ export function ThemeToolbar({
 
   const ColorIcon = colorMode === "light" ? Sun : colorMode === "dark" ? Moon : Monitor;
 
+  const btnClass = cn(
+    "theme-toolbar-btn shrink-0 rounded-full border border-border/80",
+    "bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70",
+    "shadow-sm",
+  );
+
   return (
-    <aside className="pointer-events-none fixed right-3 top-3 z-50 flex gap-2 sm:right-4 sm:top-4">
-      <DropdownMenu>
+    <aside className="theme-toolbar" aria-label="Display preferences">
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="secondary"
             size="sm"
-            className="pointer-events-auto rounded-full bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+            className={btnClass}
             aria-label={`${labels.color}: ${colorLabel}`}
           >
-            <ColorIcon className="h-4 w-4" />
-            <span className="hidden sm:inline">{colorLabel}</span>
+            <ColorIcon className="h-4 w-4 shrink-0" />
+            <span className="hidden max-w-[7rem] truncate sm:inline">{colorLabel}</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="pointer-events-auto">
+        <DropdownMenuContent
+          align="end"
+          sideOffset={8}
+          collisionPadding={12}
+          className="z-[60] min-w-[9.5rem]"
+        >
           <DropdownMenuLabel>{labels.color}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {(
@@ -109,21 +117,26 @@ export function ThemeToolbar({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="secondary"
             size="sm"
-            className="pointer-events-auto rounded-full bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+            className={btnClass}
             aria-label={`${labels.locale}: ${localeLabel}`}
           >
-            <span className="inline-flex h-5 min-w-7 items-center justify-center rounded-md bg-primary/15 px-1 text-[11px] font-bold">
+            <span className="inline-flex h-5 min-w-7 shrink-0 items-center justify-center rounded-md bg-primary/15 px-1 text-[11px] font-bold">
               {localeShort}
             </span>
-            <span className="hidden sm:inline">{localeLabel}</span>
+            <span className="hidden max-w-[7rem] truncate sm:inline">{localeLabel}</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="pointer-events-auto">
+        <DropdownMenuContent
+          align="end"
+          sideOffset={8}
+          collisionPadding={12}
+          className="z-[60] min-w-[9.5rem]"
+        >
           <DropdownMenuLabel>{labels.locale}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {(

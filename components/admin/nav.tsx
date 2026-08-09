@@ -25,20 +25,20 @@ export function AdminNav({
   t: TranslateFn;
 }) {
   return (
-    <nav className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <div className="text-sm font-semibold tracking-tight">
+    <nav className="admin-nav">
+      <div className="min-w-0 shrink">
+        <div className="truncate text-sm font-semibold tracking-tight">
           {t("admin.brand")}
-          <span className="ml-2 text-muted-foreground">{siteName}</span>
+          <span className="ml-2 font-normal text-muted-foreground">{siteName}</span>
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-1">
+      <div className="admin-nav-links">
         {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              "rounded-lg px-3 py-1.5 text-sm transition-colors",
+              "inline-flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors",
               active === item.key
                 ? "bg-primary/15 font-medium text-primary"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -49,11 +49,11 @@ export function AdminNav({
         ))}
         <Link
           href="/"
-          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="inline-flex items-center rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           {t("admin.nav.public")}
         </Link>
-        <form action={logoutAction}>
+        <form action={logoutAction} className="inline-flex">
           <input type="hidden" name={CSRF_FIELD} value={csrf} />
           <Button type="submit" variant="ghost" size="sm" className="text-destructive">
             {t("admin.nav.logout")}

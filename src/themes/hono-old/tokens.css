@@ -126,9 +126,12 @@
   }
 }
 
-/* ── Page shell (.page) ─────────────────────────────────────── */
+/* ── Page shell (.page) — keep responsive toolbar clear space ─ */
 [data-theme-id="hono-old"] .theme-page {
-  padding: 48px 20px 32px;
+  /* top uses --space-toolbar-clear from _default.css */
+  padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  padding-bottom: max(2rem, env(safe-area-inset-bottom, 0px));
+  padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }

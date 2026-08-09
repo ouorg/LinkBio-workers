@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function ProfileCard({ profile }: { profile: Profile }) {
   const initial = (profile.name || "?").trim().charAt(0).toUpperCase() || "?";
   return (
-    <div className="theme-profile flex w-full max-w-md flex-col items-center gap-3 text-center">
+    <div className="theme-profile flex w-full min-w-0 max-w-full flex-col items-center gap-3 text-center">
       <div className="relative">
         {profile.avatar ? (
           // eslint-disable-next-line @next/next/no-img-element

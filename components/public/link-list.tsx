@@ -29,7 +29,7 @@ export function LinkList({
   }
 
   return (
-    <nav className="theme-links flex w-full max-w-md flex-col gap-3" aria-label="Links">
+    <nav className="theme-links w-full min-w-0" aria-label="Links">
       {enabled.map((link) => {
         const Icon = iconFor(link.icon);
         return (

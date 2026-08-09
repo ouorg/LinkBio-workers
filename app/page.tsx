@@ -54,7 +54,7 @@ export default async function PublicPage() {
         lang={htmlLang(locale)}
         data-theme={colorMode}
         data-theme-id={themeId}
-        className="min-h-screen bg-background text-foreground"
+        className="relative min-h-screen min-h-dvh bg-background text-foreground"
       >
         <ThemeToolbar
           colorMode={colorMode}
@@ -82,9 +82,11 @@ export default async function PublicPage() {
               : undefined
           }
         >
-          <div className="theme-stack theme-card">
-            <ProfileCard profile={profile} />
-            <LinkList links={links} emptyLabel={t("public.emptyLinks")} />
+          <div className="theme-stack">
+            <div className="theme-card flex w-full min-w-0 flex-col items-center gap-[inherit]">
+              <ProfileCard profile={profile} />
+              <LinkList links={links} emptyLabel={t("public.emptyLinks")} />
+            </div>
             <SiteFooter
               settings={settings}
               siteName={siteName}

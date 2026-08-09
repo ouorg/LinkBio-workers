@@ -28,7 +28,7 @@ export default async function ProfilePage({
   const sp = await searchParams;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="admin-shell">
       <AdminNav active="profile" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.profile")}</h1>

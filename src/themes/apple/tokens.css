@@ -118,11 +118,10 @@
   }
 }
 
-/* Page: cool gray canvas, no marketing radial glow */
+/* Page: cool gray canvas — spacing from _default.css (responsive) */
 [data-theme-id="apple"] .theme-page {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  padding: 3.5rem 1.25rem 2.5rem;
 }
 
 [data-theme-id="apple"] .theme-page--gradient {

@@ -36,7 +36,7 @@ export default async function LinksPage({
   const sorted = [...links].sort((a, b) => a.order - b.order);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="admin-shell">
       <AdminNav active="links" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.links")}</h1>

@@ -47,7 +47,7 @@ export default async function ThemePage({
   const localeZh = settings.locale === "zh-CN";
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8" data-theme-id={currentThemeId}>
+    <div className="admin-shell" data-theme-id={currentThemeId}>
       <AdminNav active="theme" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.theme")}</h1>
