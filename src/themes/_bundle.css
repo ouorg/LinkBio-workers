@@ -203,6 +203,245 @@
   font-family: var(--theme-font);
 }
 
+/* === apple/tokens.css === */
+/*
+ * Theme: apple — marketing-style skin inspired by Apple.com (unofficial).
+ *
+ * Light: bg #f5f5f7, surface #ffffff, text #1d1d1f, accent #0071e3
+ * Dark:  bg #000000, surface #1d1d1f, text #f5f5f7, accent #2997ff
+ *
+ * Capsule links (border-radius: 980px), light shadows, title weight 600.
+ */
+
+[data-theme-id="apple"] {
+  /* SF Pro / PingFang-oriented system stack */
+  --theme-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Segoe UI", Roboto, sans-serif;
+  --theme-radius: 12px;
+  --theme-card-radius: 18px;
+  --theme-link-radius: 980px;
+  --theme-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --theme-border-opacity: 1;
+  /* Apple blue light #0071e3 */
+  --primary: 211 100% 44%;
+  --ring: 211 100% 44%;
+  --primary-foreground: 0 0% 100%;
+  font-family: var(--theme-font);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* ── Light ─────────────────────────────────────────────────── */
+[data-theme-id="apple"][data-theme="light"] {
+  /* #f5f5f7 */
+  --background: 240 5% 96%;
+  /* #1d1d1f */
+  --foreground: 240 3% 12%;
+  /* #ffffff */
+  --card: 0 0% 100%;
+  --card-foreground: 240 3% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 3% 12%;
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 3% 12%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 2% 40%;
+  --accent: 240 5% 96%;
+  --accent-foreground: 240 3% 12%;
+  --border: 240 4% 90%;
+  --input: 240 4% 90%;
+  --primary: 211 100% 44%;
+  --ring: 211 100% 44%;
+  --theme-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Dark ──────────────────────────────────────────────────── */
+[data-theme-id="apple"][data-theme="dark"] {
+  /* #000000 */
+  --background: 0 0% 0%;
+  /* #f5f5f7 */
+  --foreground: 240 5% 96%;
+  /* #1d1d1f */
+  --card: 240 3% 12%;
+  --card-foreground: 240 5% 96%;
+  --popover: 240 3% 12%;
+  --popover-foreground: 240 5% 96%;
+  --secondary: 240 3% 14%;
+  --secondary-foreground: 240 5% 96%;
+  --muted: 240 3% 14%;
+  --muted-foreground: 240 4% 65%;
+  --accent: 240 3% 14%;
+  --accent-foreground: 240 5% 96%;
+  --border: 240 3% 18%;
+  --input: 240 3% 18%;
+  /* #2997ff */
+  --primary: 210 100% 58%;
+  --ring: 210 100% 58%;
+  --theme-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* ── System ────────────────────────────────────────────────── */
+[data-theme-id="apple"][data-theme="system"] {
+  --background: 0 0% 0%;
+  --foreground: 240 5% 96%;
+  --card: 240 3% 12%;
+  --card-foreground: 240 5% 96%;
+  --popover: 240 3% 12%;
+  --popover-foreground: 240 5% 96%;
+  --secondary: 240 3% 14%;
+  --secondary-foreground: 240 5% 96%;
+  --muted: 240 3% 14%;
+  --muted-foreground: 240 4% 65%;
+  --accent: 240 3% 14%;
+  --accent-foreground: 240 5% 96%;
+  --border: 240 3% 18%;
+  --input: 240 3% 18%;
+  --primary: 210 100% 58%;
+  --ring: 210 100% 58%;
+  --theme-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme-id="apple"][data-theme="system"] {
+    --background: 240 5% 96%;
+    --foreground: 240 3% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 3% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 3% 12%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 3% 12%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 2% 40%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 3% 12%;
+    --border: 240 4% 90%;
+    --input: 240 4% 90%;
+    --primary: 211 100% 44%;
+    --ring: 211 100% 44%;
+    --theme-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* Page: cool gray canvas, no marketing radial glow */
+[data-theme-id="apple"] .theme-page {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  padding: 3.5rem 1.25rem 2.5rem;
+}
+
+[data-theme-id="apple"] .theme-page--gradient {
+  background-image: none;
+  background-color: hsl(var(--background));
+}
+
+[data-theme-id="apple"] .theme-stack {
+  max-width: 28rem;
+  gap: 1.5rem;
+}
+
+/* Profile title: weight 600, tight tracking */
+[data-theme-id="apple"] .theme-profile h1 {
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  color: hsl(var(--foreground));
+}
+
+[data-theme-id="apple"] .theme-profile .theme-username {
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+  letter-spacing: -0.01em;
+}
+
+[data-theme-id="apple"] .theme-profile .theme-bio {
+  font-size: 1.05rem;
+  line-height: 1.47;
+  font-weight: 400;
+  letter-spacing: -0.016em;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Soft white card feel on cool canvas */
+[data-theme-id="apple"] .theme-card {
+  border-radius: var(--theme-card-radius);
+}
+
+[data-theme-id="apple"] .theme-avatar {
+  border: 0;
+  box-shadow: var(--theme-shadow);
+  background: hsl(var(--card));
+}
+
+[data-theme-id="apple"] .theme-avatar-fallback {
+  border: 0;
+  box-shadow: var(--theme-shadow);
+  background: hsl(var(--primary));
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Capsule link buttons — signature Apple marketing CTA shape */
+[data-theme-id="apple"] .theme-links {
+  gap: 0.875rem;
+}
+
+[data-theme-id="apple"] a.theme-link {
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 980px;
+  border: none;
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  font-weight: 400;
+  font-size: 1.05rem;
+  letter-spacing: -0.016em;
+  box-shadow: var(--theme-shadow);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+[data-theme-id="apple"] a.theme-link:hover {
+  background: color-mix(in srgb, hsl(var(--primary)) 8%, hsl(var(--card)));
+  color: hsl(var(--primary));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: scale(1.01);
+}
+
+[data-theme-id="apple"] a.theme-link:active {
+  transform: scale(0.99);
+}
+
+[data-theme-id="apple"] a.theme-link .theme-link-icon {
+  color: hsl(var(--primary));
+  opacity: 1;
+}
+
+/* Optional: primary-style solid CTA look for first link only — keep soft white for all */
+
+[data-theme-id="apple"] .theme-footer {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  letter-spacing: -0.01em;
+}
+
+/* Toolbar pills */
+[data-theme-id="apple"] aside button {
+  border-radius: 980px;
+  border: none;
+  box-shadow: var(--theme-shadow);
+  background: hsl(var(--card));
+  font-weight: 400;
+}
+
 /* === aurora/tokens.css === */
 /* Theme: aurora — vivid brand accent; color mode stays global */
 

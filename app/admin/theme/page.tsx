@@ -26,6 +26,8 @@ const PREVIEW: Record<string, { a: string; b: string; c: string }> = {
   "hono-old": { a: "#6366f1", b: "#0a0a0b", c: "#18181b" }, /* Hono legacy SaaS */
   /* Anthropic illustration: clay + oat + ivory / near-black */
   anthropic: { a: "#D97757", b: "#E3DACC", c: "#FAF9F5" },
+  /* Apple.com marketing (unofficial) */
+  apple: { a: "#0071e3", b: "#f5f5f7", c: "#ffffff" },
 };
 
 export default async function ThemePage({

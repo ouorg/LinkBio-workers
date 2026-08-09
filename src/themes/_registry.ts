@@ -17,6 +17,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
+    "id": "apple",
+    "name": "Apple",
+    "nameZh": "Apple 风格",
+    "description": "Inspired by Apple.com marketing UI: cool gray canvas, white cards, SF stack, capsule links (unofficial)",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": false,
+      "customFonts": true
+    }
+  },
+  {
     "id": "aurora",
     "name": "Aurora",
     "nameZh": "极光",
