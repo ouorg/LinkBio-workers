@@ -23,6 +23,7 @@ Workers **没有**可读仓库文件系统。所有主题必须在 **build 时**
 | **nodeseek** | 技术论坛 | 青绿 #0B6E99 | 12px | 1px 细边 + 轻 elev | **网格底 + 实心卡** | 中文系统栈 | **帖子行** + 左侧 accent bar |
 | **qtcool** | Neo-brutal | #007AFF + 黄橙 | 圆润 1.15–1.5rem | **硬偏移 5–8px 无模糊** | 奶油网格 + 色块 | 圆体 | 厚描边贴纸按钮 |
 | **xandroid** | X 时间线 | **#1D9BF0 仅强调** | 卡 14 / **链 0** | **无阴影** | 纯白/纯黑 | Chirp | **全宽 hairline 列表行** |
+| **rin** | Edge 博客 / openRin | **#FC466B 玫瑰** | 中等 12–18px | 带粉调软阴影 | **#f5f5f5 / #1c1c1e** 干净表面 | 系统 | 白卡片链接 + 粉 hover |
 
 ### 重叠组拆分约定
 
@@ -52,7 +53,7 @@ src/themes/
   _default.css        # 布局/组件结构（与皮肤无关）
   aurora/             # 内置兜底（极光），必须存在
   minimal/ apple/ anthropic/ hono-old/ liquid-glass/
-  md3/ miuix/ nodeseek/ qtcool/ xandroid/
+  md3/ miuix/ nodeseek/ qtcool/ xandroid/ rin/
 ```
 
 **一个主题 = 一个目录 = `theme.json` + `tokens.css`。**  

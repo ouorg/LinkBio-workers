@@ -240,6 +240,8 @@ const en: Dict = {
     "Material 3 baseline — purple #6750A4, tonal surfaces, Roboto, 12/16/24 shape, filled first CTA",
   "theme.desc.miuix":
     "HyperOS / Miuix — exclusive #3482FF, large squircle, dense clean surfaces, soft blue elevation",
+  "theme.desc.rin":
+    "openRin/Rin default UI — rose #FC466B, clean #f5f5f5/#1c1c1e surfaces, soft shadows, edge-native blog",
 };
 
 const zhCN: Dict = {
@@ -457,6 +459,8 @@ const zhCN: Dict = {
   "theme.desc.xandroid": "X 时间线：纯白/纯黑、零圆角全宽行、发丝分割、#1D9BF0 仅强调",
   "theme.desc.md3": "Material 3：紫 #6750A4、tonal 表面、Roboto、12/16/24、首链 filled",
   "theme.desc.miuix": "HyperOS：独占 #3482FF、大 squircle、高密度干净表面、蓝调软 elevation",
+  "theme.desc.rin":
+    "openRin/Rin 默认 UI：活力玫瑰 #FC466B、浅灰/深灰表面、轻阴影、现代 Edge 博客气质",
 };
 
 const catalogs: Record<Locale, Dict> = {
