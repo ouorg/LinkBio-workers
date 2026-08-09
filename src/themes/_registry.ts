@@ -69,6 +69,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
+    "id": "md3",
+    "name": "Material 3",
+    "nameZh": "Material 3",
+    "description": "Google Material Design 3 baseline — tonal surfaces, expressive rounded shape, soft elevation, Roboto stack. Official seed #6750A4.",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": false,
+      "customFonts": true
+    }
+  },
+  {
     "id": "minimal",
     "name": "Minimal",
     "nameZh": "极简",

@@ -202,6 +202,8 @@ const en: Dict = {
     "Liquid Glass–inspired frosted panels, continuous 18–22px radius, system blue",
   "theme.desc.xandroid":
     "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows",
+  "theme.desc.md3":
+    "Google Material Design 3 baseline — tonal surfaces, rounded shape, soft elevation, Roboto. Seed #6750A4",
 };
 
 const zhCN: Dict = {
@@ -391,6 +393,8 @@ const zhCN: Dict = {
     "液态玻璃：半透明毛玻璃、连续大圆角 18–22px、系统蓝强调",
   "theme.desc.xandroid":
     "X Android 重写气质：实色白/纯黑、中性灰、#1D9BF0 仅强调、约 14px 圆角、时间线链接列表",
+  "theme.desc.md3":
+    "Google Material Design 3 基线：色调表面、圆润 Shape、轻 Elevation、Roboto。种子色 #6750A4",
 };
 
 const catalogs: Record<Locale, Dict> = {
