@@ -95,6 +95,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
+    "id": "miuix",
+    "name": "Miuix",
+    "nameZh": "小米 HyperOS",
+    "description": "Xiaomi HyperOS / Miuix design language — #3482FF primary, squircle-inspired radii, clean tonal surfaces, soft elevation. Inspired by compose-miuix-ui/miuix.",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": true,
+      "gradientBg": false,
+      "customFonts": false
+    }
+  },
+  {
     "id": "nodeseek",
     "name": "NodeSeek",
     "nameZh": "NodeSeek",

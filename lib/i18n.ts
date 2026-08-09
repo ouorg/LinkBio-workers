@@ -204,6 +204,8 @@ const en: Dict = {
     "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows",
   "theme.desc.md3":
     "Google Material Design 3 baseline — tonal surfaces, rounded shape, soft elevation, Roboto. Seed #6750A4",
+  "theme.desc.miuix":
+    "Xiaomi HyperOS / Miuix — #3482FF primary, squircle radii, clean surfaces, soft elevation + light blur",
 };
 
 const zhCN: Dict = {
@@ -395,6 +397,8 @@ const zhCN: Dict = {
     "X Android 重写气质：实色白/纯黑、中性灰、#1D9BF0 仅强调、约 14px 圆角、时间线链接列表",
   "theme.desc.md3":
     "Google Material Design 3 基线：色调表面、圆润 Shape、轻 Elevation、Roboto。种子色 #6750A4",
+  "theme.desc.miuix":
+    "小米 HyperOS / Miuix：主色 #3482FF、Squircle 大圆角、干净表面、轻阴影与轻微毛玻璃",
 };
 
 const catalogs: Record<Locale, Dict> = {
