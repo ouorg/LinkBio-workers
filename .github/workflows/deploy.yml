@@ -1,0 +1,59 @@
+# LinkBio-workers — deploy to Cloudflare Workers via Wrangler
+#
+# Required GitHub Secrets:
+#   CF_API_TOKEN   (or CLOUDFLARE_API_TOKEN) — API token with Workers Edit
+#   CF_ACCOUNT_ID  (or CLOUDFLARE_ACCOUNT_ID) — Cloudflare account id
+#
+# Optional GitHub Variables:
+#   PROJECT_NAME   — overrides wrangler worker name (default: linkbio-workers)
+#   ENVIRONMENT    — label only (e.g. production)
+#
+# Worker runtime secrets (ADMIN_PASSWORD, SESSION_SECRET) must be set once in
+# Cloudflare Dashboard or via: wrangler secret put ...
+# They are NOT injected by this workflow (keeps CI token scope minimal).
+
+name: Deploy
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build (dry-run bundle)
+        run: npm run build
+
+      - name: Deploy with Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          # Prefer CF_* names from project docs; fall back to Cloudflare defaults
+          apiToken: ${{ secrets.CF_API_TOKEN != '' && secrets.CF_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID != '' && secrets.CF_ACCOUNT_ID || secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

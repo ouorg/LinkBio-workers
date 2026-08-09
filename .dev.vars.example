@@ -1,0 +1,5 @@
+# Copy this file to .dev.vars for local development (wrangler dev).
+# .dev.vars is gitignored — never commit real secrets.
+
+ADMIN_PASSWORD=change-me-admin
+SESSION_SECRET=dev-session-secret-change-me-to-random-string
