@@ -68,7 +68,7 @@ LinkBio-workers/
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22+ (required by Wrangler 4)
 - npm
 - Cloudflare account (for real deploy; local uses miniflare via Wrangler)
 

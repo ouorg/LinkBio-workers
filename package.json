@@ -25,7 +25,7 @@
     "@cloudflare/workers-types": "$@cloudflare/workers-types"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "license": "MIT"
 }
