@@ -102,10 +102,37 @@ app/                 # Next.js routes (RSC + route handlers)
 components/ui/       # shadcn-style primitives
 components/public/   # bio UI + toolbar
 components/admin/    # admin chrome
-lib/                 # kv, session, i18n, prefs, security
+lib/                 # kv, session, i18n, prefs, security, themes
+src/themes/          # visual packs (theme.json + tokens.css)
+scripts/build-themes.mjs
 wrangler.toml        # OpenNext worker + BIO_KV
 open-next.config.ts
 ```
+
+## Visual themes (`src/themes/`)
+
+Each pack is a folder with:
+
+| File | Role |
+|------|------|
+| `theme.json` | Metadata only (`id`, `name`, `nameZh`, `version`, `features`…) |
+| `tokens.css` | CSS variables scoped by `[data-theme-id="…"]` |
+
+Orthogonal to color mode: `data-theme` = `system|light|dark`, `data-theme-id` = pack id.
+
+```bash
+npm run build:themes   # validates JSON, writes _registry.ts + _bundle.css
+```
+
+Add a theme:
+
+1. Copy `src/themes/base` → `src/themes/my-theme`
+2. Edit `theme.json` (`id` must match folder name)
+3. Edit `tokens.css`
+4. Run `npm run build:themes`
+5. Select in Admin → Theme
+
+`DEFAULT_THEME` (Workers var) and KV `settings.theme` store the same id string; unknown ids fall back to `base`.
 
 ## License
 

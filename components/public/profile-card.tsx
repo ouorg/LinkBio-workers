@@ -11,12 +11,12 @@ export function ProfileCard({ profile }: { profile: Profile }) {
           <img
             src={profile.avatar}
             alt=""
-            className="h-24 w-24 rounded-full border-2 border-border object-cover shadow-xl"
+            className="theme-avatar h-24 w-24 rounded-full border-2 border-border object-cover shadow-xl"
           />
         ) : (
           <div
             className={cn(
-              "flex h-24 w-24 items-center justify-center rounded-full border-2 border-border",
+              "theme-avatar flex h-24 w-24 items-center justify-center rounded-full border-2 border-border",
               "bg-muted text-2xl font-semibold text-muted-foreground shadow-xl",
             )}
           >

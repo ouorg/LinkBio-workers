@@ -23,7 +23,7 @@ preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_ID"
 [vars]
 SITE_NAME = "LinkBio"
 SITE_URL = "https://YOUR_SUBDOMAIN.workers.dev"
-DEFAULT_THEME = "default"
+DEFAULT_THEME = "base"
 
 # Secrets (wrangler secret put ...):
 #   ADMIN_PASSWORD

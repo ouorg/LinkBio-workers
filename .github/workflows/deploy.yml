@@ -36,8 +36,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Typecheck
-        run: npx tsc --noEmit
+      - name: Build themes + typecheck
+        run: npm run typecheck
 
       - name: Inject KV namespace IDs into wrangler.toml
         env:

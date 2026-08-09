@@ -23,6 +23,7 @@ import {
   validateCsrf,
 } from "@/lib/security";
 import type { LinkItem } from "@/lib/types";
+import { resolveThemeId } from "@/lib/themes";
 
 function flashOk(msg: string) {
   return `ok:${msg}`;
@@ -159,8 +160,9 @@ export async function saveSettingsAction(formData: FormData) {
   if (!(await requireCsrf(formData))) {
     redirect(`/admin/theme?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
   }
+  const env = await getEnv();
   const next = sanitizeSettings({
-    theme: String(formData.get("theme") || ""),
+    theme: resolveThemeId(String(formData.get("theme") || ""), env.DEFAULT_THEME),
     accentColor: String(formData.get("accentColor") || ""),
     background: String(formData.get("background") || ""),
     colorMode: String(formData.get("colorMode") || "") as never,

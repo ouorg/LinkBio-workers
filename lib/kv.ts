@@ -316,9 +316,13 @@ export function sanitizeSettings(input: Partial<Settings> & { darkMode?: boolean
   const colorMode = resolveColorMode(input);
   const localeRaw = str(input.locale, 16) as Locale;
   const locale: Locale = LOCALES.includes(localeRaw) ? localeRaw : DEFAULT_SETTINGS.locale;
+  // Visual pack id (src/themes/<id>); migrate legacy "default" → "base"
+  // Keep empty so render can fall through to env.DEFAULT_THEME
+  let themeId = str(input.theme, 40);
+  if (themeId === "default") themeId = "base";
 
   return {
-    theme: str(input.theme, 40) || DEFAULT_SETTINGS.theme,
+    theme: themeId,
     colorMode,
     // Derived mirror for older clients / exports
     darkMode: colorMode === "dark",

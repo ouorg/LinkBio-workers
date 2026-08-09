@@ -1,0 +1,12 @@
+{
+  "id": "base",
+  "name": "Base",
+  "nameZh": "基础",
+  "description": "Default clean theme",
+  "version": 1,
+  "tokensFile": "tokens.css",
+  "features": {
+    "blur": false,
+    "gradientBg": true
+  }
+}

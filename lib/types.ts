@@ -114,7 +114,11 @@ export const DEFAULT_LINKS: LinkItem[] = [
 ];
 
 export const DEFAULT_SETTINGS: Settings = {
-  theme: "default",
+  /**
+   * Visual pack id (src/themes/<id>).
+   * Empty string = no KV override → use env.DEFAULT_THEME, then "base".
+   */
+  theme: "",
   colorMode: "system",
   darkMode: false,
   locale: "zh-CN",

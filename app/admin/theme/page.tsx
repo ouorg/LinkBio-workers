@@ -11,6 +11,7 @@ import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
 import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
+import { listThemes, resolveThemeId } from "@/lib/themes";
 
 export const dynamic = "force-dynamic";
 
@@ -26,9 +27,13 @@ export default async function ThemePage({
   const t = createT(settings.locale);
   const csrf = await ensureCsrfCookie();
   const sp = await searchParams;
+  const themes = listThemes();
+  const currentThemeId = resolveThemeId(settings.theme, env.DEFAULT_THEME);
+  const label = (id: string, name: string, nameZh: string) =>
+    settings.locale === "zh-CN" ? `${nameZh} (${id})` : `${name} (${id})`;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-8" data-theme-id={currentThemeId}>
       <AdminNav active="theme" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.theme")}</h1>
@@ -47,12 +52,14 @@ export default async function ThemePage({
                 <select
                   id="theme"
                   name="theme"
-                  defaultValue={settings.theme}
+                  defaultValue={currentThemeId}
                   className="flex h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
                 >
-                  <option value="default">{t("admin.theme.themeDefault")}</option>
-                  <option value="minimal">{t("admin.theme.themeMinimal")}</option>
-                  <option value="glass">{t("admin.theme.themeGlass")}</option>
+                  {themes.map((th) => (
+                    <option key={th.id} value={th.id}>
+                      {label(th.id, th.name, th.nameZh)}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-2">

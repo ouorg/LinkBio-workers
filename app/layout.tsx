@@ -16,7 +16,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     dataTheme === "system" ? "light dark" : dataTheme === "light" ? "light" : "dark";
 
   return (
-    <html lang="zh-CN" data-theme={dataTheme} suppressHydrationWarning>
+    <html
+      lang="zh-CN"
+      data-theme={dataTheme}
+      data-theme-id="base"
+      suppressHydrationWarning
+    >
       <head>
         <meta name="color-scheme" content={colorScheme} />
         <script

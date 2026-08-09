@@ -7,6 +7,7 @@ import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
 import { createT, htmlLang } from "@/lib/i18n";
 import { resolveColorMode, resolveLocale } from "@/lib/prefs";
+import { getTheme, resolveThemeId } from "@/lib/themes";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,6 @@ export default async function PublicPage() {
     store.getSettings(),
   ]);
 
-  // Best-effort analytics (awaited; OpenNext may not expose waitUntil here)
   void store.incrementPageViews();
 
   const jar = await cookies();
@@ -36,15 +36,22 @@ export default async function PublicPage() {
     hdrs.get("accept-language") || undefined,
     settings.locale,
   );
+  const themeId = resolveThemeId(settings.theme, env.DEFAULT_THEME);
+  const theme = getTheme(themeId);
   const t = createT(locale);
   const isAdmin = await isAdminSession();
 
   const hasBg = Boolean(settings.background && /^https?:\/\//i.test(settings.background));
+  const useGradient = Boolean(theme.features?.gradientBg) && !hasBg;
 
   return (
     <>
-      {/* Keep html lang in sync via noscript-free clientless approach: set on wrapper */}
-      <div lang={htmlLang(locale)} data-theme={colorMode} className="contents">
+      <div
+        lang={htmlLang(locale)}
+        data-theme={colorMode}
+        data-theme-id={themeId}
+        className="contents"
+      >
         <ThemeToolbar
           colorMode={colorMode}
           localePref={localePref}
@@ -60,10 +67,7 @@ export default async function PublicPage() {
           }}
         />
         <main
-          className={cn(
-            "flex min-h-screen flex-col items-center px-5 pb-8 pt-14",
-            "bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(var(--primary)/0.15),transparent_60%)]",
-          )}
+          className={cn("theme-page", useGradient && "theme-page--gradient")}
           style={
             hasBg
               ? {
@@ -74,7 +78,7 @@ export default async function PublicPage() {
               : undefined
           }
         >
-          <div className="flex w-full max-w-md flex-1 flex-col items-center gap-7">
+          <div className="theme-stack theme-card">
             <ProfileCard profile={profile} />
             <LinkList links={links} emptyLabel={t("public.emptyLinks")} />
             <SiteFooter
@@ -88,7 +92,7 @@ export default async function PublicPage() {
       </div>
       <script
         dangerouslySetInnerHTML={{
-          __html: `document.documentElement.setAttribute('data-theme',${JSON.stringify(colorMode)});document.documentElement.lang=${JSON.stringify(htmlLang(locale))};`,
+          __html: `document.documentElement.setAttribute('data-theme',${JSON.stringify(colorMode)});document.documentElement.setAttribute('data-theme-id',${JSON.stringify(themeId)});document.documentElement.lang=${JSON.stringify(htmlLang(locale))};`,
         }}
       />
     </>

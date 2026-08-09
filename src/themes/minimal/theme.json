@@ -1,0 +1,12 @@
+{
+  "id": "minimal",
+  "name": "Minimal",
+  "nameZh": "极简",
+  "description": "Low-chrome, tight spacing, monochrome accent",
+  "version": 1,
+  "tokensFile": "tokens.css",
+  "features": {
+    "blur": false,
+    "gradientBg": false
+  }
+}

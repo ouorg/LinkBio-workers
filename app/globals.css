@@ -1,6 +1,8 @@
 @import "tailwindcss";
+/* Visual packs: data-theme-id + shared layout (generated) */
+@import "../src/themes/_bundle.css";
 
-/* shadcn-style tokens + system theme via data-theme */
+/* shadcn-style tokens + color mode via data-theme (system|light|dark) */
 :root {
   --radius: 0.9rem;
   --background: 0 0% 98%;

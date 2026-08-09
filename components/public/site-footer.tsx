@@ -19,7 +19,7 @@ export function SiteFooter({
   const text = useCustom && custom ? custom : defaultText || siteName;
 
   return (
-    <footer className="mt-auto pt-10 text-center text-xs text-muted-foreground">
+    <footer className="theme-footer">
       <div className="whitespace-pre-line">{text}</div>
     </footer>
   );
