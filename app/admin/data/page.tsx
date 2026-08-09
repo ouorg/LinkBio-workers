@@ -7,6 +7,7 @@ import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
+import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 
@@ -24,6 +25,7 @@ export default async function DataPage({
   const t = createT(settings.locale);
   const csrf = await ensureCsrfCookie();
   const sp = await searchParams;
+  const flash = await resolveAdminFlash(sp.msg);
 
   return (
     <div className="admin-shell">
@@ -37,7 +39,7 @@ export default async function DataPage({
         <LayerCard.Secondary>{t("admin.data.title")}</LayerCard.Secondary>
         <LayerCard.Primary>
           <div className="space-y-4">
-            <Flash message={sp.msg} />
+            <Flash message={flash} />
             <p className="text-sm text-kumo-subtle">{t("admin.data.hint")}</p>
             <LinkButton href="/api/admin/export" variant="secondary">
               {t("admin.data.export")}

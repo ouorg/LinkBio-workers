@@ -50,6 +50,14 @@ function applyColor(mode: ColorMode) {
   setCookie(COLOR_COOKIE, mode);
 }
 
+/** Shared pure-icon trigger: same size for color + locale */
+const triggerClass = cn(
+  "theme-toolbar-btn size-9 shrink-0 rounded-full border border-border/80 p-0",
+  "inline-flex items-center justify-center",
+  "bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70",
+  "shadow-sm",
+);
+
 export function ThemeToolbar({
   colorMode,
   localePref,
@@ -62,17 +70,11 @@ export function ThemeToolbar({
   const router = useRouter();
   const colorLabel =
     colorMode === "light" ? labels.light : colorMode === "dark" ? labels.dark : labels.system;
-  const localeShort = localePref === "zh-CN" ? "中" : localePref === "en" ? "EN" : "Auto";
+  const localeShort = localePref === "zh-CN" ? "中" : localePref === "en" ? "EN" : "A";
   const localeLabel =
     localePref === "zh-CN" ? labels.zh : localePref === "en" ? labels.en : labels.auto;
 
   const ColorIcon = colorMode === "light" ? Sun : colorMode === "dark" ? Moon : Monitor;
-
-  const btnClass = cn(
-    "theme-toolbar-btn shrink-0 rounded-full border border-border/80",
-    "bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70",
-    "shadow-sm",
-  );
 
   return (
     <aside className="theme-toolbar" aria-label="Display preferences">
@@ -81,11 +83,10 @@ export function ThemeToolbar({
           <Button
             variant="secondary"
             size="sm"
-            className={btnClass}
+            className={triggerClass}
             aria-label={`${labels.color}: ${colorLabel}`}
           >
-            <ColorIcon className="h-4 w-4 shrink-0" />
-            <span className="hidden max-w-[7rem] truncate sm:inline">{colorLabel}</span>
+            <ColorIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -122,13 +123,10 @@ export function ThemeToolbar({
           <Button
             variant="secondary"
             size="sm"
-            className={btnClass}
+            className={triggerClass}
             aria-label={`${labels.locale}: ${localeLabel}`}
           >
-            <span className="inline-flex h-5 min-w-7 shrink-0 items-center justify-center rounded-md bg-primary/15 px-1 text-[11px] font-bold">
-              {localeShort}
-            </span>
-            <span className="hidden max-w-[7rem] truncate sm:inline">{localeLabel}</span>
+            <span className="text-[11px] font-bold leading-none tracking-tight">{localeShort}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -151,7 +149,7 @@ export function ThemeToolbar({
               className={cn(localePref === value && "font-semibold text-primary")}
               onSelect={() => {
                 setCookie(LOCALE_COOKIE, value);
-                location.reload();
+                router.refresh();
               }}
             >
               {label}

@@ -1,8 +1,10 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getEnv, getStore } from "@/lib/env";
+import { flashErr, flashOk, setFlashCookie } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
 import {
   clientIpFromHeaders,
@@ -25,13 +27,6 @@ import {
 import type { LinkItem } from "@/lib/types";
 import { resolveThemeId } from "@/lib/themes";
 
-function flashOk(msg: string) {
-  return `ok:${msg}`;
-}
-function flashErr(msg: string) {
-  return `error:${msg}`;
-}
-
 async function tSite() {
   const store = await getStore();
   const settings = await store.getSettings();
@@ -51,6 +46,16 @@ async function requireCsrf(formData: FormData) {
 async function isSecure() {
   const h = await headers();
   return isSecureRequestFromHeaders(h);
+}
+
+/** Set one-shot flash then redirect (no ?msg= in the URL). */
+async function flashRedirect(path: string, message: string): Promise<never> {
+  await setFlashCookie(message);
+  redirect(path);
+}
+
+function revalidatePublic() {
+  revalidatePath("/");
 }
 
 export async function ensureCsrfCookie() {
@@ -76,27 +81,26 @@ export async function loginAction(formData: FormData) {
   const ip = clientIpFromHeaders(h);
 
   if (!env.ADMIN_PASSWORD || !env.SESSION_SECRET) {
-    redirect(`/admin/login?msg=${encodeURIComponent(flashErr(t("admin.login.error.noPassword")))}`);
+    await flashRedirect("/admin/login", flashErr(t("admin.login.error.noPassword")));
   }
 
   const lock = await store.checkLoginRateLimit(ip);
   if (lock !== null) {
-    redirect(
-      `/admin/login?msg=${encodeURIComponent(
-        flashErr(t("admin.login.error.rateLimit", { minutes: lock })),
-      )}`,
+    await flashRedirect(
+      "/admin/login",
+      flashErr(t("admin.login.error.rateLimit", { minutes: lock })),
     );
   }
 
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/login?msg=${encodeURIComponent(flashErr(t("admin.login.error.csrf")))}`);
+    await flashRedirect("/admin/login", flashErr(t("admin.login.error.csrf")));
   }
 
   const password = String(formData.get("password") || "");
   const ok = await constantTimeEqual(password, env.ADMIN_PASSWORD);
   if (!ok) {
     await store.recordLoginFailure(ip);
-    redirect(`/admin/login?msg=${encodeURIComponent(flashErr(t("admin.login.error.password")))}`);
+    await flashRedirect("/admin/login", flashErr(t("admin.login.error.password")));
   }
 
   await store.clearLoginRateLimit(ip);
@@ -137,7 +141,7 @@ export async function logoutAction(formData: FormData) {
 export async function saveProfileAction(formData: FormData) {
   const t = await tSite();
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/profile?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
+    await flashRedirect("/admin/profile", flashErr(t("admin.error.csrf")));
   }
   const store = await getStore();
   await store.setProfile(
@@ -150,7 +154,8 @@ export async function saveProfileAction(formData: FormData) {
       email: String(formData.get("email") || ""),
     }),
   );
-  redirect(`/admin/profile?msg=${encodeURIComponent(flashOk(t("admin.profile.saved")))}`);
+  revalidatePublic();
+  await flashRedirect("/admin/profile", flashOk(t("admin.profile.saved")));
 }
 
 export async function saveSettingsAction(formData: FormData) {
@@ -158,7 +163,7 @@ export async function saveSettingsAction(formData: FormData) {
   const current = await store.getSettings();
   const t = createT(current.locale);
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/theme?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
+    await flashRedirect("/admin/theme", flashErr(t("admin.error.csrf")));
   }
   const env = await getEnv();
   const next = sanitizeSettings({
@@ -172,14 +177,15 @@ export async function saveSettingsAction(formData: FormData) {
     footerText: String(formData.get("footerText") || ""),
   });
   await store.setSettings(next);
+  revalidatePublic();
   const tNext = createT(next.locale);
-  redirect(`/admin/theme?msg=${encodeURIComponent(flashOk(tNext("admin.theme.saved")))}`);
+  await flashRedirect("/admin/theme", flashOk(tNext("admin.theme.saved")));
 }
 
 export async function addLinkAction(formData: FormData) {
   const t = await tSite();
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/links?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
+    await flashRedirect("/admin/links", flashErr(t("admin.error.csrf")));
   }
   const store = await getStore();
   const links = await store.getLinks();
@@ -196,41 +202,44 @@ export async function addLinkAction(formData: FormData) {
     maxOrder + 1,
   );
   if (!item.url) {
-    redirect(`/admin/links?msg=${encodeURIComponent(flashErr(t("admin.links.invalidUrl")))}`);
+    await flashRedirect("/admin/links", flashErr(t("admin.links.invalidUrl")));
   }
   links.push(item);
   await store.setLinks(links);
-  redirect(`/admin/links?msg=${encodeURIComponent(flashOk(t("admin.links.added")))}`);
+  revalidatePublic();
+  await flashRedirect("/admin/links", flashOk(t("admin.links.added")));
 }
 
 export async function deleteLinkAction(formData: FormData) {
   const t = await tSite();
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/links?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
+    await flashRedirect("/admin/links", flashErr(t("admin.error.csrf")));
   }
   const id = String(formData.get("id") || "");
   const store = await getStore();
   const links = (await store.getLinks()).filter((l) => l.id !== id);
   await store.setLinks(links.map((l, i) => ({ ...l, order: i })));
-  redirect(`/admin/links?msg=${encodeURIComponent(flashOk(t("admin.links.deleted")))}`);
+  revalidatePublic();
+  await flashRedirect("/admin/links", flashOk(t("admin.links.deleted")));
 }
 
 export async function toggleLinkAction(formData: FormData) {
   const t = await tSite();
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/links?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
+    await flashRedirect("/admin/links", flashErr(t("admin.error.csrf")));
   }
   const id = String(formData.get("id") || "");
   const store = await getStore();
   const links = await store.getLinks();
   await store.setLinks(links.map((l) => (l.id === id ? { ...l, enabled: !l.enabled } : l)));
-  redirect(`/admin/links?msg=${encodeURIComponent(flashOk(t("admin.links.updated")))}`);
+  revalidatePublic();
+  await flashRedirect("/admin/links", flashOk(t("admin.links.updated")));
 }
 
 export async function reorderLinkAction(formData: FormData) {
   const t = await tSite();
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/links?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
+    await flashRedirect("/admin/links", flashErr(t("admin.error.csrf")));
   }
   const id = String(formData.get("id") || "");
   const dir = Number(formData.get("dir") || 0) as -1 | 1;
@@ -245,13 +254,14 @@ export async function reorderLinkAction(formData: FormData) {
   links[swap] = tmp;
   const normalized: LinkItem[] = links.map((l, i) => ({ ...l, order: i }));
   await store.setLinks(normalized);
-  redirect(`/admin/links?msg=${encodeURIComponent(flashOk(t("admin.links.reordered")))}`);
+  revalidatePublic();
+  await flashRedirect("/admin/links", flashOk(t("admin.links.reordered")));
 }
 
 export async function importDataAction(formData: FormData) {
   const t = await tSite();
   if (!(await requireCsrf(formData))) {
-    redirect(`/admin/data?msg=${encodeURIComponent(flashErr(t("admin.error.csrf")))}`);
+    await flashRedirect("/admin/data", flashErr(t("admin.error.csrf")));
   }
   const raw = String(formData.get("json") || "");
   try {
@@ -263,13 +273,13 @@ export async function importDataAction(formData: FormData) {
       settings: data.settings as never,
       analytics: data.analytics as never,
     });
+    revalidatePublic();
     const after = await store.getSettings();
     const tAfter = createT(after.locale);
-    redirect(`/admin/data?msg=${encodeURIComponent(flashOk(tAfter("admin.data.imported")))}`);
+    await flashRedirect("/admin/data", flashOk(tAfter("admin.data.imported")));
   } catch {
-    redirect(`/admin/data?msg=${encodeURIComponent(flashErr(t("admin.data.invalidJson")))}`);
+    await flashRedirect("/admin/data", flashErr(t("admin.data.invalidJson")));
   }
 }
 
-// re-export helpers used by pages
 export { flashOk, flashErr };

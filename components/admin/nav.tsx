@@ -27,10 +27,14 @@ export function AdminNav({
   return (
     <nav className="admin-nav">
       <div className="min-w-0 shrink">
-        <div className="truncate text-sm font-semibold tracking-tight text-kumo-strong">
-          {t("admin.brand")}
-          <span className="ml-2 font-normal text-kumo-subtle">{siteName}</span>
-        </div>
+        <Link
+          href="/"
+          className="inline-flex min-w-0 max-w-full items-baseline gap-2 truncate text-sm font-semibold tracking-tight text-kumo-strong transition-colors hover:text-kumo-link"
+          title={t("admin.nav.homeTitle", { siteName })}
+        >
+          <span className="truncate">{siteName}</span>
+          <span className="shrink-0 font-normal text-kumo-subtle">{t("admin.nav.console")}</span>
+        </Link>
       </div>
       <div className="admin-nav-links">
         {items.map((item) => (
@@ -47,12 +51,6 @@ export function AdminNav({
             {t(`admin.nav.${item.key}`)}
           </Link>
         ))}
-        <Link
-          href="/"
-          className="inline-flex items-center rounded-lg px-3 py-1.5 text-sm text-kumo-subtle hover:bg-kumo-tint hover:text-kumo-default"
-        >
-          {t("admin.nav.public")}
-        </Link>
         <form action={logoutAction} className="inline-flex">
           <input type="hidden" name={CSRF_FIELD} value={csrf} />
           <Button type="submit" variant="ghost" size="sm" className="!text-kumo-danger">

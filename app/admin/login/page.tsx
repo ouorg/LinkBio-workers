@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
-import { Banner } from "@cloudflare/kumo/components/banner";
 import { Button } from "@cloudflare/kumo/components/button";
 import { Input } from "@cloudflare/kumo/components/input";
 import { LayerCard } from "@cloudflare/kumo/components/layer-card";
-import { WarningCircleIcon } from "@phosphor-icons/react/dist/ssr";
 import { loginAction, ensureCsrfCookie } from "../actions";
+import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
+import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 
@@ -24,8 +24,7 @@ export default async function LoginPage({
   const t = createT(settings.locale);
   const csrf = await ensureCsrfCookie();
   const sp = await searchParams;
-  const raw = sp.msg || "";
-  const msg = raw.startsWith("error:") ? raw.slice(6) : raw.startsWith("ok:") ? raw.slice(3) : raw;
+  const flash = await resolveAdminFlash(sp.msg);
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8">
@@ -39,15 +38,7 @@ export default async function LoginPage({
           </div>
         </LayerCard.Secondary>
         <LayerCard.Primary>
-          {msg ? (
-            <Banner
-              className="mb-4"
-              size="sm"
-              variant="error"
-              icon={<WarningCircleIcon weight="fill" className="size-4" />}
-              title={msg}
-            />
-          ) : null}
+          <Flash message={flash} />
           <form action={loginAction} className="space-y-4">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
             <Input

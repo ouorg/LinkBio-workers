@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 import { ProfileCard } from "@/components/public/profile-card";
 import { LinkList } from "@/components/public/link-list";
@@ -11,6 +12,38 @@ import { getTheme, resolveThemeId } from "@/lib/themes";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
+
+function truncateName(name: string, max = 40): string {
+  const t = name.trim();
+  if (t.length <= max) return t;
+  return t.slice(0, max);
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const store = await getStore();
+    const env = await getEnv();
+    const profile = await store.getProfile();
+    const siteName = env.SITE_NAME || "LinkBio";
+    const name = truncateName(profile.name || "");
+    const title = name ? `${name}-LinkBio` : siteName;
+    const description = createT(undefined)("public.metaDescription", { siteName });
+    return {
+      title,
+      description,
+      icons: {
+        icon: [{ url: "/icon", type: "image/svg+xml" }],
+      },
+    };
+  } catch {
+    return {
+      title: "LinkBio",
+      icons: {
+        icon: [{ url: "/icon", type: "image/svg+xml" }],
+      },
+    };
+  }
+}
 
 export default async function PublicPage() {
   const store = await getStore();

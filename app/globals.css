@@ -258,3 +258,30 @@
   outline: 2px solid var(--color-kumo-focus, hsl(var(--ring)));
   outline-offset: 1px;
 }
+
+/* Theme picker cards: whole label clickable; :checked updates highlight immediately */
+.admin-kumo .admin-theme-card {
+  cursor: pointer;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-kumo-hairline, hsl(var(--border)));
+  padding: 0.75rem;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.admin-kumo .admin-theme-card:hover {
+  border-color: color-mix(in oklch, var(--color-kumo-focus, #000) 40%, transparent);
+}
+
+.admin-kumo .admin-theme-card:has(input[name="theme"]:checked) {
+  border-color: var(--color-kumo-focus, hsl(var(--ring)));
+  background: var(--color-kumo-tint, hsl(var(--muted)));
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-kumo-focus, #000) 30%, transparent);
+}
+
+.admin-kumo .admin-theme-card:has(input[name="theme"]:focus-visible) {
+  outline: 2px solid var(--color-kumo-focus, hsl(var(--ring)));
+  outline-offset: 2px;
+}

@@ -9,10 +9,10 @@ import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
+import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 import { listThemes, resolveThemeId } from "@/lib/themes";
-import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +40,7 @@ export default async function ThemePage({
   const t = createT(settings.locale);
   const csrf = await ensureCsrfCookie();
   const sp = await searchParams;
+  const flash = await resolveAdminFlash(sp.msg);
   const themes = listThemes();
   const currentThemeId = resolveThemeId(settings.theme, env.DEFAULT_THEME);
   const localeZh = settings.locale === "zh-CN";
@@ -56,7 +57,7 @@ export default async function ThemePage({
       <LayerCard>
         <LayerCard.Secondary>{t("admin.theme.title")}</LayerCard.Secondary>
         <LayerCard.Primary>
-          <Flash message={sp.msg} />
+          <Flash message={flash} />
           <form action={saveSettingsAction} className="space-y-6">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
 
@@ -70,16 +71,7 @@ export default async function ThemePage({
                   const sw = PREVIEW[th.id] || PREVIEW.base!;
                   const title = localeZh ? th.nameZh : th.name;
                   return (
-                    <label
-                      key={th.id}
-                      className={cn(
-                        "cursor-pointer rounded-xl border p-3 transition",
-                        "hover:border-kumo-focus/40",
-                        currentThemeId === th.id
-                          ? "border-kumo-focus bg-kumo-tint ring-2 ring-kumo-focus/30"
-                          : "border-kumo-hairline",
-                      )}
-                    >
+                    <label key={th.id} className="admin-theme-card">
                       <input
                         type="radio"
                         name="theme"

@@ -14,6 +14,7 @@ import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
 import { getEnv, getStore } from "@/lib/env";
+import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 
@@ -31,6 +32,7 @@ export default async function LinksPage({
   const t = createT(settings.locale);
   const csrf = await ensureCsrfCookie();
   const sp = await searchParams;
+  const flash = await resolveAdminFlash(sp.msg);
   const sorted = [...links].sort((a, b) => a.order - b.order);
 
   return (
@@ -45,7 +47,7 @@ export default async function LinksPage({
         <LayerCard.Secondary>{t("admin.links.title")}</LayerCard.Secondary>
         <LayerCard.Primary>
           <div className="space-y-3">
-            <Flash message={sp.msg} />
+            <Flash message={flash} />
             {sorted.length === 0 ? (
               <p className="text-sm text-kumo-subtle">{t("admin.links.empty")}</p>
             ) : (

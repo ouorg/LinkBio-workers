@@ -1,25 +1,60 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import "./globals.css";
-import { COLOR_COOKIE, parseColorMode } from "@/lib/prefs";
+import { getEnv, getStore } from "@/lib/env";
+import { htmlLang } from "@/lib/i18n";
+import { COLOR_COOKIE, parseColorMode, resolveColorMode, resolveLocale } from "@/lib/prefs";
+import { resolveThemeId } from "@/lib/themes";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "LinkBio",
+  title: {
+    default: "LinkBio",
+    template: "%s",
+  },
   description: "Personal bio / digital card on Cloudflare Workers",
+  icons: {
+    icon: [{ url: "/icon", type: "image/svg+xml" }],
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const jar = await cookies();
-  const colorFromCookie = parseColorMode(jar.get(COLOR_COOKIE)?.value);
-  const dataTheme = colorFromCookie || "system";
+  const hdrs = await headers();
+  const cookieHeader = jar
+    .getAll()
+    .map((c) => `${c.name}=${encodeURIComponent(c.value)}`)
+    .join("; ");
+
+  let dataTheme = parseColorMode(jar.get(COLOR_COOKIE)?.value) || "system";
+  let lang = "zh-CN";
+  let themeId = "base";
+
+  try {
+    const store = await getStore();
+    const env = await getEnv();
+    const settings = await store.getSettings();
+    dataTheme = resolveColorMode(cookieHeader, settings.colorMode);
+    const { locale } = resolveLocale(
+      cookieHeader,
+      hdrs.get("accept-language") || undefined,
+      settings.locale,
+    );
+    lang = htmlLang(locale);
+    themeId = resolveThemeId(settings.theme, env.DEFAULT_THEME);
+  } catch {
+    /* keep defaults when KV unavailable (e.g. edge edge-cases) */
+  }
+
   const colorScheme =
     dataTheme === "system" ? "light dark" : dataTheme === "light" ? "light" : "dark";
 
   return (
     <html
-      lang="zh-CN"
+      lang={lang}
       data-theme={dataTheme}
-      data-theme-id="base"
+      data-theme-id={themeId}
       suppressHydrationWarning
     >
       <head>
