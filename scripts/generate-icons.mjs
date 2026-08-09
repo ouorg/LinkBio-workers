@@ -1,7 +1,15 @@
+/**
+ * Optional bulk seeder for monochrome link icons.
+ * Writes SVG sources into src/icons/ (source of truth).
+ * Then run: npm run build:icons
+ *
+ * Prefer editing src/icons/*.svg + meta.json for day-to-day work.
+ * Do NOT treat this script as the runtime registry.
+ */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
-const dir = join(process.cwd(), "public", "icons");
+const dir = join(process.cwd(), "src", "icons");
 mkdirSync(dir, { recursive: true });
 
 const stroke = (body) =>
@@ -10,7 +18,7 @@ const stroke = (body) =>
 const fill = (d) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${d}"/></svg>\n`;
 
-/** Monochrome icons (simplified marks). Extend by adding SVG + registry row. */
+/** Monochrome icons (simplified marks). After writing, run build:icons. */
 const icons = {
   link: stroke(
     '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
@@ -70,6 +78,10 @@ const icons = {
 
 for (const [id, svg] of Object.entries(icons)) {
   writeFileSync(join(dir, `${id}.svg`), svg, "utf8");
-  console.log("wrote", id);
+  console.log("[generate-icons] wrote src/icons/" + id + ".svg");
 }
-console.log("total", Object.keys(icons).length);
+console.log(
+  "[generate-icons] total",
+  Object.keys(icons).length,
+  "— run: npm run build:icons",
+);

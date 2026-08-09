@@ -59,6 +59,7 @@
 | Public bio | Profile, links, footer; SSR + visitor toolbar (color / locale) |
 | Admin | `/admin` session auth, CSRF, profile / links / theme / data |
 | Themes | `src/themes/*` bundled at build time; `data-theme-id` switch |
+| Link icons | `src/icons/*` registry at build time; syncs `public/icons/` |
 | Analytics | Split KV counters (PV, clicks); login rate limit |
 | Backup | Local JSON import/export; optional WebDAV + Gist (parallel) |
 
@@ -101,13 +102,15 @@ npm run preview   # full OpenNext + workerd preview
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Build themes + Next dev server |
+| `npm run dev` | Build themes/icons + Next dev server |
 | `npm run build` | Next production build |
+| `npm run build:assets` | Themes + icons (`build:themes` && `build:icons`) |
 | `npm run build:themes` | Validate + generate theme registry / CSS |
+| `npm run build:icons` | Validate + generate icon registry; sync `public/icons/` |
 | `npm run build:worker` | OpenNext worker bundle |
 | `npm run preview` | Build + local Workers runtime |
 | `npm run deploy` | Build + deploy to Cloudflare |
-| `npm run typecheck` | `tsc --noEmit` |
+| `npm run typecheck` | `tsc --noEmit` (runs `build:assets` first) |
 
 ---
 
@@ -366,6 +369,18 @@ See [src/themes/README.md](./src/themes/README.md). Admin descriptions follow UI
 
 ---
 
+## Link icons
+
+Built-in link icons live under `src/icons/*.svg` (+ optional `meta.json`) and are registered at build time. `public/icons/` is **generated** — do not edit by hand.
+
+```bash
+npm run build:icons
+```
+
+Add an icon: drop `src/icons/{id}.svg` → build → it appears in the admin picker. See [src/icons/README.md](./src/icons/README.md).
+
+---
+
 ## Layout
 
 ```
@@ -373,10 +388,13 @@ app/                 # Next.js routes
 components/ui/       # public shadcn-style UI
 components/public/   # bio + toolbar
 components/admin/    # admin shell
-lib/                 # kv, session, backup, i18n, themes…
+lib/                 # kv, session, backup, i18n, themes, icons…
 src/themes/          # visual packs
+src/icons/           # link icon sources (*.svg + meta.json → registry)
+public/icons/        # generated icon assets (from build:icons)
 docs/logo.jpg        # repo logo
 scripts/build-themes.mjs
+scripts/build-icons.mjs
 wrangler.toml
 README.md / README.en.md
 ```

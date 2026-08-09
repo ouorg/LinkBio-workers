@@ -14,7 +14,7 @@ import { Button } from "@cloudflare/kumo/components/button";
 import { Label } from "@cloudflare/kumo/components/label";
 import { CaretDownIcon, CheckIcon } from "@phosphor-icons/react";
 import {
-  BUILTIN_ICONS,
+  listIcons,
   normalizeIconId,
   resolveLinkIconSrc,
 } from "@/lib/icons";
@@ -108,8 +108,9 @@ export function IconSelect({
   const listboxId = `${fieldId}-listbox`;
 
   const initial = normalizeIconId(defaultValue || "link");
-  const knownIds = useMemo(() => new Set(BUILTIN_ICONS.map((i) => i.id)), []);
-  const isKnownInitial = knownIds.has(initial as (typeof BUILTIN_ICONS)[number]["id"]);
+  const builtin = useMemo(() => listIcons(), []);
+  const knownIds = useMemo(() => new Set(builtin.map((i) => i.id)), [builtin]);
+  const isKnownInitial = knownIds.has(initial);
 
   const [value, setValue] = useState(initial);
   const [open, setOpen] = useState(false);
@@ -121,7 +122,7 @@ export function IconSelect({
 
   type Option = { id: string; label: string; file: string };
   const options = useMemo((): Option[] => {
-    const list: Option[] = BUILTIN_ICONS.map((i) => ({
+    const list: Option[] = builtin.map((i) => ({
       id: i.id,
       label: i.label,
       file: i.file,
@@ -134,7 +135,7 @@ export function IconSelect({
       });
     }
     return list;
-  }, [initial, isKnownInitial, customLabelTemplate]);
+  }, [builtin, initial, isKnownInitial, customLabelTemplate]);
 
   const selected = options.find((o) => o.id === value) || options[0]!;
   const previewSrc = resolveLinkIconSrc(selected.id);

@@ -59,6 +59,7 @@
 | 前台名片 | 资料、链接列表、页脚；SSR + 访客工具条（深浅色 / 语言） |
 | 管理后台 | `/admin` 会话登录、CSRF、资料 / 链接 / 主题 / 数据 |
 | 多主题 | `src/themes/*` 构建期打包；后台切换 `data-theme-id` |
+| 链接图标 | `src/icons/*` 构建期 registry + 同步 `public/icons/` |
 | 统计 | 拆分 KV 计数（PV、链接点击）；登录失败限流 |
 | 备份 | 本地 JSON 导入导出；可选 WebDAV + Gist 并行远端备份 |
 
@@ -101,13 +102,15 @@ npm run preview   # OpenNext + workerd 完整 Worker 预览
 
 | 命令 | 说明 |
 |------|------|
-| `npm run dev` | 构建主题 + Next 开发服务器 |
+| `npm run dev` | 构建主题/图标 + Next 开发服务器 |
 | `npm run build` | 生产构建（Next） |
+| `npm run build:assets` | 主题 + 图标构建（`build:themes` && `build:icons`） |
 | `npm run build:themes` | 校验并生成主题 registry / CSS |
+| `npm run build:icons` | 校验并生成图标 registry，同步 `public/icons/` |
 | `npm run build:worker` | OpenNext Worker 产物 |
 | `npm run preview` | 构建并在本地 Workers 运行时预览 |
 | `npm run deploy` | 构建并部署到 Cloudflare |
-| `npm run typecheck` | `tsc --noEmit` |
+| `npm run typecheck` | `tsc --noEmit`（会先跑 `build:assets`） |
 
 ---
 
@@ -212,7 +215,7 @@ npx wrangler secret put SESSION_SECRET
 ```bash
 npm install --legacy-peer-deps
 npm run deploy
-# 等价于：build:themes → OpenNext build → wrangler deploy
+# 等价于：build:assets（themes + icons）→ OpenNext build → wrangler deploy
 ```
 
 3. 打开 `SITE_URL`，访问 `/admin` 用 `ADMIN_PASSWORD` 登录。
@@ -369,6 +372,18 @@ npm run build:themes
 
 ---
 
+## 链接图标
+
+内置链接图标 = `src/icons/*.svg` + 可选 `meta.json` + **构建期** registry；`public/icons/` 仅为生成物（勿手改）。
+
+```bash
+npm run build:icons
+```
+
+新增图标：放入 `src/icons/{id}.svg` → 构建 → 后台下拉自动出现。完整说明见 [src/icons/README.md](./src/icons/README.md)。
+
+---
+
 ## 目录结构
 
 ```
@@ -376,10 +391,13 @@ app/                 # Next.js 路由（RSC + Route Handlers）
 components/ui/       # 前台 shadcn 风格组件
 components/public/   # 名片、工具条
 components/admin/    # 后台壳层 / 面板
-lib/                 # kv、session、backup、i18n、themes…
+lib/                 # kv、session、backup、i18n、themes、icons…
 src/themes/          # 视觉包（theme.json + tokens.css）
+src/icons/           # 链接图标源（*.svg + meta.json → registry）
+public/icons/        # 图标构建产物（由 build:icons 同步）
 docs/logo.jpg        # 仓库 Logo
 scripts/build-themes.mjs
+scripts/build-icons.mjs
 wrangler.toml
 open-next.config.ts
 README.md / README.en.md
