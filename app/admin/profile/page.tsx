@@ -3,10 +3,11 @@ import { Button } from "@cloudflare/kumo/components/button";
 import { Input } from "@cloudflare/kumo/components/input";
 import { InputArea } from "@cloudflare/kumo/components/input";
 import { LayerCard } from "@cloudflare/kumo/components/layer-card";
-import { ensureCsrfCookie, saveProfileAction } from "../actions";
+import { saveProfileAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
+import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
@@ -24,7 +25,7 @@ export default async function ProfilePage({
   const env = await getEnv();
   const [profile, settings] = await Promise.all([store.getProfile(), store.getSettings()]);
   const t = createT(settings.locale);
-  const csrf = await ensureCsrfCookie();
+  const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
 

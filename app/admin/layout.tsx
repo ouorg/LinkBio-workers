@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { ensureCsrfCookie } from "./actions";
 import { COLOR_COOKIE, parseColorMode } from "@/lib/prefs";
 
 /**
@@ -12,7 +11,7 @@ function modeFromPref(pref: string | null | undefined): "light" | "dark" | "syst
 }
 
 export default async function AdminRootLayout({ children }: { children: React.ReactNode }) {
-  await ensureCsrfCookie();
+  // CSRF is issued in middleware — never cookies().set during RSC render (Next 15 → 500).
   const jar = await cookies();
   const pref = parseColorMode(jar.get(COLOR_COOKIE)?.value);
   const mode = modeFromPref(pref);

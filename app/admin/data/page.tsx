@@ -2,10 +2,11 @@ import { redirect } from "next/navigation";
 import { Button, LinkButton } from "@cloudflare/kumo/components/button";
 import { InputArea } from "@cloudflare/kumo/components/input";
 import { LayerCard } from "@cloudflare/kumo/components/layer-card";
-import { ensureCsrfCookie, importDataAction } from "../actions";
+import { importDataAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
+import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
@@ -23,7 +24,7 @@ export default async function DataPage({
   const env = await getEnv();
   const settings = await store.getSettings();
   const t = createT(settings.locale);
-  const csrf = await ensureCsrfCookie();
+  const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
 

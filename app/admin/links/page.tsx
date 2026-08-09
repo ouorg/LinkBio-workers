@@ -6,13 +6,13 @@ import { LayerCard } from "@cloudflare/kumo/components/layer-card";
 import {
   addLinkAction,
   deleteLinkAction,
-  ensureCsrfCookie,
   reorderLinkAction,
   toggleLinkAction,
 } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
+import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
@@ -30,7 +30,7 @@ export default async function LinksPage({
   const env = await getEnv();
   const [links, settings] = await Promise.all([store.getLinks(), store.getSettings()]);
   const t = createT(settings.locale);
-  const csrf = await ensureCsrfCookie();
+  const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
   const sorted = [...links].sort((a, b) => a.order - b.order);

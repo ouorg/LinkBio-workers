@@ -15,6 +15,8 @@ export function escapeHtml(input: string): string {
  */
 export const CSRF_COOKIE = "lb_csrf";
 export const CSRF_FIELD = "_csrf";
+/** Middleware → RSC: freshly issued CSRF token for the same request (no cookie yet on request). */
+export const CSRF_HEADER = "x-csrf-token";
 
 export function generateCsrfToken(): string {
   const bytes = new Uint8Array(32);

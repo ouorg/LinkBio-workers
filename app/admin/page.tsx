@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { LinkButton } from "@cloudflare/kumo/components/button";
 import { LayerCard } from "@cloudflare/kumo/components/layer-card";
-import { ensureCsrfCookie } from "./actions";
 import { AdminNav } from "@/components/admin/nav";
 import { isAdminSession } from "@/lib/auth";
+import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
 import { createT } from "@/lib/i18n";
 
@@ -21,7 +21,7 @@ export default async function AdminOverviewPage() {
     store.getAnalytics(),
   ]);
   const t = createT(settings.locale);
-  const csrf = await ensureCsrfCookie();
+  const csrf = await getCsrfToken();
   const clicks = Object.values(analytics.linkClicks).reduce((a, b) => a + b, 0);
 
   return (

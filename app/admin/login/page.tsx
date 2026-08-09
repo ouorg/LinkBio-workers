@@ -2,9 +2,10 @@ import { redirect } from "next/navigation";
 import { Button } from "@cloudflare/kumo/components/button";
 import { Input } from "@cloudflare/kumo/components/input";
 import { LayerCard } from "@cloudflare/kumo/components/layer-card";
-import { loginAction, ensureCsrfCookie } from "../actions";
+import { loginAction } from "../actions";
 import { Flash } from "@/components/admin/flash";
 import { isAdminSession } from "@/lib/auth";
+import { getCsrfToken } from "@/lib/csrf";
 import { getEnv, getStore } from "@/lib/env";
 import { resolveAdminFlash } from "@/lib/flash";
 import { createT } from "@/lib/i18n";
@@ -22,7 +23,7 @@ export default async function LoginPage({
   const env = await getEnv();
   const settings = await store.getSettings();
   const t = createT(settings.locale);
-  const csrf = await ensureCsrfCookie();
+  const csrf = await getCsrfToken();
   const sp = await searchParams;
   const flash = await resolveAdminFlash(sp.msg);
 

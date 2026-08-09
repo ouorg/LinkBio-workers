@@ -58,20 +58,6 @@ function revalidatePublic() {
   revalidatePath("/");
 }
 
-export async function ensureCsrfCookie() {
-  const jar = await cookies();
-  const existing = jar.get(CSRF_COOKIE)?.value;
-  if (existing && existing.length >= 16) return existing;
-  const token = generateCsrfToken();
-  jar.set(CSRF_COOKIE, token, {
-    path: "/",
-    sameSite: "lax",
-    maxAge: 86400,
-    secure: await isSecure(),
-  });
-  return token;
-}
-
 export async function loginAction(formData: FormData) {
   const store = await getStore();
   const env = await getEnv();

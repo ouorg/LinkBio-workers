@@ -26,10 +26,11 @@ export async function generateMetadata(): Promise<Metadata> {
     const profile = await store.getProfile();
     const siteName = env.SITE_NAME || "LinkBio";
     const name = truncateName(profile.name || "");
-    const title = name ? `${name}-LinkBio` : siteName;
+    // absolute avoids root layout default/template overriding page title
+    const displayTitle = name ? `${name}-LinkBio` : siteName;
     const description = createT(undefined)("public.metaDescription", { siteName });
     return {
-      title,
+      title: { absolute: displayTitle },
       description,
       icons: {
         icon: [{ url: "/icon", type: "image/svg+xml" }],
@@ -37,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   } catch {
     return {
-      title: "LinkBio",
+      title: { absolute: "LinkBio" },
       icons: {
         icon: [{ url: "/icon", type: "image/svg+xml" }],
       },
