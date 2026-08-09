@@ -4,6 +4,19 @@ import { FALLBACK_THEME_ID } from "./_types";
 
 export const THEME_MANIFESTS: ThemeManifest[] = [
   {
+    "id": "anthropic",
+    "name": "Anthropic Art",
+    "nameZh": "Anthropic 插画风",
+    "description": "Flat illustration palette: oat page, ivory card, clay accent, near-black ink",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": false,
+      "customFonts": true
+    }
+  },
+  {
     "id": "aurora",
     "name": "Aurora",
     "nameZh": "极光",

@@ -24,6 +24,8 @@ const PREVIEW: Record<string, { a: string; b: string; c: string }> = {
   aurora: { a: "hsl(199 89% 48%)", b: "hsl(258 90% 66%)", c: "hsl(200 40% 92%)" },
   /* Legacy Hono UI: indigo + near-black card */
   old: { a: "#6366f1", b: "#0a0a0b", c: "#18181b" },
+  /* Anthropic illustration: clay + oat + ivory / near-black */
+  anthropic: { a: "#D97757", b: "#E3DACC", c: "#FAF9F5" },
 };
 
 export default async function ThemePage({
