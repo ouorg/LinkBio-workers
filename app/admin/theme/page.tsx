@@ -12,8 +12,19 @@ import { getEnv, getStore } from "@/lib/env";
 import { createT } from "@/lib/i18n";
 import { CSRF_FIELD } from "@/lib/security";
 import { listThemes, resolveThemeId } from "@/lib/themes";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
+
+/** Lightweight preview swatches (not loaded from CSS — admin-only hint) */
+const PREVIEW: Record<string, { a: string; b: string; c: string }> = {
+  base: { a: "hsl(239 84% 67%)", b: "hsl(240 5% 20%)", c: "hsl(240 5% 90%)" },
+  minimal: { a: "hsl(240 6% 40%)", b: "hsl(0 0% 20%)", c: "hsl(0 0% 92%)" },
+  glass: { a: "hsl(262 83% 68%)", b: "hsl(260 20% 25%)", c: "hsl(260 30% 92%)" },
+  aurora: { a: "hsl(199 89% 48%)", b: "hsl(258 90% 66%)", c: "hsl(200 40% 92%)" },
+  /* Legacy Hono UI: indigo + near-black card */
+  old: { a: "#6366f1", b: "#0a0a0b", c: "#18181b" },
+};
 
 export default async function ThemePage({
   searchParams,
@@ -29,14 +40,14 @@ export default async function ThemePage({
   const sp = await searchParams;
   const themes = listThemes();
   const currentThemeId = resolveThemeId(settings.theme, env.DEFAULT_THEME);
-  const label = (id: string, name: string, nameZh: string) =>
-    settings.locale === "zh-CN" ? `${nameZh} (${id})` : `${name} (${id})`;
+  const localeZh = settings.locale === "zh-CN";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8" data-theme-id={currentThemeId}>
       <AdminNav active="theme" siteName={env.SITE_NAME || "LinkBio"} csrf={csrf} t={t} />
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">{t("admin.page.theme")}</h1>
+        <p className="text-sm text-muted-foreground">{t("admin.subtitle")}</p>
       </header>
       <Card>
         <CardHeader>
@@ -44,24 +55,55 @@ export default async function ThemePage({
         </CardHeader>
         <CardContent>
           <Flash message={sp.msg} />
-          <form action={saveSettingsAction} className="space-y-4">
+          <form action={saveSettingsAction} className="space-y-6">
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="theme">{t("admin.theme.theme")}</Label>
-                <select
-                  id="theme"
-                  name="theme"
-                  defaultValue={currentThemeId}
-                  className="flex h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
-                >
-                  {themes.map((th) => (
-                    <option key={th.id} value={th.id}>
-                      {label(th.id, th.name, th.nameZh)}
-                    </option>
-                  ))}
-                </select>
+
+            <div className="space-y-3">
+              <Label>{t("admin.theme.theme")}</Label>
+              <p className="text-xs text-muted-foreground">
+                DEFAULT_THEME={env.DEFAULT_THEME || "base"} · current={currentThemeId}
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {themes.map((th) => {
+                  const sw = PREVIEW[th.id] || PREVIEW.base!;
+                  const title = localeZh ? th.nameZh : th.name;
+                  return (
+                    <label
+                      key={th.id}
+                      className={cn(
+                        "cursor-pointer rounded-xl border p-3 transition",
+                        "hover:border-primary/50",
+                        currentThemeId === th.id
+                          ? "border-primary bg-primary/5 ring-2 ring-primary/30"
+                          : "border-border",
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name="theme"
+                        value={th.id}
+                        defaultChecked={currentThemeId === th.id}
+                        className="sr-only"
+                      />
+                      <div className="mb-2 flex gap-1">
+                        <span className="h-6 flex-1 rounded-md" style={{ background: sw.a }} />
+                        <span className="h-6 flex-1 rounded-md" style={{ background: sw.b }} />
+                        <span className="h-6 flex-1 rounded-md" style={{ background: sw.c }} />
+                      </div>
+                      <div className="text-sm font-medium">
+                        {title}{" "}
+                        <span className="font-mono text-xs text-muted-foreground">({th.id})</span>
+                      </div>
+                      {th.description ? (
+                        <p className="mt-0.5 text-xs text-muted-foreground">{th.description}</p>
+                      ) : null}
+                    </label>
+                  );
+                })}
               </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="accentColor">{t("admin.theme.accent")}</Label>
                 <Input
@@ -71,10 +113,15 @@ export default async function ThemePage({
                   pattern="#[0-9a-fA-F]{3,8}"
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="background">{t("admin.theme.background")}</Label>
-              <Input id="background" name="background" type="url" defaultValue={settings.background} />
+              <div className="space-y-2">
+                <Label htmlFor="background">{t("admin.theme.background")}</Label>
+                <Input
+                  id="background"
+                  name="background"
+                  type="url"
+                  defaultValue={settings.background}
+                />
+              </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">

@@ -4,6 +4,19 @@ import { FALLBACK_THEME_ID } from "./_types";
 
 export const THEME_MANIFESTS: ThemeManifest[] = [
   {
+    "id": "aurora",
+    "name": "Aurora",
+    "nameZh": "极光",
+    "description": "Vivid cyan–violet accent with soft glow",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": true,
+      "customFonts": false
+    }
+  },
+  {
     "id": "base",
     "name": "Base",
     "nameZh": "基础",
@@ -12,7 +25,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
-      "gradientBg": true
+      "gradientBg": true,
+      "customFonts": false
     }
   },
   {
@@ -24,7 +38,8 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "tokensFile": "tokens.css",
     "features": {
       "blur": true,
-      "gradientBg": true
+      "gradientBg": true,
+      "customFonts": false
     }
   },
   {
@@ -36,7 +51,21 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,
-      "gradientBg": false
+      "gradientBg": false,
+      "customFonts": false
+    }
+  },
+  {
+    "id": "old",
+    "name": "Old",
+    "nameZh": "旧版",
+    "description": "Pre-Next.js Hono UI look (indigo SaaS card, 14px radius, soft radial glow)",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": true,
+      "customFonts": false
     }
   }
 ] as ThemeManifest[];
@@ -52,6 +81,7 @@ export function listThemes(): ThemeListItem[] {
     features: {
       blur: Boolean(m.features?.blur),
       gradientBg: Boolean(m.features?.gradientBg),
+      customFonts: Boolean(m.features?.customFonts),
     },
   }));
 }

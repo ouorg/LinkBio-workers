@@ -23,7 +23,9 @@ preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_ID"
 [vars]
 SITE_NAME = "LinkBio"
 SITE_URL = "https://YOUR_SUBDOMAIN.workers.dev"
+# Default visual pack id when KV settings.theme is empty/invalid (not a Secret)
 DEFAULT_THEME = "base"
+# Optional future: DEFAULT_COLOR_MODE = "system"
 
 # Secrets (wrangler secret put ...):
 #   ADMIN_PASSWORD

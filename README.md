@@ -111,28 +111,22 @@ open-next.config.ts
 
 ## Visual themes (`src/themes/`)
 
-Each pack is a folder with:
+> 主题 = 标准目录 + **构建期**打进 registry/CSS；默认由 **`DEFAULT_THEME`**（Vars）决定；运行时 KV `settings.theme` 切换 `data-theme-id`；深浅色用 `data-theme` 正交控制。
 
-| File | Role |
+详见 **[src/themes/README.md](src/themes/README.md)**（给 AI/人的完整 checklist）。
+
+| 属性 | 含义 |
 |------|------|
-| `theme.json` | Metadata only (`id`, `name`, `nameZh`, `version`, `features`…) |
-| `tokens.css` | CSS variables scoped by `[data-theme-id="…"]` |
+| `data-theme` | `system` \| `light` \| `dark` |
+| `data-theme-id` | `base` \| `minimal` \| `glass` \| `aurora` \| … |
 
-Orthogonal to color mode: `data-theme` = `system|light|dark`, `data-theme-id` = pack id.
+解析顺序：`settings.theme`（合法 id）→ `env.DEFAULT_THEME` → `base`。
 
 ```bash
-npm run build:themes   # validates JSON, writes _registry.ts + _bundle.css
+npm run build:themes   # 校验 + 生成 _registry.ts / _bundle.css（打包全部主题）
 ```
 
-Add a theme:
-
-1. Copy `src/themes/base` → `src/themes/my-theme`
-2. Edit `theme.json` (`id` must match folder name)
-3. Edit `tokens.css`
-4. Run `npm run build:themes`
-5. Select in Admin → Theme
-
-`DEFAULT_THEME` (Workers var) and KV `settings.theme` store the same id string; unknown ids fall back to `base`.
+**新增主题 4 步：** 复制 `base/` → 改 `theme.json` → 改 `tokens.css` → `npm run build:themes`（不要改路由核心逻辑）。
 
 ## License
 

@@ -57,8 +57,48 @@
   color: hsl(var(--muted-foreground));
 }
 
+/* === aurora/tokens.css === */
+/* Theme: aurora — vivid brand accent; color mode stays global */
+
+[data-theme-id="aurora"] {
+  --theme-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --theme-radius: 1rem;
+  --theme-card-radius: 1.15rem;
+  --theme-link-radius: 1rem;
+  --theme-shadow: 0 18px 50px rgba(56, 189, 248, 0.12);
+  --theme-border-opacity: 0.9;
+  /* cyan → violet brand */
+  --primary: 199 89% 48%;
+  --ring: 258 90% 66%;
+}
+
+[data-theme-id="aurora"][data-theme="dark"] {
+  --primary: 190 95% 55%;
+  --ring: 270 90% 72%;
+  --theme-shadow: 0 22px 60px rgba(56, 189, 248, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme-id="aurora"][data-theme="system"] {
+    --primary: 190 95% 55%;
+    --ring: 270 90% 72%;
+    --theme-shadow: 0 22px 60px rgba(56, 189, 248, 0.18);
+  }
+}
+
+[data-theme-id="aurora"] .theme-link:hover {
+  box-shadow: 0 0 0 1px hsl(var(--primary) / 0.45), var(--theme-shadow);
+}
+
 /* === base/tokens.css === */
-/* Theme: base — clean default, works with data-theme=light|dark|system */
+/*
+ * Theme: base — clean default skin (orthogonal to data-theme light|dark|system).
+ *
+ * Documented token set (see _types.ts ThemeTokenVars):
+ *   --primary, --ring (HSL channels)
+ *   --theme-radius, --theme-card-radius, --theme-link-radius
+ *   --theme-shadow, --theme-font, --theme-blur, --theme-border-opacity
+ */
 
 [data-theme-id="base"] {
   --theme-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -67,25 +107,18 @@
   --theme-link-radius: 1rem;
   --theme-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
   --theme-border-opacity: 1;
-  /* brand (HSL channels without hsl()) */
   --primary: 239 84% 67%;
   --ring: 239 84% 67%;
 }
 
-[data-theme-id="base"][data-theme="light"],
-[data-theme-id="base"][data-theme="system"] {
-  --theme-card-alpha: 0.92;
+[data-theme-id="base"][data-theme="dark"] {
+  --theme-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme-id="base"][data-theme="system"] {
-    --theme-card-alpha: 0.88;
+    --theme-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
   }
-}
-
-[data-theme-id="base"][data-theme="dark"] {
-  --theme-card-alpha: 0.88;
-  --theme-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
 /* === glass/tokens.css === */
@@ -170,5 +203,140 @@
 [data-theme-id="minimal"] .theme-avatar {
   border-width: 1px;
   box-shadow: none;
+}
+
+/* === old/tokens.css === */
+/*
+ * Theme: old — previous Hono frontend UI (Linear / Vercel inspired).
+ * Source reference: _legacy_hono/styles/app.css
+ *
+ * Orthogonal: data-theme = light|dark|system controls luminance;
+ * data-theme-id="old" restores brand radii, indigo accent, card/link chrome.
+ */
+
+[data-theme-id="old"] {
+  --theme-font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  /* legacy --radius: 14px */
+  --theme-radius: 14px;
+  --theme-card-radius: 14px;
+  --theme-link-radius: 14px;
+  --theme-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --theme-border-opacity: 1;
+  /* indigo #6366f1 */
+  --primary: 239 84% 67%;
+  --ring: 239 84% 67%;
+  --primary-foreground: 0 0% 100%;
+}
+
+/* ── Dark (legacy default) ─────────────────────────────────── */
+[data-theme-id="old"][data-theme="dark"] {
+  /* #0a0a0b #141416 #18181b */
+  --background: 240 6% 4%;
+  --foreground: 0 0% 98%;
+  --card: 240 5% 10%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 5% 10%;
+  --popover-foreground: 0 0% 98%;
+  --secondary: 240 4% 14%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 4% 14%;
+  --muted-foreground: 240 5% 65%;
+  --accent: 240 4% 14%;
+  --accent-foreground: 0 0% 98%;
+  --border: 0 0% 100% / 0.08;
+  --input: 0 0% 100% / 0.08;
+  --theme-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Light ─────────────────────────────────────────────────── */
+[data-theme-id="old"][data-theme="light"] {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 4%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 4%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 4%;
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 6% 10%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 4% 46%;
+  --accent: 240 5% 96%;
+  --accent-foreground: 240 6% 10%;
+  --border: 0 0% 0% / 0.08;
+  --input: 0 0% 0% / 0.08;
+  --theme-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+/* ── System follows OS (same as legacy prefers-color-scheme) ─ */
+[data-theme-id="old"][data-theme="system"] {
+  --background: 240 6% 4%;
+  --foreground: 0 0% 98%;
+  --card: 240 5% 10%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 5% 10%;
+  --popover-foreground: 0 0% 98%;
+  --secondary: 240 4% 14%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 4% 14%;
+  --muted-foreground: 240 5% 65%;
+  --accent: 240 4% 14%;
+  --accent-foreground: 0 0% 98%;
+  --border: 0 0% 100% / 0.08;
+  --input: 0 0% 100% / 0.08;
+  --theme-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme-id="old"][data-theme="system"] {
+    --background: 0 0% 98%;
+    --foreground: 240 10% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 4%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 6% 10%;
+    --border: 0 0% 0% / 0.08;
+    --input: 0 0% 0% / 0.08;
+    --theme-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Legacy link-btn chrome */
+[data-theme-id="old"] .theme-link {
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, hsl(var(--foreground)) 12%, transparent);
+  background: hsl(var(--card));
+  box-shadow: var(--theme-shadow);
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+[data-theme-id="old"] .theme-link:hover {
+  border-color: color-mix(in srgb, hsl(var(--primary)) 45%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Legacy avatar fallback gradient feel when no image */
+[data-theme-id="old"] .theme-avatar {
+  border-width: 2px;
+  box-shadow: var(--theme-shadow);
+}
+
+[data-theme-id="old"] .theme-page--gradient {
+  background-image: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    hsl(var(--primary) / 0.15),
+    transparent 60%
+  );
 }
 
