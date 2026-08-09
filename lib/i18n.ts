@@ -200,6 +200,8 @@ const en: Dict = {
     "Neo-brutalism à la qt.cool: cream grid, hard offset shadow, thick ink borders, blue #007AFF CTAs",
   "theme.desc.liquid-glass":
     "Liquid Glass–inspired frosted panels, continuous 18–22px radius, system blue",
+  "theme.desc.xandroid":
+    "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows",
 };
 
 const zhCN: Dict = {
@@ -387,6 +389,8 @@ const zhCN: Dict = {
     "参考 qt.cool 的 Neo-brutalism：奶油网格、硬偏移阴影、粗近黑描边、#007AFF 主按钮",
   "theme.desc.liquid-glass":
     "液态玻璃：半透明毛玻璃、连续大圆角 18–22px、系统蓝强调",
+  "theme.desc.xandroid":
+    "X Android 重写气质：实色白/纯黑、中性灰、#1D9BF0 仅强调、约 14px 圆角、时间线链接列表",
 };
 
 const catalogs: Record<Locale, Dict> = {

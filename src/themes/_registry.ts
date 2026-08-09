@@ -106,6 +106,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
       "gradientBg": false,
       "customFonts": false
     }
+  },
+  {
+    "id": "xandroid",
+    "name": "X Android",
+    "nameZh": "X Android",
+    "description": "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows, short transitions",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": false,
+      "gradientBg": false,
+      "customFonts": false
+    }
   }
 ] as ThemeManifest[];
 
