@@ -375,6 +375,12 @@ const zhCN: Dict = {
   "admin.theme.footerText": "自定义页脚文案（可选）",
   "admin.theme.footerTextHint": "纯文本；换行会保留。HTML 会被转义。",
   "admin.theme.footerTextPlaceholder": "留空则显示站点名称",
+  "admin.theme.themeColorMode": "主题配色",
+  "admin.theme.themeColorMode.default": "主题默认",
+  "admin.theme.themeColorMode.system": "跟随系统",
+  "admin.theme.themeColorMode.custom": "自定义颜色",
+  "admin.theme.customColor": "自定义主题色",
+  "admin.theme.customColorHint": "仅在“自定义颜色”模式下生效。",
   "admin.theme.save": "保存主题",
   "admin.theme.saved": "主题已保存。",
 

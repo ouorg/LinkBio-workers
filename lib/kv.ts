@@ -18,6 +18,7 @@ import {
   type Profile,
   type Settings,
   type SiteData,
+  type ThemeColorMode,
 } from "./types";
 
 /**
@@ -356,6 +357,7 @@ export function sanitizeLink(input: Partial<LinkItem>, index = 0): LinkItem {
 }
 
 const COLOR_MODES: ColorMode[] = ["system", "light", "dark"];
+const THEME_COLOR_MODES: ThemeColorMode[] = ["default", "system", "custom"];
 const LOCALES: Locale[] = ["zh-CN", "en"];
 
 /**
@@ -364,10 +366,12 @@ const LOCALES: Locale[] = ["zh-CN", "en"];
  */
 export function sanitizeSettings(input: Partial<Settings> & { darkMode?: boolean }): Settings {
   const accent = str(input.accentColor, 20);
+  const customColor = str(input.customColor, 20);
   const modeRaw = str(input.footerMode, 20) as FooterMode;
   const footerMode: FooterMode = FOOTER_MODES.includes(modeRaw) ? modeRaw : DEFAULT_SETTINGS.footerMode;
 
   const colorMode = resolveColorMode(input);
+  const themeColorMode = resolveThemeColorMode(input);
   const localeRaw = str(input.locale, 16) as Locale;
   const locale: Locale = LOCALES.includes(localeRaw) ? localeRaw : DEFAULT_SETTINGS.locale;
   // Visual pack id (src/themes/<id>); migrate legacy ids
@@ -384,6 +388,8 @@ export function sanitizeSettings(input: Partial<Settings> & { darkMode?: boolean
     darkMode: colorMode === "dark",
     locale,
     accentColor: /^#[0-9a-fA-F]{3,8}$/.test(accent) ? accent : DEFAULT_SETTINGS.accentColor,
+    themeColorMode,
+    customColor: /^#[0-9a-fA-F]{3,8}$/.test(customColor) ? customColor : DEFAULT_SETTINGS.customColor,
     background: str(input.background, 2000),
     showFooter: input.showFooter !== false && footerMode !== "off",
     footerMode: input.showFooter === false ? "off" : footerMode,
@@ -399,6 +405,15 @@ function resolveColorMode(input: Partial<Settings> & { darkMode?: boolean }): Co
     return input.darkMode ? "dark" : "light";
   }
   return DEFAULT_SETTINGS.colorMode;
+}
+
+function resolveThemeColorMode(input: Partial<Settings>): ThemeColorMode {
+  const raw = str(input.themeColorMode, 16) as ThemeColorMode;
+  if (THEME_COLOR_MODES.includes(raw)) return raw;
+  // Legacy: if accentColor was actively customized, treat it as custom mode
+  const accent = str(input.accentColor, 20);
+  if (accent && accent !== DEFAULT_SETTINGS.accentColor) return "custom";
+  return DEFAULT_SETTINGS.themeColorMode;
 }
 
 export function sanitizeAnalytics(input: Partial<Analytics>): Analytics {

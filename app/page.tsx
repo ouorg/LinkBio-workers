@@ -9,6 +9,7 @@ import { getEnv, getStore } from "@/lib/env";
 import { createT, htmlLang } from "@/lib/i18n";
 import { resolveColorMode, resolveLocale } from "@/lib/prefs";
 import { getTheme, resolveThemeId } from "@/lib/themes";
+import { buildThemeColorOverrideCss, resolveColorSeed } from "@/lib/theme-colors";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -88,11 +89,21 @@ export default async function PublicPage() {
   const t = createT(locale);
   const isAdmin = await isAdminSession();
 
+  const seed = resolveColorSeed(settings.themeColorMode, settings.customColor);
+  const dynamicColorCss = seed ? buildThemeColorOverrideCss(seed, themeId) : null;
+
   const hasBg = Boolean(settings.background && /^https?:\/\//i.test(settings.background));
   const useGradient = Boolean(theme.features?.gradientBg) && !hasBg;
 
   return (
     <>
+      {dynamicColorCss ? (
+        <style
+          id="theme-color-override"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: dynamicColorCss }}
+        />
+      ) : null}
       {/*
         Use a real box (not display:contents) so [data-theme-id] descendant
         selectors in theme tokens.css apply reliably.

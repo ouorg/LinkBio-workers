@@ -23,16 +23,13 @@ const PREVIEW: Record<string, { a: string; b: string; c: string }> = {
   aurora: { a: "hsl(232 78% 58%)", b: "hsl(175 55% 55%)", c: "hsl(230 40% 96%)" },
   base: { a: "hsl(232 78% 58%)", b: "hsl(175 55% 55%)", c: "hsl(230 40% 96%)" },
   minimal: { a: "hsl(0 0% 18%)", b: "hsl(0 0% 60%)", c: "hsl(0 0% 96%)" },
-  "hono-old": { a: "#6366f1", b: "#0a0a0b", c: "#18181b" },
   anthropic: { a: "#D97757", b: "#E3DACC", c: "#FAF9F5" },
-  apple: { a: "#0071e3", b: "#f5f5f7", c: "#ffffff" },
   "liquid-glass": { a: "#0A84FF", b: "#E8F1FA", c: "#FFFFFF" },
   md3: { a: "#6750A4", b: "#F3EDF7", c: "#FEF7FF" },
-  miuix: { a: "#3482FF", b: "#F0F4FF", c: "#FFFFFF" },
   nodeseek: { a: "#0B6E99", b: "#E8F2F6", c: "#FFFFFF" },
   qtcool: { a: "#007AFF", b: "#F7F1E3", c: "#1a1a1a" },
   xandroid: { a: "#1D9BF0", b: "#0f1419", c: "#FFFFFF" },
-  rin: { a: "#FC466B", b: "#f5f5f5", c: "#1c1c1e" },
+  firecrawl: { a: "#FF5A1F", b: "#050505", c: "#1a1a1a" },
 };
 
 export default async function ThemePage({
@@ -122,6 +119,29 @@ export default async function ThemePage({
               defaultValue={settings.background}
               placeholder={t("admin.theme.backgroundPlaceholder")}
               required={false}
+            />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <AdminSelect
+              id="themeColorMode"
+              name="themeColorMode"
+              label={t("admin.theme.themeColorMode")}
+              defaultValue={settings.themeColorMode}
+              options={[
+                { value: "default", label: t("admin.theme.themeColorMode.default") },
+                { value: "system", label: t("admin.theme.themeColorMode.system") },
+                { value: "custom", label: t("admin.theme.themeColorMode.custom") },
+              ]}
+            />
+            <Input
+              id="customColor"
+              name="customColor"
+              label={t("admin.theme.customColor")}
+              defaultValue={settings.customColor}
+              pattern="#[0-9a-fA-F]{3,8}"
+              placeholder={t("admin.theme.accentPlaceholder")}
+              required={false}
+              description={t("admin.theme.customColorHint")}
             />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">

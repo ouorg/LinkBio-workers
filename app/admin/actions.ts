@@ -183,6 +183,8 @@ export async function saveSettingsAction(formData: FormData) {
     accentColor: String(formData.get("accentColor") || ""),
     background: String(formData.get("background") || ""),
     colorMode: String(formData.get("colorMode") || "") as never,
+    themeColorMode: String(formData.get("themeColorMode") || "") as never,
+    customColor: String(formData.get("customColor") || ""),
     locale: String(formData.get("locale") || "") as never,
     showFooter: formData.get("showFooter") === "1",
     footerMode: String(formData.get("footerMode") || "") as never,

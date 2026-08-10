@@ -364,6 +364,18 @@ KV：`backup:config`、`backup:state`。WebDAV 密码 / Gist Token 为你填写�
 
 解析顺序：合法 `settings.theme` → `env.DEFAULT_THEME`（默认 `minimal`）→ 兜底 `aurora`。
 
+### 主题配色模式（Theme Color Mode）
+
+每个主题除了保持自身设计，还支持三种配色来源：
+
+| 模式 | 说明 |
+|------|------|
+| **default** | 使用主题原始配色 |
+| **system** | 使用系统强调色（在 Web 环境下回退到默认系统色 `#6366f1`） |
+| **custom** | 用户在后台选择任意主题色，自动生成完整色板 |
+
+设置项：`settings.themeColorMode` + `settings.customColor`。
+
 ### 主题一览（共 9 个）
 
 | id | 灵魂 | 主色 | 圆角 | 特色 |

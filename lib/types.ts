@@ -30,6 +30,9 @@ export type FooterMode = "default" | "custom" | "auth_only" | "off";
 /** Color appearance: follow OS, or force light/dark */
 export type ColorMode = "system" | "light" | "dark";
 
+/** Theme color mode: use theme's own palette, follow system accent, or use a custom color */
+export type ThemeColorMode = "default" | "system" | "custom";
+
 /** UI locale for public + admin chrome (user content is not translated) */
 export type Locale = "zh-CN" | "en";
 
@@ -48,6 +51,10 @@ export interface Settings {
   /** UI language for SSR chrome (zh-CN | en) */
   locale: Locale;
   accentColor: string;
+  /** How the theme's primary/accent palette is chosen. */
+  themeColorMode: ThemeColorMode;
+  /** User-selected primary color for `themeColorMode === "custom"`. */
+  customColor: string;
   background: string;
   /** Master switch; false hides footer regardless of footerMode */
   showFooter: boolean;
@@ -185,6 +192,8 @@ export const DEFAULT_SETTINGS: Settings = {
   darkMode: false,
   locale: "zh-CN",
   accentColor: "#6366f1",
+  themeColorMode: "default",
+  customColor: "#6366f1",
   background: "",
   showFooter: true,
   footerMode: "default",
