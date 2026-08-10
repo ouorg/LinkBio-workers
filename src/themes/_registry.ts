@@ -43,10 +43,10 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
-    "id": "fireline",
-    "name": "Fireline",
-    "nameZh": "火线",
-    "description": "Dark developer SaaS theme — near-black canvas, orange accent, terminal-inspired details, glass surfaces with subtle glow",
+    "id": "firecrawl",
+    "name": "Firecrawl",
+    "nameZh": "火搜",
+    "description": "Futuristic AI SaaS personal page — near-black canvas, grid background, orange glow, glass feature cards, terminal details",
     "version": 1,
     "tokensFile": "tokens.css",
     "features": {

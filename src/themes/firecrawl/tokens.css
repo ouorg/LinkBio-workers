@@ -1,0 +1,621 @@
+/*
+ * Theme: firecrawl — futuristic AI SaaS personal page.
+ * DNA: near-black #050505 canvas, 40px grid, orange glow orb, noise texture,
+ *      glass feature-card links, large hero typography, terminal footer.
+ * Orthogonal to data-theme light|dark|system.
+ */
+
+/* ── Animations ────────────────────────────────────────────── */
+
+@keyframes fc-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(0.5deg); }
+  66% { transform: translateY(4px) rotate(-0.3deg); }
+}
+
+@keyframes fc-pulse-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes fc-drift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(6px, -4px); }
+  50% { transform: translate(-3px, 6px); }
+  75% { transform: translate(-6px, -2px); }
+}
+
+/* ── Base theme tokens ──────────────────────────────────────── */
+
+[data-theme-id="firecrawl"] {
+  --theme-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
+  --theme-mono: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, "Fira Code",
+    "Consolas", monospace;
+  --theme-radius: 0.75rem;
+  --theme-card-radius: 1rem;
+  --theme-link-radius: 0.875rem;
+  --theme-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.4);
+  --theme-blur: 16px;
+  --theme-border-opacity: 0.6;
+  --theme-card-alpha: 0.5;
+  --theme-content-max: 28rem;
+  /* orange primary #ff5a1f */
+  --primary: 16 100% 56%;
+  --ring: 16 100% 56%;
+  --primary-foreground: 0 0% 100%;
+
+  --fc-glow-orb: rgba(255, 90, 31, 0.2);
+  --fc-glow-hover: rgba(255, 90, 31, 0.35);
+  --fc-glow-edge: rgba(255, 90, 31, 0.06);
+  --fc-grid: rgba(255, 255, 255, 0.04);
+  --fc-glass: rgba(255, 255, 255, 0.04);
+  --fc-glass-hover: rgba(255, 255, 255, 0.08);
+  --fc-border: rgba(255, 255, 255, 0.1);
+  --fc-border-hover: rgba(255, 90, 31, 0.25);
+  --fc-line: rgba(255, 255, 255, 0.06);
+  --fc-transition: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  font-family: var(--theme-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Dark (default — #050505 near-black, orange fire) ────────── */
+
+[data-theme-id="firecrawl"][data-theme="dark"] {
+  --background: 0 0% 2%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 100%;
+  --secondary: 0 0% 8%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 8%;
+  --muted-foreground: 0 0% 56%;
+  --accent: 16 10% 8%;
+  --accent-foreground: 16 80% 70%;
+  --border: 0 0% 14%;
+  --input: 0 0% 14%;
+  --primary: 16 100% 56%;
+  --ring: 16 100% 56%;
+  --theme-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.5);
+  --fc-glow-orb: rgba(255, 90, 31, 0.22);
+  --fc-glow-hover: rgba(255, 90, 31, 0.35);
+  --fc-grid: rgba(255, 255, 255, 0.04);
+  --fc-glass: rgba(255, 255, 255, 0.03);
+  --fc-glass-hover: rgba(255, 255, 255, 0.07);
+  --fc-border: rgba(255, 255, 255, 0.1);
+  --fc-border-hover: rgba(255, 90, 31, 0.25);
+  --fc-line: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Light ──────────────────────────────────────────────────── */
+
+[data-theme-id="firecrawl"][data-theme="light"] {
+  --background: 0 0% 98%;
+  --foreground: 0 0% 4%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 4%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 4%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 4%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 16 80% 96%;
+  --accent-foreground: 16 80% 30%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --primary: 16 90% 48%;
+  --ring: 16 90% 48%;
+  --theme-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(0, 0, 0, 0.04);
+  --fc-glow-orb: rgba(255, 90, 31, 0.08);
+  --fc-glow-hover: rgba(255, 90, 31, 0.15);
+  --fc-grid: rgba(0, 0, 0, 0.04);
+  --fc-glass: rgba(0, 0, 0, 0.02);
+  --fc-glass-hover: rgba(0, 0, 0, 0.04);
+  --fc-border: rgba(0, 0, 0, 0.08);
+  --fc-border-hover: rgba(255, 90, 31, 0.2);
+  --fc-line: rgba(0, 0, 0, 0.06);
+}
+
+/* ── System ──────────────────────────────────────────────────── */
+
+[data-theme-id="firecrawl"][data-theme="system"] {
+  --background: 0 0% 2%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 100%;
+  --secondary: 0 0% 8%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 8%;
+  --muted-foreground: 0 0% 56%;
+  --accent: 16 10% 8%;
+  --accent-foreground: 16 80% 70%;
+  --border: 0 0% 14%;
+  --input: 0 0% 14%;
+  --primary: 16 100% 56%;
+  --ring: 16 100% 56%;
+  --theme-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.5);
+  --fc-glow-orb: rgba(255, 90, 31, 0.22);
+  --fc-glow-hover: rgba(255, 90, 31, 0.35);
+  --fc-grid: rgba(255, 255, 255, 0.04);
+  --fc-glass: rgba(255, 255, 255, 0.03);
+  --fc-glass-hover: rgba(255, 255, 255, 0.07);
+  --fc-border: rgba(255, 255, 255, 0.1);
+  --fc-border-hover: rgba(255, 90, 31, 0.25);
+  --fc-line: rgba(255, 255, 255, 0.05);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme-id="firecrawl"][data-theme="system"] {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 4%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 16 80% 96%;
+    --accent-foreground: 16 80% 30%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --primary: 16 90% 48%;
+    --ring: 16 90% 48%;
+    --theme-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(0, 0, 0, 0.04);
+    --fc-glow-orb: rgba(255, 90, 31, 0.08);
+    --fc-glow-hover: rgba(255, 90, 31, 0.15);
+    --fc-grid: rgba(0, 0, 0, 0.04);
+    --fc-glass: rgba(0, 0, 0, 0.02);
+    --fc-glass-hover: rgba(0, 0, 0, 0.04);
+    --fc-border: rgba(0, 0, 0, 0.08);
+    --fc-border-hover: rgba(255, 90, 31, 0.2);
+    --fc-line: rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* ── Background system (Layer 1: grid + Layer 2: glow orb) ──── */
+
+[data-theme-id="firecrawl"] .theme-page {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  /*
+   * Layer 1 — 40px grid pattern
+   * Layer 2 — orange glow orb at top center
+   */
+  background-image:
+    linear-gradient(var(--fc-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--fc-grid) 1px, transparent 1px),
+    radial-gradient(ellipse 600px 400px at 50% -5%, var(--fc-glow-orb), transparent 65%);
+  background-size:
+    40px 40px,
+    40px 40px,
+    100% 100%;
+  background-repeat:
+    repeat,
+    repeat,
+    no-repeat;
+  background-position:
+    0 0,
+    0 0,
+    0 0;
+  overflow-x: clip;
+  position: relative;
+}
+
+[data-theme-id="firecrawl"] .theme-page--gradient {
+  background-image:
+    linear-gradient(var(--fc-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--fc-grid) 1px, transparent 1px),
+    radial-gradient(ellipse 600px 400px at 50% -5%, var(--fc-glow-orb), transparent 65%);
+  background-size:
+    40px 40px,
+    40px 40px,
+    100% 100%;
+}
+
+/* Layer 3 — noise texture overlay */
+[data-theme-id="firecrawl"] .theme-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  mix-blend-mode: overlay;
+}
+
+/* ── Floating decorative badges ──────────────────────────────── */
+
+[data-theme-id="firecrawl"] .theme-page::before {
+  content: "✦ AI";
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  font-family: var(--theme-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: hsl(var(--primary) / 0.3);
+  border: 1px solid hsl(var(--primary) / 0.12);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  background: hsl(var(--card) / 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  top: 20%;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  animation: fc-float 7s ease-in-out infinite, fc-pulse-glow 4s ease-in-out infinite;
+}
+
+/* Second floating badge on the stack */
+[data-theme-id="firecrawl"] .theme-stack::before {
+  content: "</>";
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  font-family: var(--theme-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  color: hsl(var(--muted-foreground) / 0.25);
+  border: 1px solid var(--fc-line);
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  background: hsl(var(--card) / 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  bottom: 30%;
+  left: max(1rem, env(safe-area-inset-left, 0px));
+  animation: fc-float 9s ease-in-out 2s infinite, fc-drift 12s ease-in-out 1s infinite;
+}
+
+[data-theme-id="firecrawl"] .theme-stack::after {
+  content: "✦";
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  font-size: 0.5rem;
+  color: hsl(var(--primary) / 0.2);
+  top: 60%;
+  right: max(2rem, env(safe-area-inset-right, 0px));
+  animation: fc-float 8s ease-in-out 3s infinite;
+}
+
+/* ── Page stack (wider content column) ────────────────────────── */
+
+[data-theme-id="firecrawl"] .theme-stack {
+  position: relative;
+  z-index: 2;
+  max-width: 28rem;
+  gap: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  [data-theme-id="firecrawl"] .theme-stack {
+    max-width: 30rem;
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-theme-id="firecrawl"] .theme-stack {
+    max-width: 32rem;
+    gap: 2.25rem;
+  }
+}
+
+/* ── Card (glass surface) ────────────────────────────────────── */
+
+[data-theme-id="firecrawl"] .theme-card {
+  border-radius: var(--theme-card-radius);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  gap: 1.5rem;
+  padding: 0;
+}
+
+/* ── Avatar (glow ring) ──────────────────────────────────────── */
+
+[data-theme-id="firecrawl"] .theme-avatar {
+  width: 5rem;
+  height: 5rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 0 0 4px hsl(var(--card)),
+    0 0 0 6px hsl(var(--primary) / 0.15),
+    0 0 40px var(--fc-glow-orb);
+  background: hsl(var(--card));
+  transition: box-shadow var(--fc-transition);
+}
+
+[data-theme-id="firecrawl"] .theme-avatar:hover {
+  box-shadow:
+    0 0 0 4px hsl(var(--card)),
+    0 0 0 6px hsl(var(--primary) / 0.25),
+    0 0 60px var(--fc-glow-hover);
+}
+
+[data-theme-id="firecrawl"] .theme-avatar-fallback {
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 0 0 4px hsl(var(--card)),
+    0 0 0 6px hsl(var(--primary) / 0.15),
+    0 0 40px var(--fc-glow-orb);
+  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(16 20% 10%) 100%);
+  color: hsl(var(--primary));
+  font-weight: 600;
+  font-size: 1.5rem;
+  font-family: var(--theme-mono);
+}
+
+/* ── Profile (hero SaaS style) ───────────────────────────────── */
+
+[data-theme-id="firecrawl"] .theme-profile {
+  gap: 1.25rem;
+  padding-inline: 0;
+}
+
+[data-theme-id="firecrawl"] .theme-profile h1 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  line-height: 1.1;
+  color: hsl(var(--foreground));
+}
+
+[data-theme-id="firecrawl"] .theme-profile .theme-username {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--theme-mono);
+  letter-spacing: -0.01em;
+  margin-top: 0.25rem;
+}
+
+/* Status badge — "● Available for projects" */
+[data-theme-id="firecrawl"] .theme-username::before {
+  content: "● ";
+  color: #22c55e;
+  font-size: 0.6rem;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 0.2rem;
+  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.5));
+  animation: fc-pulse-glow 3s ease-in-out infinite;
+}
+
+[data-theme-id="firecrawl"] .theme-profile .theme-bio {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+  max-width: 24rem;
+  margin-inline: auto;
+  letter-spacing: -0.01em;
+}
+
+[data-theme-id="firecrawl"] .theme-meta {
+  gap: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-family: var(--theme-mono);
+  color: hsl(var(--muted-foreground));
+}
+
+[data-theme-id="firecrawl"] .theme-meta a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  transition: color var(--fc-transition);
+}
+
+[data-theme-id="firecrawl"] .theme-meta a:hover {
+  color: color-mix(in srgb, hsl(var(--primary)) 80%, #fff);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ── Link cards (feature-card style) ──────────────────────────── */
+
+[data-theme-id="firecrawl"] .theme-links {
+  gap: 0.875rem;
+  width: 100%;
+}
+
+[data-theme-id="firecrawl"] a.theme-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 4rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--theme-link-radius);
+  border: 1px solid var(--fc-border);
+  background: var(--fc-glass);
+  color: hsl(var(--foreground));
+  font-weight: 450;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  box-shadow: var(--theme-shadow);
+  backdrop-filter: blur(var(--theme-blur));
+  -webkit-backdrop-filter: blur(var(--theme-blur));
+  position: relative;
+  transition:
+    background var(--fc-transition),
+    border-color var(--fc-transition),
+    box-shadow var(--fc-transition),
+    transform var(--fc-transition);
+  overflow: visible;
+  text-decoration: none;
+}
+
+/* Arrow indicator on the right */
+[data-theme-id="firecrawl"] a.theme-link::after {
+  content: "→";
+  flex-shrink: 0;
+  font-family: var(--theme-mono);
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground) / 0.5);
+  margin-left: auto;
+  transition: color var(--fc-transition), transform var(--fc-transition);
+}
+
+[data-theme-id="firecrawl"] a.theme-link:hover {
+  background: var(--fc-glass-hover);
+  border-color: var(--fc-border-hover);
+  box-shadow:
+    0 0 0 1px rgba(255, 90, 31, 0.15),
+    0 0 40px var(--fc-glow-orb),
+    0 8px 32px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+  color: hsl(var(--foreground));
+}
+
+[data-theme-id="firecrawl"] a.theme-link:hover::after {
+  color: hsl(var(--primary));
+  transform: translateX(3px);
+}
+
+[data-theme-id="firecrawl"] a.theme-link:active {
+  transform: translateY(0);
+}
+
+[data-theme-id="firecrawl"] a.theme-link:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Icon styling */
+[data-theme-id="firecrawl"] a.theme-link .theme-link-icon {
+  color: hsl(var(--primary));
+  opacity: 0.9;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* External link icon hidden — we use our own arrow */
+[data-theme-id="firecrawl"] a.theme-link .theme-link-external {
+  display: none;
+}
+
+/* Link title */
+[data-theme-id="firecrawl"] a.theme-link > span:not(.theme-link-icon):not(.theme-link-external) {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+}
+
+/* ── First link: featured project card ────────────────────────── */
+
+[data-theme-id="firecrawl"] a.theme-link:first-child {
+  border-color: rgba(255, 90, 31, 0.15);
+  background: rgba(255, 90, 31, 0.03);
+  box-shadow:
+    0 0 0 1px rgba(255, 90, 31, 0.1),
+    0 0 30px var(--fc-glow-orb),
+    var(--theme-shadow);
+  min-height: 4.5rem;
+  padding: 1.15rem 1.25rem;
+}
+
+[data-theme-id="firecrawl"] a.theme-link:first-child::before {
+  content: "✦ Featured";
+  position: absolute;
+  top: -0.5rem;
+  right: 1rem;
+  font-family: var(--theme-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  color: hsl(var(--primary));
+  background: hsl(var(--background));
+  border: 1px solid rgba(255, 90, 31, 0.2);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  line-height: 1.4;
+}
+
+[data-theme-id="firecrawl"] a.theme-link:first-child:hover {
+  background: rgba(255, 90, 31, 0.06);
+  border-color: rgba(255, 90, 31, 0.3);
+  box-shadow:
+    0 0 0 1px rgba(255, 90, 31, 0.2),
+    0 0 60px var(--fc-glow-hover),
+    0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Footer (terminal style) ─────────────────────────────────── */
+
+[data-theme-id="firecrawl"] .theme-footer {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: hsl(var(--muted-foreground) / 0.6);
+  padding-top: 2rem;
+  font-family: var(--theme-mono);
+  text-align: center;
+  position: relative;
+}
+
+/* Terminal divider */
+[data-theme-id="firecrawl"] .theme-footer::before {
+  content: "────────────────";
+  display: block;
+  margin-bottom: 0.75rem;
+  font-family: var(--theme-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: hsl(var(--muted-foreground) / 0.2);
+  text-align: center;
+}
+
+[data-theme-id="firecrawl"] .theme-footer::after {
+  content: "< Powered by Edge Runtime />";
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--theme-mono);
+  font-size: 0.625rem;
+  color: hsl(var(--muted-foreground) / 0.35);
+}
+
+/* ── Toolbar (glass match) ────────────────────────────────────── */
+
+[data-theme-id="firecrawl"] aside.theme-toolbar button,
+[data-theme-id="firecrawl"] .theme-toolbar-btn {
+  border-radius: var(--theme-radius) !important;
+  border: 1px solid var(--fc-border) !important;
+  box-shadow: var(--theme-shadow) !important;
+  background: var(--fc-glass) !important;
+  color: hsl(var(--foreground));
+  font-weight: 450;
+  backdrop-filter: blur(var(--theme-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--theme-blur)) !important;
+  transition:
+    border-color var(--fc-transition),
+    box-shadow var(--fc-transition),
+    background var(--fc-transition);
+}
+
+[data-theme-id="firecrawl"] aside.theme-toolbar button:hover,
+[data-theme-id="firecrawl"] .theme-toolbar-btn:hover {
+  border-color: var(--fc-border-hover) !important;
+  box-shadow: 0 0 20px var(--fc-glow-orb), var(--theme-shadow) !important;
+  background: var(--fc-glass-hover) !important;
+}
+
+/* Dropdown menus: glass panels */
+[data-theme-id="firecrawl"] [data-radix-menu-content],
+[data-theme-id="firecrawl"] [role="menu"] {
+  border-radius: var(--theme-radius) !important;
+  border: 1px solid var(--fc-border) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: hsl(var(--popover) / 0.85);
+}

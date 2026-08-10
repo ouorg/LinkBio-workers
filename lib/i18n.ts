@@ -250,8 +250,8 @@ const en: Dict = {
     "HyperOS / Miuix — exclusive #3482FF, large squircle, dense clean surfaces, soft blue elevation",
   "theme.desc.rin":
     "openRin/Rin default UI — rose #FC466B, clean #f5f5f5/#1c1c1e surfaces, soft shadows, edge-native blog",
-  "theme.desc.fireline":
-    "Dark developer SaaS — near-black canvas, orange accent, terminal details, glass surfaces with subtle glow",
+  "theme.desc.firecrawl":
+    "Futuristic AI SaaS personal page — near-black canvas, 40px grid, orange glow orb, glass feature cards, terminal footer",
 };
 
 const zhCN: Dict = {
@@ -480,8 +480,8 @@ const zhCN: Dict = {
   "theme.desc.miuix": "HyperOS：独占 #3482FF、大 squircle、高密度干净表面、蓝调软 elevation",
   "theme.desc.rin":
     "openRin/Rin 默认 UI：活力玫瑰 #FC466B、浅灰/深灰表面、轻阴影、现代 Edge 博客气质",
-  "theme.desc.fireline":
-    "暗色开发者 SaaS：近黑画布、橙色强调、终端细节、毛玻璃表面与微光晕",
+  "theme.desc.firecrawl":
+    "未来 AI SaaS 个人主页：近黑画布、40px 网格、橙色光晕、毛玻璃功能卡片、终端风格页脚",
 };
 
 const catalogs: Record<Locale, Dict> = {
