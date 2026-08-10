@@ -352,20 +352,40 @@ KV: `backup:config`, `backup:state`.
 
 ## Visual themes
 
-Themes live under `src/themes/<id>/` and are bundled at build time.
+Themes live under `src/themes/<id>/` and are bundled at build time. Switched via `data-theme-id`, orthogonal to `data-theme` (color mode).
 
 | Attribute | Meaning |
 |-----------|---------|
-| `data-theme` | `system` \| `light` \| `dark` |
-| `data-theme-id` | `aurora` \| `minimal` \| `apple` \| `anthropic` \| `hono-old` \| `nodeseek` \| `qtcool` \| `liquid-glass` \| … |
+| `data-theme` | `system` \| `light` \| `dark` (luminance) |
+| `data-theme-id` | Skin id (radius, brand color, texture) |
 
 Order: valid `settings.theme` → `env.DEFAULT_THEME` (default `minimal`) → fallback `aurora`.
+
+### Theme gallery (13 themes)
+
+| id | Soul | Primary | Radius | Signature |
+|----|------|---------|--------|-----------|
+| **aurora** | Northern lights | cool teal–indigo | 0.9–1rem | Multi-stop radial aurora glow, dreamy shadow |
+| **minimal** | Almost no design | monochrome gray | 4–6px | No shadows/borders, flat, tight spacing |
+| **apple** | Product marketing | #0071e3 | 28px + pill | Solid cool-gray canvas, pill CTAs, SF stack |
+| **anthropic** | Editorial paper | clay #D97757 | 6–8px | Thick ink/no shadow, serif type, ivory cards |
+| **hono-old** | Linear/Vercel dark | sharp indigo | 14px | Near-black + strong radial glow, centered buttons |
+| **liquid-glass** | Liquid glass | cyan-blue | 18–22px | High blur, translucent panels, fluid hover |
+| **md3** | Material 3 | purple #6750A4 | 12/16/24 | Roboto, tonal surfaces, filled first CTA |
+| **miuix** | HyperOS | #3482FF | Squircle 16–28px | Soft blue elevation, dense Chinese UI |
+| **nodeseek** | Tech forum | teal #0B6E99 | 12px | Cool-gray grid, solid cards, teal accent bar |
+| **qtcool** | Neo-brutal | #007AFF + yellow | 1.15–1.5rem | Hard offset shadow no blur, thick stroke stickers |
+| **xandroid** | X Android timeline | #1D9BF0 | 14px / 0 | No shadow, solid white/black, hairline list rows |
+| **rin** | Edge blog / openRin | rose #FC466B | 12–18px | Pink-tinted shadows, white card links, pink hover |
+| **firecrawl** | AI SaaS personal page | orange #FF5A1F | 0.75–1rem | 40px grid + orange glow, glass feature cards, terminal footer |
+
+### Build
 
 ```bash
 npm run build:themes
 ```
 
-See [src/themes/README.md](./src/themes/README.md). Admin descriptions follow UI locale (`zh-CN` / `en`).
+Full design spec at [src/themes/README.md](./src/themes/README.md). Admin descriptions follow UI locale.
 
 ---
 

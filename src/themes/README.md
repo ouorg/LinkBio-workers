@@ -24,6 +24,7 @@ Workers **没有**可读仓库文件系统。所有主题必须在 **build 时**
 | **qtcool** | Neo-brutal | #007AFF + 黄橙 | 圆润 1.15–1.5rem | **硬偏移 5–8px 无模糊** | 奶油网格 + 色块 | 圆体 | 厚描边贴纸按钮 |
 | **xandroid** | X Android 时间线 | **#1D9BF0 仅强调** | 卡 **~14px** / 链 **0** | **无阴影** | 纯白/纯黑 | Chirp | 时间线 hairline 列表行 |
 | **rin** | Edge 博客 / openRin | **#FC466B 玫瑰** | 中等 12–18px | 带粉调软阴影 | **#f5f5f5 / #1c1c1e** 干净表面 | 系统 | 白卡片链接 + 粉 hover |
+| **firecrawl** | AI SaaS 个人主页 | **#FF5A1F 橙** | 中等 0.75–1rem | 毛玻璃 + 橙色光晕 | **#050505 近黑 + 40px 网格 + 噪声纹理** | Inter + JetBrains Mono | 毛玻璃功能卡片 + 箭头 |
 
 ### 重叠组拆分约定
 
@@ -33,6 +34,7 @@ Workers **没有**可读仓库文件系统。所有主题必须在 **build 时**
 | aurora ↔ hono-old | aurora = 青绿紫极光渐变；hono-old = 纯深黑 + indigo 光晕 + 居中链 |
 | nodeseek ↔ xandroid | nodeseek = 网格 + 卡片行 + 左侧色条；xandroid = 无网格 + 0 圆角时间线 |
 | md3 ↔ miuix | md3 = Google 紫 tonal；miuix = 小米蓝 squircle |
+| firecrawl ↔ minimal | firecrawl = AI SaaS 网格 + 光晕 + 毛玻璃；minimal = 纯平无阴影 |
 
 ### 新增主题原则
 
@@ -53,7 +55,7 @@ src/themes/
   _default.css        # 布局/组件结构（与皮肤无关）
   aurora/             # 内置兜底（极光），必须存在
   minimal/ apple/ anthropic/ hono-old/ liquid-glass/
-  md3/ miuix/ nodeseek/ qtcool/ xandroid/ rin/
+  md3/ miuix/ nodeseek/ qtcool/ xandroid/ rin/ firecrawl/
 ```
 
 **一个主题 = 一个目录 = `theme.json` + `tokens.css`。**  
