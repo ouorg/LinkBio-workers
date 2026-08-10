@@ -1,0 +1,69 @@
+# LinkBio-workers — fork synchronization
+#
+# When upstream/main receives new commits, automatically syncs configured
+# fork repositories to keep them in sync.
+#
+# Setup:
+#   1. Create a Personal Access Token (classic) with `repo` scope.
+#   2. Add it as a repository secret: FORK_SYNC_TOKEN
+#   3. Add the fork owner as a repository variable: FORK_OWNER (e.g. "my-org")
+#   4. (Optional) Set FORK_REPO if different from the current repo name
+#
+# The workflow pushes only when the remote ref can be fast-forwarded.
+# It never force-pushes, never overwrites history.
+
+name: Sync Forks
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-forks
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync fork
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Push to fork
+        env:
+          TOKEN: ${{ secrets.FORK_SYNC_TOKEN }}
+          OWNER: ${{ vars.FORK_OWNER }}
+          REPO: ${{ vars.FORK_REPO || github.event.repository.name }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TOKEN:-}" ]; then
+            echo "::notice::FORK_SYNC_TOKEN not set — skipping sync"
+            exit 0
+          fi
+          if [ -z "${OWNER:-}" ]; then
+            echo "::notice::FORK_OWNER not set — skipping sync"
+            exit 0
+          fi
+
+          FORK_URL="https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPO}.git"
+          REMOTE="fork-${OWNER}"
+
+          git remote add "${REMOTE}" "${FORK_URL}"
+          git fetch "${REMOTE}" main
+
+          if git merge-base --is-ancestor main "${REMOTE}/main"; then
+            echo "Fork is already up to date — nothing to push"
+          else
+            git push "${REMOTE}" main:main
+            echo "Pushed main to ${OWNER}/${REPO}"
+          fi
