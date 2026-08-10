@@ -17,19 +17,6 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
-    "id": "apple",
-    "name": "Apple",
-    "nameZh": "Apple 风格",
-    "description": "Apple.com product marketing — solid cool-gray canvas, SF stack, 28px tiles, pill CTAs, first-link primary blue",
-    "version": 3,
-    "tokensFile": "tokens.css",
-    "features": {
-      "blur": false,
-      "gradientBg": false,
-      "customFonts": true
-    }
-  },
-  {
     "id": "aurora",
     "name": "Aurora",
     "nameZh": "极光",
@@ -51,19 +38,6 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "tokensFile": "tokens.css",
     "features": {
       "blur": true,
-      "gradientBg": true,
-      "customFonts": false
-    }
-  },
-  {
-    "id": "hono-old",
-    "name": "Hono Classic",
-    "nameZh": "Hono 经典",
-    "description": "Linear/Vercel-style dark — near-black canvas, sharp indigo, strong radial glow, centered link buttons",
-    "version": 2,
-    "tokensFile": "tokens.css",
-    "features": {
-      "blur": false,
       "gradientBg": true,
       "customFonts": false
     }
@@ -108,19 +82,6 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
-    "id": "miuix",
-    "name": "Miuix",
-    "nameZh": "小米 HyperOS",
-    "description": "HyperOS / Miuix — exclusive #3482FF, large squircle radii, dense clean surfaces, soft blue elevation",
-    "version": 2,
-    "tokensFile": "tokens.css",
-    "features": {
-      "blur": true,
-      "gradientBg": false,
-      "customFonts": false
-    }
-  },
-  {
     "id": "nodeseek",
     "name": "NodeSeek",
     "nameZh": "NodeSeek",
@@ -139,19 +100,6 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     "nameZh": "晴辰酷",
     "description": "Neo-brutal stickers — cream grid, 3px ink stroke, hard 5–8px offset shadow, yellow/orange pops, blue CTA",
     "version": 2,
-    "tokensFile": "tokens.css",
-    "features": {
-      "blur": false,
-      "gradientBg": false,
-      "customFonts": false
-    }
-  },
-  {
-    "id": "rin",
-    "name": "Rin",
-    "nameZh": "Rin",
-    "description": "openRin/Rin default UI — vibrant rose accent #FC466B, clean neutral surfaces (#f5f5f5 / #1c1c1e), soft shadows, modern edge-native blog aesthetic.",
-    "version": 1,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,

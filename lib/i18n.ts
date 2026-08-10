@@ -230,12 +230,8 @@ const en: Dict = {
     "Northern lights default — cool teal–indigo, multi-stop aurora glow, dreamy elevation",
   "theme.desc.minimal":
     "Ultra-minimal — near-square corners, no shadows/borders, monochrome ink, tight spacing",
-  "theme.desc.apple":
-    "Apple.com marketing — solid cool-gray tiles, SF stack, pill CTAs, first-link primary blue",
   "theme.desc.anthropic":
     "Editorial paper — oat page, ivory notes, clay accent, serif type, thick ink, no shadow",
-  "theme.desc.hono-old":
-    "Linear/Vercel-style dark — near-black, sharp indigo, strong radial glow, centered buttons",
   "theme.desc.nodeseek":
     "Tech-forum rows — cool-gray grid, solid cards, teal accent bar on every link, CJK fonts",
   "theme.desc.qtcool":
@@ -246,10 +242,7 @@ const en: Dict = {
     "X Android rewrite vibe: solid white/black, neutral gray, #1D9BF0 accent only, ~14px radius, timeline link rows",
   "theme.desc.md3":
     "Material 3 baseline — purple #6750A4, tonal surfaces, Roboto, 12/16/24 shape, filled first CTA",
-  "theme.desc.miuix":
-    "HyperOS / Miuix — exclusive #3482FF, large squircle, dense clean surfaces, soft blue elevation",
-  "theme.desc.rin":
-    "openRin/Rin default UI — rose #FC466B, clean #f5f5f5/#1c1c1e surfaces, soft shadows, edge-native blog",
+  
   "theme.desc.firecrawl":
     "Futuristic AI SaaS personal page — near-black canvas, 40px grid, orange glow orb, glass feature cards, terminal footer",
 };
@@ -468,18 +461,14 @@ const zhCN: Dict = {
   "theme.desc.aurora": "极光默认：冷青–靛紫、多层径向极光、梦幻阴影",
   "theme.desc.base": "极光默认：冷青–靛紫、多层径向极光、梦幻阴影",
   "theme.desc.minimal": "极致极简：近直角、无阴影无描边、单色墨、紧凑间距",
-  "theme.desc.apple": "Apple 营销页：实色冷灰 tile、SF、胶囊 CTA、首链主色蓝",
   "theme.desc.anthropic": "编辑纸质感：燕麦页、象牙便签、黏土强调、衬线、厚描边无阴影",
-  "theme.desc.hono-old": "Linear/Vercel 暗色：近纯黑、锐利 indigo、强径向光晕、居中按钮",
   "theme.desc.nodeseek": "技术论坛行：冷灰网格、实色卡、每行左侧青绿 accent bar、中文字体",
   "theme.desc.qtcool": "新粗野贴纸：奶油网格、3px 描边、硬偏移 5–8px、黄橙点缀",
   "theme.desc.liquid-glass": "液态玻璃：高 blur、半透明面板、顶高光、冷青蓝、液面 hover",
   "theme.desc.xandroid":
     "X Android 重写气质：实色白/纯黑、中性灰、#1D9BF0 仅强调、约 14px 圆角、时间线链接列表",
   "theme.desc.md3": "Material 3：紫 #6750A4、tonal 表面、Roboto、12/16/24、首链 filled",
-  "theme.desc.miuix": "HyperOS：独占 #3482FF、大 squircle、高密度干净表面、蓝调软 elevation",
-  "theme.desc.rin":
-    "openRin/Rin 默认 UI：活力玫瑰 #FC466B、浅灰/深灰表面、轻阴影、现代 Edge 博客气质",
+  
   "theme.desc.firecrawl":
     "未来 AI SaaS 个人主页：近黑画布、40px 网格、橙色光晕、毛玻璃功能卡片、终端风格页脚",
 };

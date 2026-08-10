@@ -14,26 +14,19 @@ Workers **没有**可读仓库文件系统。所有主题必须在 **build 时**
 |----|------|------|----------|-------------|----------|------|----------|
 | **aurora** | 北方夜空 / 极光 | 冷青–靛紫 | 中等 0.9–1rem | 梦幻软阴影 | **径向极光渐变** | Inter | 中等圆角实色按钮 |
 | **minimal** | 几乎没设计 | 单色深灰 | **近直角** 4–6px | **无阴影、无边框** | 纯平 | 系统轻字重 | 极薄下划线感 / 极淡底 |
-| **apple** | 产品营销页 | #0071e3 | **大 tile 28px + 胶囊 980px** | 极轻 elevation | **实色** 冷灰画布 | SF | 胶囊 CTA（首链主色） |
 | **anthropic** | 编辑 / 插画纸 | 黏土 #D97757 | **小圆角** 6–8px | **厚描边、无阴影** | 燕麦页 + 象牙卡 | **衬线** | 便签/卡片块 |
-| **hono-old** | Linear/Vercel 暗色 | 锐利 indigo | 14px | 深阴影 + 内高光 | **深黑 + 强径向光晕** | Inter | **居中** 按钮行 |
 | **liquid-glass** | 液态玻璃 | 系统蓝偏青 | 连续 18–22px | 内高光 + 外软影 | **半透明 + 高 blur** | SF | 玻璃块 + 液面过渡 |
 | **md3** | Material 3 | 紫 seed #6750A4 | 12 / 16 / 24 | MD Level 1–2 | Tonal 表面 | **Roboto** | Filled/tonal 圆角按钮 |
-| **miuix** | HyperOS | **#3482FF** | **Squircle 16–28px** | 蓝调软影 + 轻模糊 | 干净高对比 | 中文系统栈 | 次色容器胶囊 |
 | **nodeseek** | 技术论坛 | 青绿 #0B6E99 | 12px | 1px 细边 + 轻 elev | **网格底 + 实心卡** | 中文系统栈 | **帖子行** + 左侧 accent bar |
 | **qtcool** | Neo-brutal | #007AFF + 黄橙 | 圆润 1.15–1.5rem | **硬偏移 5–8px 无模糊** | 奶油网格 + 色块 | 圆体 | 厚描边贴纸按钮 |
 | **xandroid** | X Android 时间线 | **#1D9BF0 仅强调** | 卡 **~14px** / 链 **0** | **无阴影** | 纯白/纯黑 | Chirp | 时间线 hairline 列表行 |
-| **rin** | Edge 博客 / openRin | **#FC466B 玫瑰** | 中等 12–18px | 带粉调软阴影 | **#f5f5f5 / #1c1c1e** 干净表面 | 系统 | 白卡片链接 + 粉 hover |
 | **firecrawl** | AI SaaS 个人主页 | **#FF5A1F 橙** | 中等 0.75–1rem | 毛玻璃 + 橙色光晕 | **#050505 近黑 + 40px 网格 + 噪声纹理** | Inter + JetBrains Mono | 毛玻璃功能卡片 + 箭头 |
 
 ### 重叠组拆分约定
 
 | 易混组 | 如何拉开 |
 |--------|----------|
-| apple ↔ liquid-glass ↔ miuix | apple = 实色营销胶囊；liquid-glass = 半透明玻璃；miuix = 小米蓝 + squircle + 中文密度 |
-| aurora ↔ hono-old | aurora = 青绿紫极光渐变；hono-old = 纯深黑 + indigo 光晕 + 居中链 |
 | nodeseek ↔ xandroid | nodeseek = 网格 + 卡片行 + 左侧色条；xandroid = 无网格 + 0 圆角时间线 |
-| md3 ↔ miuix | md3 = Google 紫 tonal；miuix = 小米蓝 squircle |
 | firecrawl ↔ minimal | firecrawl = AI SaaS 网格 + 光晕 + 毛玻璃；minimal = 纯平无阴影 |
 
 ### 新增主题原则
@@ -54,8 +47,8 @@ src/themes/
   _bundle.css         # 构建生成 — 勿手改
   _default.css        # 布局/组件结构（与皮肤无关）
   aurora/             # 内置兜底（极光），必须存在
-  minimal/ apple/ anthropic/ hono-old/ liquid-glass/
-  md3/ miuix/ nodeseek/ qtcool/ xandroid/ rin/ firecrawl/
+  minimal/ anthropic/ liquid-glass/
+  md3/ nodeseek/ qtcool/ xandroid/ firecrawl/
 ```
 
 **一个主题 = 一个目录 = `theme.json` + `tokens.css`。**  

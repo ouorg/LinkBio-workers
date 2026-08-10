@@ -364,22 +364,18 @@ KV：`backup:config`、`backup:state`。WebDAV 密码 / Gist Token 为你填写�
 
 解析顺序：合法 `settings.theme` → `env.DEFAULT_THEME`（默认 `minimal`）→ 兜底 `aurora`。
 
-### 主题一览（共 13 个）
+### 主题一览（共 9 个）
 
 | id | 灵魂 | 主色 | 圆角 | 特色 |
 |----|------|------|------|------|
 | **aurora** | 北方夜空 / 极光 | 冷青–靛紫 | 0.9–1rem | 径向极光渐变，梦幻软阴影 |
 | **minimal** | 几乎没设计 | 单色深灰 | 4–6px | 无阴影无边框，纯平极简 |
-| **apple** | 产品营销页 | #0071e3 | 28px + 胶囊 | 实色冷灰画布，胶囊 CTA，首链主色 |
 | **anthropic** | 编辑 / 插画纸 | 黏土 #D97757 | 6–8px | 厚描边无阴影，衬线字体，卡片块 |
-| **hono-old** | Linear/Vercel 暗色 | 锐利 indigo | 14px | 深黑 + 强径向光晕，居中按钮行 |
 | **liquid-glass** | 液态玻璃 | 系统蓝偏青 | 18–22px | 半透明 + 高 blur，玻璃块，液面 hover |
 | **md3** | Material 3 | 紫 #6750A4 | 12/16/24 | Roboto，Tonal 表面，Filled CTA |
-| **miuix** | HyperOS | #3482FF | Squircle 16–28px | 蓝调软影 + 轻模糊，中文密度 |
 | **nodeseek** | 技术论坛 | 青绿 #0B6E99 | 12px | 网格底 + 实心卡，左侧 accent bar |
 | **qtcool** | Neo-brutal | #007AFF + 黄橙 | 1.15–1.5rem | 硬偏移阴影无模糊，厚描边贴纸按钮 |
 | **xandroid** | X Android 时间线 | #1D9BF0 | 14px / 0 | 无阴影，纯白/纯黑，hairline 列表行 |
-| **rin** | Edge 博客 / openRin | #FC466B 玫瑰 | 12–18px | 粉调软阴影，白卡片链接 + 粉 hover |
 | **firecrawl** | AI SaaS 个人主页 | 橙 #FF5A1F | 0.75–1rem | 40px 网格 + 橙色光晕，毛玻璃功能卡片，终端风格页脚 |
 
 ### 构建
