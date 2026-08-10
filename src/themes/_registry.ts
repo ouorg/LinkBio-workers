@@ -57,10 +57,10 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
   },
   {
     "id": "md3",
-    "name": "Material 3",
-    "nameZh": "Material 3",
-    "description": "Material Design 3 baseline — purple seed #6750A4, tonal surfaces, Roboto, 12/16/24 shape, filled first CTA",
-    "version": 2,
+    "name": "Material You",
+    "nameZh": "Material You",
+    "description": "Google Material 3 expressive personal profile — tonal surfaces, adaptive color, rounded containers, and soft elevation",
+    "version": 3,
     "tokensFile": "tokens.css",
     "features": {
       "blur": false,

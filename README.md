@@ -384,7 +384,7 @@ KV：`backup:config`、`backup:state`。WebDAV 密码 / Gist Token 为你填写�
 | **minimal** | 几乎没设计 | 单色深灰 | 4–6px | 无阴影无边框，纯平极简 |
 | **anthropic** | 编辑 / 插画纸 | 黏土 #D97757 | 6–8px | 厚描边无阴影，衬线字体，卡片块 |
 | **liquid-glass** | 液态玻璃 | 系统蓝偏青 | 18–22px | 半透明 + 高 blur，玻璃块，液面 hover |
-| **md3** | Material 3 | 紫 #6750A4 | 12/16/24 | Roboto，Tonal 表面，Filled CTA |
+| **md3** | Material You | 紫 #6750A4 | 12/16/24/28 | Roboto，tonal surfaces，28px 圆角卡片，M3 动态色就绪 |
 | **nodeseek** | 技术论坛 | 青绿 #0B6E99 | 12px | 网格底 + 实心卡，左侧 accent bar |
 | **qtcool** | Neo-brutal | #007AFF + 黄橙 | 1.15–1.5rem | 硬偏移阴影无模糊，厚描边贴纸按钮 |
 | **xandroid** | X Android 时间线 | #1D9BF0 | 14px / 0 | 无阴影，纯白/纯黑，hairline 列表行 |
