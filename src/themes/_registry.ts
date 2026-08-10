@@ -43,6 +43,19 @@ export const THEME_MANIFESTS: ThemeManifest[] = [
     }
   },
   {
+    "id": "fireline",
+    "name": "Fireline",
+    "nameZh": "火线",
+    "description": "Dark developer SaaS theme — near-black canvas, orange accent, terminal-inspired details, glass surfaces with subtle glow",
+    "version": 1,
+    "tokensFile": "tokens.css",
+    "features": {
+      "blur": true,
+      "gradientBg": true,
+      "customFonts": false
+    }
+  },
+  {
     "id": "hono-old",
     "name": "Hono Classic",
     "nameZh": "Hono 经典",

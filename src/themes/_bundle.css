@@ -1073,6 +1073,400 @@
   border-color: hsl(var(--border));
 }
 
+/* === fireline/tokens.css === */
+/*
+ * Theme: fireline — dark developer SaaS inspired by Firecrawl, Vercel, Linear.
+ * DNA: near-black canvas, orange accent, terminal-inspired details, glass surfaces with subtle glow.
+ * Orthogonal to data-theme light|dark|system.
+ */
+
+[data-theme-id="fireline"] {
+  --theme-font: "SF Mono", "Cascadia Code", "JetBrains Mono", ui-monospace, "Fira Code",
+    "Source Code Pro", "Consolas", monospace, ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --theme-radius: 0.625rem;
+  --theme-card-radius: 0.875rem;
+  --theme-link-radius: 0.75rem;
+  --theme-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --theme-blur: 20px;
+  --theme-border-opacity: 0.5;
+  --theme-card-alpha: 0.6;
+  --theme-content-max: 28rem;
+  /* orange accent #f97316 */
+  --primary: 24 94% 53%;
+  --ring: 24 94% 53%;
+  --primary-foreground: 0 0% 100%;
+
+  --fl-glow: rgba(249, 115, 22, 0.15);
+  --fl-glow-strong: rgba(249, 115, 22, 0.25);
+  --fl-glow-edge: rgba(249, 115, 22, 0.06);
+  --fl-line: rgba(255, 255, 255, 0.04);
+  --fl-transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  font-family: var(--theme-font);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.015em;
+}
+
+/* ── Dark (default — near-black canvas, orange fire) ──────────── */
+[data-theme-id="fireline"][data-theme="dark"] {
+  --background: 240 20% 4%;
+  --foreground: 210 40% 98%;
+  --card: 240 12% 7%;
+  --card-foreground: 210 40% 98%;
+  --popover: 240 10% 10%;
+  --popover-foreground: 210 40% 98%;
+  --secondary: 240 8% 12%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 240 8% 10%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 24 10% 10%;
+  --accent-foreground: 30 97% 72%;
+  --border: 240 6% 14%;
+  --input: 240 6% 14%;
+  --primary: 24 94% 53%;
+  --ring: 24 94% 53%;
+  --theme-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --fl-glow: rgba(249, 115, 22, 0.18);
+  --fl-glow-strong: rgba(249, 115, 22, 0.3);
+  --fl-glow-edge: rgba(249, 115, 22, 0.06);
+  --fl-line: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Light ──────────────────────────────────────────────────── */
+[data-theme-id="fireline"][data-theme="light"] {
+  --background: 60 9% 98%;
+  --foreground: 24 10% 7%;
+  --card: 0 0% 100%;
+  --card-foreground: 24 10% 7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 24 10% 7%;
+  --secondary: 60 5% 96%;
+  --secondary-foreground: 24 10% 7%;
+  --muted: 60 5% 96%;
+  --muted-foreground: 25 5% 45%;
+  --accent: 30 100% 96%;
+  --accent-foreground: 20 91% 40%;
+  --border: 24 6% 90%;
+  --input: 24 6% 90%;
+  --primary: 20 91% 48%;
+  --ring: 20 91% 48%;
+  --theme-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --fl-glow: rgba(234, 88, 12, 0.08);
+  --fl-glow-strong: rgba(234, 88, 12, 0.15);
+  --fl-glow-edge: rgba(234, 88, 12, 0.04);
+  --fl-line: rgba(0, 0, 0, 0.04);
+}
+
+/* ── System (follows OS) ────────────────────────────────────── */
+[data-theme-id="fireline"][data-theme="system"] {
+  --background: 240 20% 4%;
+  --foreground: 210 40% 98%;
+  --card: 240 12% 7%;
+  --card-foreground: 210 40% 98%;
+  --popover: 240 10% 10%;
+  --popover-foreground: 210 40% 98%;
+  --secondary: 240 8% 12%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 240 8% 10%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 24 10% 10%;
+  --accent-foreground: 30 97% 72%;
+  --border: 240 6% 14%;
+  --input: 240 6% 14%;
+  --primary: 24 94% 53%;
+  --ring: 24 94% 53%;
+  --theme-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --fl-glow: rgba(249, 115, 22, 0.18);
+  --fl-glow-strong: rgba(249, 115, 22, 0.3);
+  --fl-glow-edge: rgba(249, 115, 22, 0.06);
+  --fl-line: rgba(255, 255, 255, 0.04);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme-id="fireline"][data-theme="system"] {
+    --background: 60 9% 98%;
+    --foreground: 24 10% 7%;
+    --card: 0 0% 100%;
+    --card-foreground: 24 10% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 10% 7%;
+    --secondary: 60 5% 96%;
+    --secondary-foreground: 24 10% 7%;
+    --muted: 60 5% 96%;
+    --muted-foreground: 25 5% 45%;
+    --accent: 30 100% 96%;
+    --accent-foreground: 20 91% 40%;
+    --border: 24 6% 90%;
+    --input: 24 6% 90%;
+    --primary: 20 91% 48%;
+    --ring: 20 91% 48%;
+    --theme-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    --fl-glow: rgba(234, 88, 12, 0.08);
+    --fl-glow-strong: rgba(234, 88, 12, 0.15);
+    --fl-glow-edge: rgba(234, 88, 12, 0.04);
+    --fl-line: rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* ── Page shell ─────────────────────────────────────────────── */
+
+[data-theme-id="fireline"] .theme-page {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  background-image:
+    radial-gradient(ellipse 85% 50% at 50% -15%, var(--fl-glow), transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 5%, var(--fl-glow-edge), transparent 50%);
+  background-repeat: no-repeat;
+}
+
+[data-theme-id="fireline"] .theme-page--gradient {
+  background-image:
+    radial-gradient(ellipse 85% 50% at 50% -15%, var(--fl-glow), transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 5%, var(--fl-glow-edge), transparent 50%);
+}
+
+[data-theme-id="fireline"] .theme-stack {
+  max-width: var(--theme-content-max, 28rem);
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  [data-theme-id="fireline"] .theme-stack {
+    gap: 1.75rem;
+  }
+}
+
+/* ── Card (glass surface) ──────────────────────────────────── */
+
+[data-theme-id="fireline"] .theme-card {
+  border-radius: var(--theme-card-radius);
+  background: hsl(var(--card) / 0.65);
+  border: 1px solid hsl(var(--border) / 0.5);
+  box-shadow: var(--theme-shadow);
+  backdrop-filter: blur(var(--theme-blur, 20px));
+  -webkit-backdrop-filter: blur(var(--theme-blur, 20px));
+  gap: 1.25rem;
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+/* ── Profile ─────────────────────────────────────────────────── */
+
+[data-theme-id="fireline"] .theme-profile {
+  gap: 1rem;
+  padding-inline: 0.25rem;
+}
+
+[data-theme-id="fireline"] .theme-profile h1 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  font-size: clamp(1.5rem, 4vw, 1.875rem);
+  line-height: 1.2;
+  color: hsl(var(--foreground));
+}
+
+[data-theme-id="fireline"] .theme-profile .theme-username {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", monospace;
+  letter-spacing: -0.01em;
+}
+
+[data-theme-id="fireline"] .theme-profile .theme-bio {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+  max-width: 22rem;
+  margin-inline: auto;
+}
+
+[data-theme-id="fireline"] .theme-meta {
+  gap: 0.35rem 1rem;
+  font-size: 0.8125rem;
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", monospace;
+}
+
+[data-theme-id="fireline"] .theme-meta a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  transition: color var(--fl-transition);
+}
+
+[data-theme-id="fireline"] .theme-meta a:hover {
+  color: color-mix(in srgb, hsl(var(--primary)) 80%, #fff);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Avatar: glass ring with glow */
+[data-theme-id="fireline"] .theme-avatar {
+  width: 6rem;
+  height: 6rem;
+  border: 2px solid hsl(var(--border) / 0.6);
+  box-shadow: 0 0 24px var(--fl-glow), var(--theme-shadow);
+  background: hsl(var(--card));
+}
+
+[data-theme-id="fireline"] .theme-avatar-fallback {
+  border: 2px solid hsl(var(--border) / 0.6);
+  box-shadow: 0 0 24px var(--fl-glow), var(--theme-shadow);
+  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
+  color: hsl(var(--primary));
+  font-weight: 600;
+  font-size: 1.5rem;
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", monospace;
+}
+
+/* ── Links (terminal-style rows) ──────────────────────────────── */
+
+[data-theme-id="fireline"] .theme-links {
+  gap: 0.75rem;
+  width: 100%;
+}
+
+[data-theme-id="fireline"] a.theme-link {
+  justify-content: flex-start;
+  min-height: 3.25rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--theme-link-radius);
+  border: 1px solid hsl(var(--border) / 0.4);
+  background: hsl(var(--card) / 0.45);
+  color: hsl(var(--foreground));
+  font-weight: 450;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0 0 1px transparent, var(--theme-shadow);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background var(--fl-transition),
+    border-color var(--fl-transition),
+    box-shadow var(--fl-transition),
+    transform var(--fl-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Terminal cursor accent bar on left */
+[data-theme-id="fireline"] a.theme-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  background: hsl(var(--primary));
+  border-radius: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity var(--fl-transition);
+}
+
+[data-theme-id="fireline"] a.theme-link:hover {
+  border-color: hsl(var(--primary) / 0.4);
+  background: hsl(var(--card) / 0.7);
+  box-shadow: 0 0 24px var(--fl-glow), var(--theme-shadow);
+  transform: translateY(-1px);
+  color: hsl(var(--foreground));
+}
+
+[data-theme-id="fireline"] a.theme-link:hover::before {
+  opacity: 1;
+}
+
+[data-theme-id="fireline"] a.theme-link:active {
+  transform: translateY(0);
+  box-shadow: 0 0 12px var(--fl-glow), var(--theme-shadow);
+}
+
+[data-theme-id="fireline"] a.theme-link:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+[data-theme-id="fireline"] a.theme-link .theme-link-icon {
+  color: hsl(var(--primary));
+  opacity: 0.9;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+[data-theme-id="fireline"] a.theme-link .theme-link-external {
+  width: 0.9rem;
+  height: 0.9rem;
+  opacity: 0.3;
+  color: hsl(var(--muted-foreground));
+  transition: opacity var(--fl-transition);
+}
+
+[data-theme-id="fireline"] a.theme-link:hover .theme-link-external {
+  opacity: 0.6;
+  color: hsl(var(--primary));
+}
+
+/* First link: elevated glow */
+[data-theme-id="fireline"] a.theme-link:first-child {
+  border-color: hsl(var(--primary) / 0.25);
+  background: hsl(var(--card) / 0.55);
+  box-shadow: 0 0 20px var(--fl-glow), var(--theme-shadow);
+}
+
+[data-theme-id="fireline"] a.theme-link:first-child::before {
+  opacity: 1;
+}
+
+[data-theme-id="fireline"] a.theme-link:first-child:hover {
+  border-color: hsl(var(--primary) / 0.5);
+  background: hsl(var(--card) / 0.75);
+  box-shadow: 0 0 36px var(--fl-glow-strong), var(--theme-shadow);
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+
+[data-theme-id="fireline"] .theme-footer {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: hsl(var(--muted-foreground));
+  opacity: 0.7;
+  padding-top: 2rem;
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", monospace;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────── */
+
+[data-theme-id="fireline"] aside.theme-toolbar button,
+[data-theme-id="fireline"] .theme-toolbar-btn {
+  border-radius: var(--theme-radius) !important;
+  border: 1px solid hsl(var(--border) / 0.4) !important;
+  box-shadow: 0 0 12px var(--fl-glow-edge), var(--theme-shadow) !important;
+  background: hsl(var(--card) / 0.6) !important;
+  color: hsl(var(--foreground));
+  font-weight: 450;
+  backdrop-filter: blur(var(--theme-blur, 20px)) !important;
+  -webkit-backdrop-filter: blur(var(--theme-blur, 20px)) !important;
+  transition:
+    border-color var(--fl-transition),
+    box-shadow var(--fl-transition);
+}
+
+[data-theme-id="fireline"] aside.theme-toolbar button:hover,
+[data-theme-id="fireline"] .theme-toolbar-btn:hover {
+  border-color: hsl(var(--primary) / 0.3) !important;
+  box-shadow: 0 0 20px var(--fl-glow), var(--theme-shadow) !important;
+}
+
+/* Dropdown menus: glass panels */
+[data-theme-id="fireline"] [data-radix-menu-content],
+[data-theme-id="fireline"] [role="menu"] {
+  border-radius: var(--theme-radius) !important;
+  border: 1px solid hsl(var(--border) / 0.4) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: hsl(var(--popover) / 0.85);
+}
 /* === hono-old/tokens.css === */
 /*
  * Theme: hono-old — pre-Next.js Hono public UI
