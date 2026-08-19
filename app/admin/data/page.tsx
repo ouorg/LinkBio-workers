@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
-import { Button, LinkButton } from "@cloudflare/kumo/components/button";
-import { Input } from "@cloudflare/kumo/components/input";
-import { InputArea } from "@cloudflare/kumo/components/input";
+import { Button, LinkButton } from "@/components/base/button";
+import { Input, InputArea } from "@/components/base/field";
+import { SubmitButton } from "@/components/base/submit-button";
+import { ConfirmSubmitButton } from "@/components/admin/confirm-submit";
 import {
   importDataAction,
   restoreGistAction,
@@ -66,16 +67,16 @@ export default async function DataPage({
     <div className="admin-shell">
       <AdminNav active="data" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+        <h1 className="text-2xl font-semibold tracking-tight text-admin-strong">
           {t("admin.page.data")}
         </h1>
-        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
+        <p className="text-sm text-admin-muted">{t("admin.subtitle")}</p>
       </header>
 
       <AdminPanel title={t("admin.data.title")} className="mb-6">
         <div className="space-y-4">
           <Flash message={flash} />
-          <p className="text-sm text-kumo-subtle">{t("admin.data.hint")}</p>
+          <p className="text-sm text-admin-muted">{t("admin.data.hint")}</p>
           <LinkButton href="/api/admin/export" variant="secondary">
             {t("admin.data.export")}
           </LinkButton>
@@ -90,17 +91,24 @@ export default async function DataPage({
               className="font-mono text-xs"
               placeholder={t("admin.data.importPlaceholder")}
             />
-            <Button type="submit" variant="primary">
+            <ConfirmSubmitButton
+              type="submit"
+              variant="destructive"
+              confirmTitle={t("admin.data.import")}
+              confirmMessage={t("admin.data.importConfirm")}
+              confirmLabel={t("admin.common.confirm")}
+              cancelLabel={t("admin.common.cancel")}
+            >
               {t("admin.data.import")}
-            </Button>
+            </ConfirmSubmitButton>
           </form>
         </div>
       </AdminPanel>
 
       <AdminPanel title={t("admin.backup.title")} className="mb-6">
         <div className="space-y-4">
-          <p className="text-sm text-kumo-subtle">{t("admin.backup.hint")}</p>
-          <p className="rounded-lg border border-kumo-hairline bg-kumo-tint px-3 py-2 text-xs text-kumo-default">
+          <p className="text-sm text-admin-muted">{t("admin.backup.hint")}</p>
+          <p className="rounded-lg border border-admin-border bg-admin-tint px-3 py-2 text-xs text-admin-text">
             {statusLine}
           </p>
 
@@ -108,7 +116,7 @@ export default async function DataPage({
             <input type="hidden" name={CSRF_FIELD} value={csrf} />
 
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm text-kumo-default">
+              <label className="flex items-center gap-2 text-sm text-admin-text">
                 <input
                   type="checkbox"
                   name="autoBackup"
@@ -118,7 +126,7 @@ export default async function DataPage({
                 />
                 {t("admin.backup.autoBackup")}
               </label>
-              <label className="flex items-center gap-2 text-sm text-kumo-default">
+              <label className="flex items-center gap-2 text-sm text-admin-text">
                 <input
                   type="checkbox"
                   name="includeAnalytics"
@@ -140,9 +148,9 @@ export default async function DataPage({
               />
             </div>
 
-            <div className="space-y-3 rounded-xl border border-kumo-hairline p-4">
-              <h3 className="text-sm font-semibold text-kumo-strong">{t("admin.backup.webdav")}</h3>
-              <label className="flex items-center gap-2 text-sm text-kumo-default">
+            <div className="space-y-3 rounded-xl border border-admin-border p-4">
+              <h3 className="text-sm font-semibold text-admin-strong">{t("admin.backup.webdav")}</h3>
+              <label className="flex items-center gap-2 text-sm text-admin-text">
                 <input
                   type="checkbox"
                   name="webdavEnabled"
@@ -185,9 +193,9 @@ export default async function DataPage({
               </div>
             </div>
 
-            <div className="space-y-3 rounded-xl border border-kumo-hairline p-4">
-              <h3 className="text-sm font-semibold text-kumo-strong">{t("admin.backup.gist")}</h3>
-              <label className="flex items-center gap-2 text-sm text-kumo-default">
+            <div className="space-y-3 rounded-xl border border-admin-border p-4">
+              <h3 className="text-sm font-semibold text-admin-strong">{t("admin.backup.gist")}</h3>
+              <label className="flex items-center gap-2 text-sm text-admin-text">
                 <input
                   type="checkbox"
                   name="gistEnabled"
@@ -230,12 +238,12 @@ export default async function DataPage({
               </div>
             </div>
 
-            <Button type="submit" variant="primary">
+            <SubmitButton type="submit" variant="primary" pendingLabel={t("admin.common.saving")}>
               {t("admin.backup.saveConfig")}
-            </Button>
+            </SubmitButton>
           </form>
 
-          <div className="flex flex-wrap gap-2 border-t border-kumo-hairline pt-4">
+          <div className="flex flex-wrap gap-2 border-t border-admin-border pt-4">
             <form action={runBackupNowAction}>
               <input type="hidden" name={CSRF_FIELD} value={csrf} />
               <Button type="submit" variant="secondary">
@@ -244,18 +252,32 @@ export default async function DataPage({
             </form>
             <form action={restoreWebDavAction}>
               <input type="hidden" name={CSRF_FIELD} value={csrf} />
-              <Button type="submit" variant="secondary">
+              <ConfirmSubmitButton
+                type="submit"
+                variant="destructive"
+                confirmTitle={t("admin.backup.restoreWebdav")}
+                confirmMessage={t("admin.backup.restoreWarn")}
+                confirmLabel={t("admin.common.confirm")}
+                cancelLabel={t("admin.common.cancel")}
+              >
                 {t("admin.backup.restoreWebdav")}
-              </Button>
+              </ConfirmSubmitButton>
             </form>
             <form action={restoreGistAction}>
               <input type="hidden" name={CSRF_FIELD} value={csrf} />
-              <Button type="submit" variant="secondary">
+              <ConfirmSubmitButton
+                type="submit"
+                variant="destructive"
+                confirmTitle={t("admin.backup.restoreGist")}
+                confirmMessage={t("admin.backup.restoreWarn")}
+                confirmLabel={t("admin.common.confirm")}
+                cancelLabel={t("admin.common.cancel")}
+              >
                 {t("admin.backup.restoreGist")}
-              </Button>
+              </ConfirmSubmitButton>
             </form>
           </div>
-          <p className="text-xs text-kumo-subtle">{t("admin.backup.restoreWarn")}</p>
+          <p className="text-xs text-admin-muted">{t("admin.backup.restoreWarn")}</p>
         </div>
       </AdminPanel>
     </div>

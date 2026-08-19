@@ -68,7 +68,7 @@
 ## 技术栈
 
 - **Next.js 15** App Router（默认 Server Components）
-- **Tailwind CSS v4** + 前台 shadcn 风格组件 · 后台 **Cloudflare Kumo**
+- **Tailwind CSS v4** + 前台 shadcn 风格组件 · 后台 **Base UI**（`@base-ui/react`）
 - **OpenNext Cloudflare** 边缘部署
 - **Cloudflare KV** 存储内容、统计与备份配置
 
@@ -418,12 +418,13 @@ npm run build:icons
 app/                 # Next.js 路由（RSC + Route Handlers）
 components/ui/       # 前台 shadcn 风格组件
 components/public/   # 名片、工具条
-components/admin/    # 后台壳层 / 面板
+components/admin/    # 后台业务组件（Nav、Panel、IconSelect…）
+components/base/     # Admin Base UI 封装
 lib/                 # kv、session、backup、i18n、themes、icons…
 src/themes/          # 视觉包（theme.json + tokens.css）
 src/icons/           # 链接图标源（*.svg + meta.json → registry）
 public/icons/        # 图标构建产物（由 build:icons 同步）
-docs/logo.jpg        # 仓库 Logo
+docs/                # Logo + Admin 重构说明
 scripts/build-themes.mjs
 scripts/build-icons.mjs
 wrangler.toml

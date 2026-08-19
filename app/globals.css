@@ -1,7 +1,3 @@
-/* Kumo tokens/utilities for Admin; must precede Tailwind so @theme registers first */
-@source "../node_modules/@cloudflare/kumo/dist/**/*.{js,jsx,ts,tsx}";
-@import "@cloudflare/kumo/styles/tailwind";
-
 @import "tailwindcss";
 /* Visual packs: data-theme-id + shared layout (generated) */
 @import "../src/themes/_bundle.css";
@@ -29,6 +25,30 @@
   --ring: 239 84% 67%;
 }
 
+/* Admin design tokens — defined on :root so Base UI portals inherit them */
+:root {
+  --admin-bg: hsl(var(--background));
+  --admin-surface: hsl(var(--card));
+  --admin-elevated: hsl(var(--popover));
+  --admin-tint: hsl(var(--muted));
+  --admin-control: hsl(var(--secondary));
+  --admin-border: hsl(var(--border));
+  --admin-line: hsl(var(--input));
+  --admin-text: hsl(var(--foreground));
+  --admin-muted: hsl(var(--muted-foreground));
+  --admin-strong: hsl(var(--foreground));
+  --admin-link: hsl(var(--primary));
+  --admin-danger: hsl(var(--destructive));
+  --admin-danger-bg: hsl(0 86% 97%);
+  --admin-primary: hsl(var(--primary));
+  --admin-primary-fg: hsl(var(--primary-foreground));
+  --admin-focus: hsl(var(--ring));
+  --admin-success: hsl(142 71% 35%);
+  --admin-success-bg: hsl(142 76% 94%);
+  --admin-radius: 0.75rem;
+  --admin-radius-control: 0.5rem;
+}
+
 /* Default dark when no data-theme or dark */
 :root,
 [data-theme="dark"] {
@@ -50,6 +70,9 @@
   --border: 240 4% 16%;
   --input: 240 4% 16%;
   --ring: 239 84% 67%;
+  --admin-danger-bg: hsl(0 40% 14%);
+  --admin-success: hsl(142 70% 55%);
+  --admin-success-bg: hsl(142 30% 12%);
 }
 
 [data-theme="light"] {
@@ -71,6 +94,9 @@
   --border: 240 6% 90%;
   --input: 240 6% 90%;
   --ring: 239 84% 67%;
+  --admin-danger-bg: hsl(0 86% 97%);
+  --admin-success: hsl(142 71% 35%);
+  --admin-success-bg: hsl(142 76% 94%);
 }
 
 [data-theme="system"] {
@@ -92,6 +118,9 @@
   --border: 240 4% 16%;
   --input: 240 4% 16%;
   --ring: 239 84% 67%;
+  --admin-danger-bg: hsl(0 40% 14%);
+  --admin-success: hsl(142 70% 55%);
+  --admin-success-bg: hsl(142 30% 12%);
 }
 
 @media (prefers-color-scheme: light) {
@@ -139,6 +168,25 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+
+  --color-admin-bg: var(--admin-bg);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-elevated: var(--admin-elevated);
+  --color-admin-tint: var(--admin-tint);
+  --color-admin-control: var(--admin-control);
+  --color-admin-border: var(--admin-border);
+  --color-admin-line: var(--admin-line);
+  --color-admin-text: var(--admin-text);
+  --color-admin-muted: var(--admin-muted);
+  --color-admin-strong: var(--admin-strong);
+  --color-admin-link: var(--admin-link);
+  --color-admin-danger: var(--admin-danger);
+  --color-admin-danger-bg: var(--admin-danger-bg);
+  --color-admin-primary: var(--admin-primary);
+  --color-admin-primary-fg: var(--admin-primary-fg);
+  --color-admin-focus: var(--admin-focus);
+  --color-admin-success: var(--admin-success);
+  --color-admin-success-bg: var(--admin-success-bg);
 }
 
 @layer base {
@@ -147,6 +195,7 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    position: relative;
     font-family:
       Inter,
       ui-sans-serif,
@@ -160,8 +209,7 @@
   }
 
   /*
-   * Kumo sets color-scheme: light on :root. Restore our data-theme-driven scheme
-   * so the public site and light-dark() tokens stay consistent.
+   * Restore data-theme-driven scheme so the public site and light-dark() tokens stay consistent.
    */
   :root[data-theme="light"],
   [data-theme="light"] {
@@ -177,22 +225,28 @@
   }
 }
 
-/* ── Admin (Kumo) shell: layout only; colors via Kumo tokens ── */
-.admin-kumo {
-  min-height: 100vh;
-  background: var(--color-kumo-canvas, hsl(var(--background)));
-  color: var(--text-color-kumo-default, hsl(var(--foreground)));
+/* Base UI portals render outside the triggering tree */
+.root {
+  isolation: isolate;
 }
 
-.admin-kumo[data-mode="light"] {
+/* ── Admin shell ── */
+.admin-root {
+  min-height: 100vh;
+  isolation: isolate;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+}
+
+.admin-root[data-mode="light"] {
   color-scheme: light;
 }
 
-.admin-kumo[data-mode="dark"] {
+.admin-root[data-mode="dark"] {
   color-scheme: dark;
 }
 
-.admin-kumo .admin-shell {
+.admin-root .admin-shell {
   box-sizing: border-box;
   width: 100%;
   max-width: 48rem;
@@ -205,14 +259,14 @@
 }
 
 @media (min-width: 640px) {
-  .admin-kumo .admin-shell {
+  .admin-root .admin-shell {
     padding: max(3.75rem, calc(env(safe-area-inset-top, 0px) + 3.25rem))
       max(1.25rem, env(safe-area-inset-right, 0px)) 3rem
       max(1.25rem, env(safe-area-inset-left, 0px));
   }
 }
 
-.admin-kumo .admin-nav {
+.admin-root .admin-nav {
   display: flex;
   flex-direction: column;
   gap: 0.75rem 1rem;
@@ -220,7 +274,7 @@
   min-width: 0;
 }
 
-.admin-kumo .admin-nav-links {
+.admin-root .admin-nav-links {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -228,14 +282,14 @@
   min-width: 0;
 }
 
-.admin-kumo .admin-nav-links a,
-.admin-kumo .admin-nav-links button {
+.admin-root .admin-nav-links a,
+.admin-root .admin-nav-links button {
   min-height: 2.25rem;
   max-width: 100%;
 }
 
 @media (min-width: 640px) {
-  .admin-kumo .admin-nav {
+  .admin-root .admin-nav {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -243,29 +297,28 @@
   }
 }
 
-.admin-kumo .admin-select {
+.admin-root .admin-select {
   display: flex;
   height: 2.25rem;
   width: 100%;
-  border-radius: 0.5rem;
-  border: 1px solid transparent;
-  background: var(--color-kumo-control, hsl(var(--background)));
-  color: var(--text-color-kumo-default, hsl(var(--foreground)));
+  border-radius: var(--admin-radius-control);
+  border: 1px solid var(--admin-border);
+  background: var(--admin-control);
+  color: var(--admin-text);
   padding: 0 0.75rem;
   font-size: 0.875rem;
-  box-shadow: 0 0 0 1px var(--color-kumo-line, hsl(var(--border)));
 }
 
-.admin-kumo .admin-select:focus {
-  outline: 2px solid var(--color-kumo-focus, hsl(var(--ring)));
+.admin-root .admin-select:focus {
+  outline: 2px solid var(--admin-focus);
   outline-offset: 1px;
 }
 
 /* Theme picker cards: whole label clickable; :checked updates highlight immediately */
-.admin-kumo .admin-theme-card {
+.admin-root .admin-theme-card {
   cursor: pointer;
-  border-radius: 0.75rem;
-  border: 1px solid var(--color-kumo-hairline, hsl(var(--border)));
+  border-radius: var(--admin-radius);
+  border: 1px solid var(--admin-border);
   padding: 0.75rem;
   transition:
     border-color 0.15s ease,
@@ -273,18 +326,18 @@
     box-shadow 0.15s ease;
 }
 
-.admin-kumo .admin-theme-card:hover {
-  border-color: color-mix(in oklch, var(--color-kumo-focus, #000) 40%, transparent);
+.admin-root .admin-theme-card:hover {
+  border-color: color-mix(in oklch, var(--admin-focus) 40%, transparent);
 }
 
-.admin-kumo .admin-theme-card:has(input[name="theme"]:checked) {
-  border-color: var(--color-kumo-focus, hsl(var(--ring)));
-  background: var(--color-kumo-tint, hsl(var(--muted)));
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-kumo-focus, #000) 30%, transparent);
+.admin-root .admin-theme-card:has(input[name="theme"]:checked) {
+  border-color: var(--admin-focus);
+  background: var(--admin-tint);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--admin-focus) 30%, transparent);
 }
 
-.admin-kumo .admin-theme-card:has(input[name="theme"]:focus-visible) {
-  outline: 2px solid var(--color-kumo-focus, hsl(var(--ring)));
+.admin-root .admin-theme-card:has(input[name="theme"]:focus-visible) {
+  outline: 2px solid var(--admin-focus);
   outline-offset: 2px;
 }
 

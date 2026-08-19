@@ -1,10 +1,6 @@
 import { AdminPrefsToolbar } from "@/components/admin/prefs-toolbar";
 import { getAdminUi, prefsToolbarLabels } from "@/lib/admin-ui";
 
-/**
- * Map site color preference to Kumo's data-mode (light | dark).
- * "system" follows prefers-color-scheme at runtime via a tiny inline script.
- */
 function modeFromPref(pref: string | null | undefined): "light" | "dark" | "system" {
   if (pref === "light" || pref === "dark") return pref;
   return "system";
@@ -37,7 +33,7 @@ export default async function AdminRootLayout({ children }: { children: React.Re
   const mode = modeFromPref(colorMode);
 
   return (
-    <div className="admin-kumo" data-mode={mode === "system" ? undefined : mode} data-admin-root>
+    <div className="admin-root" data-mode={mode === "system" ? undefined : mode} data-admin-root>
       {mode === "system" ? (
         <script
           dangerouslySetInnerHTML={{

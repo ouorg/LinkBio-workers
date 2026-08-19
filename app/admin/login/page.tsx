@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { Button } from "@cloudflare/kumo/components/button";
-import { Input } from "@cloudflare/kumo/components/input";
+import { Input } from "@/components/base/field";
+import { SubmitButton } from "@/components/base/submit-button";
 import { loginAction } from "../actions";
 import { Flash } from "@/components/admin/flash";
 import { AdminPanel } from "@/components/admin/panel";
@@ -29,8 +29,8 @@ export default async function LoginPage({
         className="w-full max-w-md"
         title={
           <div className="space-y-1">
-            <div className="text-base font-semibold text-kumo-strong">{t("admin.login.title")}</div>
-            <p className="text-sm font-normal text-kumo-subtle">
+            <div className="text-base font-semibold text-admin-strong">{t("admin.login.title")}</div>
+            <p className="text-sm font-normal text-admin-muted">
               {t("admin.login.sub", { siteName })}
             </p>
           </div>
@@ -49,9 +49,9 @@ export default async function LoginPage({
             autoComplete="current-password"
             autoFocus
           />
-          <Button type="submit" variant="primary" className="w-full">
+          <SubmitButton type="submit" variant="primary" className="w-full" pendingLabel={t("admin.common.saving")}>
             {t("admin.login.submit")}
-          </Button>
+          </SubmitButton>
         </form>
       </AdminPanel>
     </div>

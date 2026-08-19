@@ -68,7 +68,7 @@
 ## Stack
 
 - **Next.js 15** App Router (Server Components first)
-- **Tailwind CSS v4** + public shadcn-style UI · admin **Cloudflare Kumo**
+- **Tailwind CSS v4** + public shadcn-style UI · admin **Base UI** (`@base-ui/react`)
 - **OpenNext Cloudflare** edge deploy
 - **Cloudflare KV** for content, analytics, backup config
 
@@ -403,12 +403,13 @@ Add an icon: drop `src/icons/{id}.svg` → build → it appears in the admin pic
 app/                 # Next.js routes
 components/ui/       # public shadcn-style UI
 components/public/   # bio + toolbar
-components/admin/    # admin shell
+components/admin/    # admin business components
+components/base/     # Admin Base UI wrappers
 lib/                 # kv, session, backup, i18n, themes, icons…
 src/themes/          # visual packs
 src/icons/           # link icon sources (*.svg + meta.json → registry)
 public/icons/        # generated icon assets (from build:icons)
-docs/logo.jpg        # repo logo
+docs/                # logo + admin UI notes
 scripts/build-themes.mjs
 scripts/build-icons.mjs
 wrangler.toml

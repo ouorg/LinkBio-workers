@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
-import { Button } from "@cloudflare/kumo/components/button";
-import { Input } from "@cloudflare/kumo/components/input";
-import { InputArea } from "@cloudflare/kumo/components/input";
-import { Label } from "@cloudflare/kumo/components/label";
+import { Input, InputArea } from "@/components/base/field";
+import { SubmitButton } from "@/components/base/submit-button";
 import { saveSettingsAction } from "../actions";
 import { AdminSelect } from "@/components/admin/admin-select";
 import { AdminNav } from "@/components/admin/nav";
@@ -51,10 +49,10 @@ export default async function ThemePage({
     <div className="admin-shell">
       <AdminNav active="theme" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+        <h1 className="text-2xl font-semibold tracking-tight text-admin-strong">
           {t("admin.page.theme")}
         </h1>
-        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
+        <p className="text-sm text-admin-muted">{t("admin.subtitle")}</p>
       </header>
       <AdminPanel title={t("admin.theme.title")}>
         <Flash message={flash} />
@@ -62,8 +60,8 @@ export default async function ThemePage({
           <input type="hidden" name={CSRF_FIELD} value={csrf} />
 
           <div className="space-y-3">
-            <Label>{t("admin.theme.theme")}</Label>
-            <p className="text-xs text-kumo-subtle">
+            <p className="text-sm font-medium text-admin-text">{t("admin.theme.theme")}</p>
+            <p className="text-xs text-admin-muted">
               {t("admin.theme.defaultThemeHint", {
                 default: siteDefault,
                 current: currentThemeId,
@@ -88,12 +86,12 @@ export default async function ThemePage({
                       <span className="h-6 flex-1 rounded-md" style={{ background: sw.b }} />
                       <span className="h-6 flex-1 rounded-md" style={{ background: sw.c }} />
                     </div>
-                    <div className="text-sm font-medium text-kumo-default">
+                    <div className="text-sm font-medium text-admin-text">
                       {title}{" "}
-                      <span className="font-mono text-xs text-kumo-subtle">({th.id})</span>
+                      <span className="font-mono text-xs text-admin-muted">({th.id})</span>
                     </div>
                     {desc ? (
-                      <p className="mt-0.5 text-xs text-kumo-subtle">{desc}</p>
+                      <p className="mt-0.5 text-xs text-admin-muted">{desc}</p>
                     ) : null}
                   </label>
                 );
@@ -167,10 +165,10 @@ export default async function ThemePage({
               ]}
             />
           </div>
-          <div className="space-y-3 rounded-xl border border-kumo-hairline p-4">
-            <h2 className="font-medium text-kumo-strong">{t("admin.theme.footerTitle")}</h2>
-            <p className="text-xs text-kumo-subtle">{t("admin.theme.footerHint")}</p>
-            <label className="flex items-center gap-2 text-sm text-kumo-default">
+          <div className="space-y-3 rounded-xl border border-admin-border p-4">
+            <h2 className="font-medium text-admin-strong">{t("admin.theme.footerTitle")}</h2>
+            <p className="text-xs text-admin-muted">{t("admin.theme.footerHint")}</p>
+            <label className="flex items-center gap-2 text-sm text-admin-text">
               <input
                 type="checkbox"
                 name="showFooter"
@@ -204,9 +202,9 @@ export default async function ThemePage({
               required={false}
             />
           </div>
-          <Button type="submit" variant="primary">
+          <SubmitButton type="submit" variant="primary" pendingLabel={t("admin.common.saving")}>
             {t("admin.theme.save")}
-          </Button>
+          </SubmitButton>
         </form>
       </AdminPanel>
     </div>

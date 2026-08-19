@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import { Button } from "@cloudflare/kumo/components/button";
-import { Input } from "@cloudflare/kumo/components/input";
-import { InputArea } from "@cloudflare/kumo/components/input";
+import { Input, InputArea } from "@/components/base/field";
+import { SubmitButton } from "@/components/base/submit-button";
 import { saveProfileAction } from "../actions";
 import { AdminNav } from "@/components/admin/nav";
 import { Flash } from "@/components/admin/flash";
@@ -30,10 +29,10 @@ export default async function ProfilePage({
     <div className="admin-shell">
       <AdminNav active="profile" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+        <h1 className="text-2xl font-semibold tracking-tight text-admin-strong">
           {t("admin.page.profile")}
         </h1>
-        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
+        <p className="text-sm text-admin-muted">{t("admin.subtitle")}</p>
       </header>
       <AdminPanel title={t("admin.profile.title")}>
         <Flash message={flash} />
@@ -54,7 +53,6 @@ export default async function ProfilePage({
               label={t("admin.profile.username")}
               defaultValue={profile.username}
               maxLength={40}
-              required={false}
             />
           </div>
           <InputArea
@@ -64,7 +62,6 @@ export default async function ProfilePage({
             defaultValue={profile.bio}
             maxLength={500}
             rows={4}
-            required={false}
           />
           <Input
             id="avatar"
@@ -73,7 +70,6 @@ export default async function ProfilePage({
             label={t("admin.profile.avatar")}
             defaultValue={profile.avatar}
             maxLength={2000}
-            required={false}
           />
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
@@ -82,7 +78,6 @@ export default async function ProfilePage({
               label={t("admin.profile.location")}
               defaultValue={profile.location}
               maxLength={120}
-              required={false}
             />
             <Input
               id="email"
@@ -91,12 +86,11 @@ export default async function ProfilePage({
               label={t("admin.profile.email")}
               defaultValue={profile.email}
               maxLength={120}
-              required={false}
             />
           </div>
-          <Button type="submit" variant="primary">
+          <SubmitButton type="submit" variant="primary" pendingLabel={t("admin.common.saving")}>
             {t("admin.profile.save")}
-          </Button>
+          </SubmitButton>
         </form>
       </AdminPanel>
     </div>

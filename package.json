@@ -1,7 +1,7 @@
 {
   "name": "linkbio-workers",
   "version": "2.0.0",
-  "description": "Personal Bio / Digital Card on Cloudflare Workers — Next.js + Tailwind + Kumo Admin",
+  "description": "Personal Bio / Digital Card on Cloudflare Workers — Next.js + Tailwind + Base UI Admin",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,17 +19,12 @@
     "start": "next start"
   },
   "dependencies": {
-    "@cloudflare/kumo": "^2.9.2",
+    "@base-ui/react": "^1.7.0",
     "@opennextjs/cloudflare": "^1.20.2",
-    "@phosphor-icons/react": "^2.1.10",
-    "@radix-ui/react-checkbox": "^1.3.11",
-    "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",
     "@radix-ui/react-label": "^2.1.15",
-    "@radix-ui/react-select": "^2.3.7",
     "@radix-ui/react-separator": "^1.1.15",
     "@radix-ui/react-slot": "^1.3.3",
-    "@radix-ui/react-switch": "^1.3.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",

@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Admin card surface — plain divs only (no Kumo LayerCard.Primary/Secondary).
- * Compound subcomponents on client modules can serialize as $undefined under RSC
+ * Admin card surface — plain divs only.
+ * Compound client-library cards can serialize as $undefined under RSC
  * on OpenNext/Workers and crash the admin payload.
  */
 export function AdminPanel({
@@ -11,7 +11,6 @@ export function AdminPanel({
   className,
   bodyClassName,
 }: {
-  /** Optional header row (was LayerCard.Secondary) */
   title?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
@@ -21,17 +20,16 @@ export function AdminPanel({
     return (
       <div
         className={cn(
-          /* overflow-visible: allow popovers/dropdowns (e.g. IconSelect) to escape */
-          "flex w-full flex-col overflow-visible rounded-lg bg-kumo-elevated text-base ring ring-kumo-hairline",
+          "flex w-full flex-col overflow-visible rounded-[var(--admin-radius)] bg-admin-elevated text-base ring-1 ring-admin-border",
           className,
         )}
       >
-        <div className="-my-2 flex items-center gap-2 rounded-t-lg bg-kumo-elevated p-4 text-base font-medium text-kumo-subtle">
+        <div className="flex items-center gap-2 rounded-t-[var(--admin-radius)] bg-admin-elevated px-4 pt-4 pb-2 text-base font-medium text-admin-muted">
           {title}
         </div>
         <div
           className={cn(
-            "relative flex flex-col gap-2 overflow-visible rounded-lg bg-kumo-base p-4 pr-3 text-inherit ring ring-kumo-fill",
+            "relative flex flex-col gap-2 overflow-visible rounded-[var(--admin-radius)] bg-admin-surface p-4 text-inherit ring-1 ring-admin-line",
             bodyClassName,
           )}
         >
@@ -44,7 +42,7 @@ export function AdminPanel({
   return (
     <div
       className={cn(
-        "overflow-visible rounded-lg bg-kumo-base p-4 shadow-xs ring ring-kumo-line",
+        "overflow-visible rounded-[var(--admin-radius)] bg-admin-surface p-4 shadow-xs ring-1 ring-admin-line",
         className,
       )}
     >

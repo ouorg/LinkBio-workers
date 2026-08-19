@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Banner } from "@cloudflare/kumo/components/banner";
-import { CheckCircleIcon, WarningCircleIcon } from "@phosphor-icons/react";
+import { Alert } from "@/components/base/alert";
 import { FLASH_COOKIE } from "@/lib/flash-constants";
 
 function clearFlashCookie() {
@@ -25,19 +24,5 @@ export function Flash({ message }: { message?: string }) {
     : message.startsWith("ok:")
       ? message.slice(3)
       : message;
-  return (
-    <Banner
-      className="mb-4"
-      size="sm"
-      variant={isError ? "error" : "default"}
-      icon={
-        isError ? (
-          <WarningCircleIcon weight="fill" className="size-4" />
-        ) : (
-          <CheckCircleIcon weight="fill" className="size-4" />
-        )
-      }
-      title={text}
-    />
-  );
+  return <Alert title={text} variant={isError ? "error" : "default"} />;
 }

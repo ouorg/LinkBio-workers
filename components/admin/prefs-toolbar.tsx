@@ -2,15 +2,18 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Button } from "@cloudflare/kumo/components/button";
+import { Button } from "@/components/base/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  MenuGroup,
+  MenuItem,
+  MenuLabel,
+  MenuPopup,
+  MenuPortal,
+  MenuPositioner,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+} from "@/components/base/menu";
 import type { ColorMode } from "@/lib/types";
 import type { LocalePref } from "@/lib/prefs";
 import { COLOR_COOKIE, COLOR_STORAGE_KEY, LOCALE_COOKIE } from "@/lib/prefs";
@@ -43,7 +46,6 @@ function applyColor(mode: ColorMode) {
   const meta = document.querySelector('meta[name="color-scheme"]');
   if (meta) meta.setAttribute("content", mode === "system" ? "light dark" : mode);
 
-  // Sync Kumo admin shell data-mode
   const root = document.querySelector<HTMLElement>("[data-admin-root]");
   if (root) {
     if (mode === "system") {
@@ -62,14 +64,8 @@ function applyColor(mode: ColorMode) {
   setCookie(COLOR_COOKIE, mode);
 }
 
-const triggerClass = cn(
-  "size-9 shrink-0 rounded-full p-0",
-  "inline-flex items-center justify-center",
-);
+const triggerClass = cn("size-9 shrink-0 rounded-full p-0", "inline-flex items-center justify-center");
 
-/**
- * Same prefs as public ThemeToolbar (cookie + refresh), styled for admin / Kumo.
- */
 export function AdminPrefsToolbar({
   colorMode,
   localePref,
@@ -89,87 +85,93 @@ export function AdminPrefsToolbar({
 
   return (
     <aside className="admin-prefs-toolbar" aria-label={`${labels.color} / ${labels.locale}`}>
-      <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="secondary"
-            size="sm"
-            className={triggerClass}
-            aria-label={`${labels.color}: ${colorLabel}`}
-            title={`${labels.color}: ${colorLabel}`}
-          >
-            <ColorIcon className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          sideOffset={8}
-          collisionPadding={12}
-          className="z-[70] min-w-[9.5rem]"
+      <MenuRoot>
+        <MenuTrigger
+          render={
+            <Button
+              variant="secondary"
+              size="sm"
+              className={triggerClass}
+              aria-label={`${labels.color}: ${colorLabel}`}
+              title={`${labels.color}: ${colorLabel}`}
+            />
+          }
         >
-          <DropdownMenuLabel>{labels.color}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {(
-            [
-              ["system", labels.system],
-              ["light", labels.light],
-              ["dark", labels.dark],
-            ] as const
-          ).map(([value, label]) => (
-            <DropdownMenuItem
-              key={value}
-              className={cn(colorMode === value && "font-semibold text-primary")}
-              onSelect={() => {
-                applyColor(value);
-                router.refresh();
-              }}
-            >
-              {label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <ColorIcon className="h-4 w-4" />
+        </MenuTrigger>
+        <MenuPortal>
+          <MenuPositioner sideOffset={8} align="end">
+            <MenuPopup>
+              <MenuGroup>
+                <MenuLabel>{labels.color}</MenuLabel>
+                <MenuSeparator className="my-1 h-px bg-admin-line" />
+                {(
+                  [
+                    ["system", labels.system],
+                    ["light", labels.light],
+                    ["dark", labels.dark],
+                  ] as const
+                ).map(([value, label]) => (
+                  <MenuItem
+                    key={value}
+                    className={cn(colorMode === value && "font-semibold text-admin-primary")}
+                    onClick={() => {
+                      applyColor(value);
+                      router.refresh();
+                    }}
+                  >
+                    {label}
+                  </MenuItem>
+                ))}
+              </MenuGroup>
+            </MenuPopup>
+          </MenuPositioner>
+        </MenuPortal>
+      </MenuRoot>
 
-      <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="secondary"
-            size="sm"
-            className={triggerClass}
-            aria-label={`${labels.locale}: ${localeLabel}`}
-            title={`${labels.locale}: ${localeLabel}`}
-          >
-            <span className="text-[11px] font-bold leading-none tracking-tight">{localeShort}</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          sideOffset={8}
-          collisionPadding={12}
-          className="z-[70] min-w-[9.5rem]"
+      <MenuRoot>
+        <MenuTrigger
+          render={
+            <Button
+              variant="secondary"
+              size="sm"
+              className={triggerClass}
+              aria-label={`${labels.locale}: ${localeLabel}`}
+              title={`${labels.locale}: ${localeLabel}`}
+            />
+          }
         >
-          <DropdownMenuLabel>{labels.locale}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {(
-            [
-              ["auto", labels.auto],
-              ["zh-CN", labels.zh],
-              ["en", labels.en],
-            ] as const
-          ).map(([value, label]) => (
-            <DropdownMenuItem
-              key={value}
-              className={cn(localePref === value && "font-semibold text-primary")}
-              onSelect={() => {
-                setCookie(LOCALE_COOKIE, value);
-                router.refresh();
-              }}
-            >
-              {label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <span className="text-[11px] font-bold leading-none tracking-tight">{localeShort}</span>
+        </MenuTrigger>
+        <MenuPortal>
+          <MenuPositioner sideOffset={8} align="end">
+            <MenuPopup>
+              <MenuGroup>
+                <MenuLabel>{labels.locale}</MenuLabel>
+                <MenuSeparator className="my-1 h-px bg-admin-line" />
+                {(
+                  [
+                    ["auto", labels.auto],
+                    ["zh-CN", labels.zh],
+                    ["en", labels.en],
+                  ] as const
+                ).map(([value, label]) => (
+                  <MenuItem
+                    key={value}
+                    className={cn(localePref === value && "font-semibold text-admin-primary")}
+                    onClick={() => {
+                      setCookie(LOCALE_COOKIE, value);
+                      router.refresh();
+                    }}
+                  >
+                    {label}
+                  </MenuItem>
+                ))}
+              </MenuGroup>
+            </MenuPopup>
+          </MenuPositioner>
+        </MenuPortal>
+      </MenuRoot>
     </aside>
   );
 }

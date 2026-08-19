@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { LinkButton } from "@cloudflare/kumo/components/button";
+import { LinkButton } from "@/components/base/button";
 import { AdminNav } from "@/components/admin/nav";
 import { AdminPanel } from "@/components/admin/panel";
 import { isAdminSession } from "@/lib/auth";
@@ -23,24 +23,24 @@ export default async function AdminOverviewPage() {
     <div className="admin-shell">
       <AdminNav active="overview" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+        <h1 className="text-2xl font-semibold tracking-tight text-admin-strong">
           {t("admin.page.overview")}
         </h1>
-        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
+        <p className="text-sm text-admin-muted">{t("admin.subtitle")}</p>
       </header>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <AdminPanel>
-          <p className="text-sm font-medium text-kumo-subtle">{t("admin.stats.pageViews")}</p>
-          <p className="mt-1 text-3xl font-semibold text-kumo-strong">{analytics.pageViews}</p>
+          <p className="text-sm font-medium text-admin-muted">{t("admin.stats.pageViews")}</p>
+          <p className="mt-1 text-3xl font-semibold text-admin-strong">{analytics.pageViews}</p>
         </AdminPanel>
         <AdminPanel>
-          <p className="text-sm font-medium text-kumo-subtle">{t("admin.stats.linkClicks")}</p>
-          <p className="mt-1 text-3xl font-semibold text-kumo-strong">{clicks}</p>
+          <p className="text-sm font-medium text-admin-muted">{t("admin.stats.linkClicks")}</p>
+          <p className="mt-1 text-3xl font-semibold text-admin-strong">{clicks}</p>
         </AdminPanel>
         <AdminPanel>
-          <p className="text-sm font-medium text-kumo-subtle">{t("admin.stats.lastUpdated")}</p>
-          <p className="mt-1 text-sm font-medium text-kumo-default">
+          <p className="text-sm font-medium text-admin-muted">{t("admin.stats.lastUpdated")}</p>
+          <p className="mt-1 text-sm font-medium text-admin-text">
             {analytics.lastUpdated || t("admin.stats.empty")}
           </p>
         </AdminPanel>
@@ -68,12 +68,12 @@ export default async function AdminOverviewPage() {
 
       <AdminPanel title={t("admin.overview.currentProfile")}>
         <div className="space-y-2 text-sm">
-          <p className="text-kumo-default">
-            <strong className="text-kumo-strong">{profile.name}</strong>
+          <p className="text-admin-text">
+            <strong className="text-admin-strong">{profile.name}</strong>
             {profile.username ? ` · @${profile.username}` : ""}
           </p>
-          <p className="text-kumo-subtle">{profile.bio}</p>
-          <p className="text-kumo-subtle">
+          <p className="text-admin-muted">{profile.bio || t("admin.stats.empty")}</p>
+          <p className="text-admin-muted">
             {t("admin.overview.enabledLinks", {
               count: links.filter((l) => l.enabled).length,
             })}

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Badge } from "@cloudflare/kumo/components/badge";
-import { Button, LinkButton } from "@cloudflare/kumo/components/button";
-import { Input } from "@cloudflare/kumo/components/input";
+import { Badge } from "@/components/base/badge";
+import { Button, LinkButton } from "@/components/base/button";
+import { Input } from "@/components/base/field";
+import { SubmitButton } from "@/components/base/submit-button";
 import {
   addLinkAction,
   deleteLinkAction,
@@ -43,16 +44,16 @@ export default async function LinksPage({
     <div className="admin-shell">
       <AdminNav active="links" siteName={siteName} csrf={csrf} t={t} />
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-kumo-strong">
+        <h1 className="text-2xl font-semibold tracking-tight text-admin-strong">
           {t("admin.page.links")}
         </h1>
-        <p className="text-sm text-kumo-subtle">{t("admin.subtitle")}</p>
+        <p className="text-sm text-admin-muted">{t("admin.subtitle")}</p>
       </header>
       <AdminPanel title={t("admin.links.title")} className="mb-6">
           <div className="space-y-3">
             <Flash message={flash} />
             {sorted.length === 0 ? (
-              <p className="text-sm text-kumo-subtle">{t("admin.links.empty")}</p>
+              <p className="text-sm text-admin-muted">{t("admin.links.empty")}</p>
             ) : (
               sorted.map((l) => {
                 const isEditing = editing?.id === l.id;
@@ -60,13 +61,13 @@ export default async function LinksPage({
                 return (
                   <div
                     key={l.id}
-                    className="rounded-xl border border-kumo-hairline bg-kumo-base p-3"
+                    className="rounded-xl border border-admin-border bg-admin-surface p-3"
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex min-w-0 items-start gap-3">
                         <span
                           aria-hidden
-                          className="mt-0.5 inline-block size-8 shrink-0 rounded-md border border-kumo-hairline bg-kumo-control"
+                          className="mt-0.5 inline-block size-8 shrink-0 rounded-md border border-admin-border bg-admin-control"
                           style={{
                             maskImage: `url(${iconSrc})`,
                             WebkitMaskImage: `url(${iconSrc})`,
@@ -76,17 +77,17 @@ export default async function LinksPage({
                             WebkitMaskRepeat: "no-repeat",
                             maskPosition: "center",
                             WebkitMaskPosition: "center",
-                            backgroundColor: "var(--text-color-kumo-default, currentColor)",
+                            backgroundColor: "var(--admin-text)",
                           }}
                         />
                         <div className="min-w-0">
-                          <div className="flex items-center gap-2 font-medium text-kumo-default">
+                          <div className="flex items-center gap-2 font-medium text-admin-text">
                             <span className="truncate">{l.title}</span>
                             <Badge variant={l.enabled ? "success" : "neutral"}>
                               {l.enabled ? t("admin.links.badgeOn") : t("admin.links.badgeOff")}
                             </Badge>
                           </div>
-                          <p className="truncate text-xs text-kumo-subtle">
+                          <p className="truncate text-xs text-admin-muted">
                             {t("admin.links.meta", {
                               url: l.url,
                               icon: l.icon,
@@ -151,6 +152,8 @@ export default async function LinksPage({
                             size="sm"
                             variant="destructive"
                             confirmMessage={t("admin.links.deleteConfirm")}
+                            confirmLabel={t("admin.links.delete")}
+                            cancelLabel={t("admin.common.cancel")}
                           >
                             {t("admin.links.delete")}
                           </ConfirmSubmitButton>
@@ -161,7 +164,7 @@ export default async function LinksPage({
                     {isEditing ? (
                       <form
                         action={updateLinkAction}
-                        className="mt-4 space-y-4 border-t border-kumo-hairline pt-4"
+                        className="mt-4 space-y-4 border-t border-admin-border pt-4"
                       >
                         <input type="hidden" name={CSRF_FIELD} value={csrf} />
                         <input type="hidden" name="id" value={l.id} />
@@ -192,7 +195,7 @@ export default async function LinksPage({
                           maxLength={2000}
                           placeholder={t("admin.links.urlPlaceholder")}
                         />
-                        <label className="flex items-center gap-2 text-sm text-kumo-default">
+                        <label className="flex items-center gap-2 text-sm text-admin-text">
                           <input
                             type="checkbox"
                             name="enabled"
@@ -220,9 +223,9 @@ export default async function LinksPage({
       </AdminPanel>
 
       {editId && !editing ? (
-        <p className="mb-4 text-sm text-kumo-subtle">
+        <p className="mb-4 text-sm text-admin-muted">
           {t("admin.links.notFound")}{" "}
-          <Link href="/admin/links" className="text-kumo-link underline">
+          <Link href="/admin/links" className="text-admin-link underline">
             {t("admin.links.cancelEdit")}
           </Link>
         </p>
@@ -256,11 +259,11 @@ export default async function LinksPage({
               maxLength={2000}
               placeholder={t("admin.links.urlPlaceholder")}
             />
-            <label className="flex items-center gap-2 text-sm text-kumo-default">
+            <label className="flex items-center gap-2 text-sm text-admin-text">
               <input type="checkbox" name="enabled" value="1" defaultChecked className="size-4" />
               {t("admin.links.enabled")}
             </label>
-            <div className="border-t border-kumo-hairline pt-4">
+            <div className="border-t border-admin-border pt-4">
               <Button type="submit" variant="primary">
                 {t("admin.links.submit")}
               </Button>
